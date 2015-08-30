@@ -1,0 +1,7 @@
+<template name="index">
+    {{#if currentUser }}
+        {{pathFor 'codeMage' currentUser}}
+    {{else}}
+        {{> atForm }}
+    {{/if}}
+</template>

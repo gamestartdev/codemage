@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="CodeMageSpigot" default="buildSpigotServer" basedir=".">
+
+	<property file="spigot.config" />
+
+	<target name="CodeMageSpigotDDPJar">
+		<ant antfile="../CodeMageSpigotDDP/build.xml" target="makeJar" inheritAll="false">
+			<property name="spigotServerPath" value="${spigotServerPath}" />
+		</ant>
+	</target>
+
+	<target name="CodeMageSpigotPythonJar">
+		<ant antfile="../CodeMageSpigotPython/build.xml" target="makeJar" inheritAll="false">
+			<property name="spigotServerPath" value="${spigotServerPath}" />
+		</ant>
+	</target>
+
+
+	<target name="buildSpigotServer" depends="CodeMageSpigotDDPJar, CodeMageSpigotPythonJar">
+		<copy todir="${spigotServerPath}">
+		    <fileset dir="serverResources"/>
+  		</copy>
+	</target>
+</project>

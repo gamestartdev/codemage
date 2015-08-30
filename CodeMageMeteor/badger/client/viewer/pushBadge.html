@@ -1,0 +1,14 @@
+<template name="pushBadge">
+  {{#with assertion}}
+      <div class="row">
+      <div class="small-6 columns">
+        <button class="pushToBackpack">Push this Badge to my Backpack!</button>
+      </div>
+      <div class="small-6 columns">
+          <label>Evidence:
+              <input type="text" value="{{evidence}}" disabled>
+          </label>
+      </div>
+      </div>
+  {{/with}}
+</template>

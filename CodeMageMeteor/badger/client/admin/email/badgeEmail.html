@@ -1,0 +1,336 @@
+
+<template name="badgeEmail">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>*|MC:SUBJECT|*</title>
+
+    <style type="text/css">
+        #outlook a {
+            padding: 0;
+        }
+
+        body {
+            width: 100% !important;
+        }
+
+        .ReadMsgBody {
+            width: 100%;
+        }
+
+        .ExternalClass {
+            width: 100%;
+        }
+
+        body {
+            -webkit-text-size-adjust: none;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        img {
+            border: 0;
+            height: auto;
+            line-height: 100%;
+            outline: none;
+            text-decoration: none;
+        }
+
+        table td {
+            border-collapse: collapse;
+        }
+
+        #backgroundTable {
+            height: 100% !important;
+            margin: 0;
+            padding: 0;
+            width: 100% !important;
+        }
+
+        h1, .h1 {
+            color: #363636;
+            display: block;
+            font-family: Helvetica;
+            font-size: 32px;
+            font-weight: normal;
+            letter-spacing: normal;
+            line-height: 100%;
+            margin-top: 0;
+            margin-right: 0;
+            margin-bottom: 10px;
+            margin-left: 0;
+            text-align: left;
+        }
+
+        h2, .h2 {
+            color: #543680;
+            display: block;
+            font-family: Helvetica;
+            font-size: 40px;
+            font-weight: normal;
+            line-height: 100%;
+            margin-top: 0;
+            margin-right: 0;
+            margin-bottom: 10px;
+            margin-left: 0;
+            text-align: left;
+        }
+
+        h3, .h3 {
+            color: #363636;
+            display: block;
+            font-family: Helvetica;
+            font-size: 20px;
+            font-weight: bold;
+            line-height: 100%;
+            margin-top: 0;
+            margin-right: 0;
+            margin-bottom: 10px;
+            margin-left: 0;
+            text-align: left;
+        }
+
+        h4, .h4 {
+            color: #999690;
+            display: block;
+            font-family: Helvetica;
+            font-size: 14px;
+            font-weight: normal;
+            line-height: 100%;
+            font-style: italic;
+            margin-top: 0;
+            margin-right: 0;
+            margin-bottom: 10px;
+            margin-left: 0;
+            text-align: left;
+        }
+
+        #templatePreheader {
+            background-color: #FFFFFF;
+        }
+
+        .preheaderContent {
+            color: #707070;
+            font-family: Helvetica;
+            font-size: 11px;
+            line-height: 100%;
+            text-align: left;
+        }
+
+        .preheaderContent a:link, .preheaderContent a:visited, .preheaderContent a .yshortcuts {
+            color: #26ABE2;
+            font-weight: normal;
+            text-decoration: none;
+        }
+
+        #templateHeader {
+            background-color: #EEEEEE;
+        }
+
+        .headerContent {
+            color: #363636;
+            font-family: Helvetica;
+            font-size: 20px;
+            font-weight: bold;
+            line-height: 100%;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .headerContent a:link, .headerContent a:visited, .headerContent a .yshortcuts {
+            color: #26ABE2;
+            font-weight: normal;
+            text-decoration: underline;
+        }
+
+        #headerImage {
+            height: auto;
+            max-width: 600px;
+        }
+
+        #templateBody {
+            background-color: #EEEEEE;
+        }
+
+        .couponBlock {
+            background-color: #FFFFFF;
+            border: 1px solid #E5E5E5;
+        }
+
+        .couponContent {
+            color: #505050;
+            font-family: Helvetica;
+            font-size: 12px;
+            line-height: 150%;
+            text-align: left;
+        }
+
+        .couponContent a:link, .couponContent a:visited, .couponContent a .yshortcuts {
+            color: #26ABE2;
+            font-weight: normal;
+            text-decoration: underline;
+        }
+
+        .bodyContent img, .couponContent img {
+            display: inline;
+            height: auto;
+        }
+
+        .leftColumnContent {
+            color: #707070;
+            font-family: Helvetica;
+            font-size: 13px;
+            line-height: 150%;
+            text-align: left;
+        }
+
+        .leftColumnContent a:link, .leftColumnContent a:visited, .leftColumnContent a .yshortcuts {
+            color: #26ABE2;
+            font-weight: normal;
+            text-decoration: none;
+        }
+
+        .leftColumnContent img {
+            display: inline;
+            height: auto;
+        }
+
+        .centerColumnContent {
+            color: #707070;
+            font-family: Helvetica;
+            font-size: 13px;
+            line-height: 150%;
+            text-align: left;
+        }
+
+        .centerColumnContent a:link, .centerColumnContent a:visited, .centerColumnContent a .yshortcuts {
+            color: #26ABE2;
+            font-weight: normal;
+            text-decoration: none;
+        }
+
+        .centerColumnContent img {
+            display: inline;
+            height: auto;
+        }
+
+        .rightColumnContent {
+            color: #707070;
+            font-family: Helvetica;
+            font-size: 13px;
+            line-height: 150%;
+            text-align: left;
+        }
+
+        .rightColumnContent a:link, .rightColumnContent a:visited, .rightColumnContent a .yshortcuts {
+            color: #26ABE2;
+            font-weight: normal;
+            text-decoration: none;
+        }
+
+        .rightColumnContent img {
+            display: inline;
+            height: auto;
+        }
+
+        body, #backgroundTable {
+            background-color: #363636;
+        }
+
+        #templateFooter {
+            border-top: 0;
+        }
+
+        .footerContent {
+            color: #909090;
+            font-family: Helvetica;
+            font-size: 11px;
+            line-height: 125%;
+            text-align: left;
+        }
+
+        .footerContent a:link, .footerContent a:visited, .footerContent a .yshortcuts {
+            color: #BBBBBB;
+            font-weight: normal;
+            text-decoration: none;
+        }
+
+        .footerContent img {
+            display: inline;
+        }
+
+        #monkeyRewards img {
+            max-width: 180px;
+        }
+    </style>
+</head>
+<body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0"
+      style="-webkit-text-size-adjust: none;margin: 0;padding: 0;background-color: #363636;width: 100% !important;">
+<center>
+    <table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" id="backgroundTable"
+           style="margin: 0;padding: 0;background-color: #363636;height: 100% !important;width: 100% !important;">
+        <tr>
+            <td align="center" valign="top"
+                style="height: 100% !important;margin: 0 !important;padding: 0 !important;width: 100% !important;border-collapse: collapse;">
+
+                <!-- // Header \\    -->
+                <table border="0" cellpadding="40" cellspacing="0" width="100%" id="templateHeader"
+                       style="background-color: #EEEEEE;">
+                    <tr>
+                        <td align="center" valign="top" style="padding-bottom: 10px;border-collapse: collapse;">
+                            <table border="0" cellpadding="0" cellspacing="0" width="560">
+                                <tr>
+                                    <td class="headerContent"
+                                        style="border-collapse: collapse;color: #363636;font-family: Helvetica;font-size: 20px;font-weight: bold;line-height: 100%;text-align: left;vertical-align: top;">
+                                        <img src="http://badger.gamestartschool.org/DPTV_logo.png"
+                                             alt="" border="0"
+                                             style="margin: 0;padding: 0;max-width: 560px;border: 0;height: auto;line-height: 100%;outline: none;text-decoration: none;"
+                                             id="headerImage campaign-icon">
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                <!-- // Header \\ -->
+
+                <!-- // Body \\ -->
+                <table border="0" cellpadding="20" cellspacing="0" width="100%" id="templateBody"
+                       style="background-color: #EEEEEE;">
+                    <tr>
+                        <td align="center" valign="top" style="border-collapse: collapse;">
+                            <table border="0" cellpadding="0" cellspacing="0" width="560" class="class-list">
+                                <tr>
+                                    <td valign="top"
+                                        style="padding-bottom: 0px;padding-top: 5px;border-collapse: collapse;color: #505050;font-family: Helvetica;font-size: 12px;line-height: 150%;text-align: left;"
+                                        class="couponContent">
+                                        <h1>Congratulations!</h1>
+                                        <h2>You have been awarded a Be Summer Smart Digital Badge!</h2>
+                                        <p><span style="font-size:17px"><a href="http://badger.gamestartschool.org">Register or login here</a> using this email address to see your previous Badges, and discover your next Badge Earning opportunity!</span></p>
+                                    </td>
+                                </tr>
+
+                                <tr></tr>
+                                <tr><td valign="top"
+                                        style="padding-bottom: 0px;padding-top: 20px;border-collapse: collapse;color: #505050;font-family: Helvetica;font-size: 12px;line-height: 150%;text-align: left;"
+                                        class="couponContent">
+                                    <h3>Be Summer Smart Digital Badges are hosted by GameStart School, where we teach kids to program using video games (like Minecraft!).  To learn more about GameStart workshops and summer camps at <a href="http://gamestartschool.org/" target="_blank">www.gamestartschool.org</a></h3>
+                                </td>
+                                </tr>
+                                <br><br>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                <!-- // Body \\ -->
+            </td>
+        </tr>
+
+    </table>
+</center>
+</body>
+</html>
+</template>

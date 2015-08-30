@@ -1,0 +1,5 @@
+<template name="userList">
+    {{#each otherUsers}}
+        <a href="{{pathFor 'codeMage.user' _id=username}}">{{username}}</a><br>
+    {{/each}}
+</template>

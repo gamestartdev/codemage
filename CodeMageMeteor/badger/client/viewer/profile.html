@@ -1,0 +1,22 @@
+<template name="profile">
+  {{#if profileUser }}
+    {{#with profileUser}}
+      {{>profileContent}}
+    {{/with}}
+  {{else}}
+    {{> atForm }}
+  {{/if}}
+</template>
+
+<template name="emailProfile">
+  {{#with profileUser}}
+    {{>profileContent}}
+  {{/with}}
+</template>
+
+<template name="profileContent">
+    {{#with badge_data}}
+        <h5>Badges Earned: {{count}}</h5>
+      {{> badge_grid }}
+    {{/with}}
+</template>

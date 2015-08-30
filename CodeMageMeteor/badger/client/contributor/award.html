@@ -1,0 +1,10 @@
+<template name="award">
+    {{#each myOrganizations}}
+        <div class="panel"  style="text-align: center">
+            <h1>{{name}}</h1>
+            {{#with badgesForOrg}}
+            {{> badge_grid }}
+            {{/with}}
+        </div>
+    {{/each}}
+</template>

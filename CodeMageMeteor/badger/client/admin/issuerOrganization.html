@@ -1,0 +1,32 @@
+<template name="issuerOrganization">
+    <div class="row">
+        <form class="organization-form">
+            <input type="hidden" name="_id" value="{{_id}}">
+            <label for="name">Name</label>
+            <input type="text" name="name" class="form-control"
+                   placeholder="Organization Name" value="{{name}}">
+
+            <label for="email">Admininistrator Email Address</label>
+            <input type="email" name="email" class="form-control"
+                   placeholder="Administrator Email" value="{{email}}">
+
+            <label for="url">Website</label>
+            <input type="url" name="url" class="form-control"
+                   placeholder="Organization URL" value="{{#if url}}{{ url }}{{else}}http://{{/if}}">
+
+            <label for="description">Description</label>
+            <input type="text" name="description" class="form-control"
+                   placeholder="A breif description of the organization" value="{{description}}">
+            <button type="submit" class="expand">Update</button>
+        </form>
+    </div>
+
+    {{#if _id}}
+    {{#if isAdmin}}
+    <div class="row">
+        <button class="deleteOrg expand" style="background-color: red">Delete the ENTIRE Organization</button>
+    </div>
+    {{/if}}
+    {{/if}}
+
+</template>

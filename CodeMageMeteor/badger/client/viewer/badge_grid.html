@@ -1,0 +1,18 @@
+<template name="badge_grid">
+    <div id="badge_grid_container" class="row">
+      {{#each badges}}
+          <div class="medium-4 small-6 columns">
+              <div class="badge_cell">
+                  <a class="badge_icon" href="{{pathFor 'viewBadge'}}">
+                      <img src="{{image_url}}"/>
+                      <h4 class="badge_name" style="text-align: center">{{name}}</h4>
+                  </a>
+              </div>
+          </div>
+      {{else}}
+          <div class="small-12 columns">
+              <h1>Go earn badges!!</h1>
+          </div>
+      {{/each}}
+    </div>
+</template>

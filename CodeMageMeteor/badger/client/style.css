@@ -1,0 +1,56 @@
+body {
+    background-color: floralwhite;
+}
+
+#badgedesigner {
+    overflow: hidden;
+    width: 100%;
+    height: 600px;
+}
+
+.container {
+    padding:10px;
+}
+
+.root-row {
+    max-width:640px;
+}
+
+.at-error p {
+    color:white;
+}
+
+.nav-button .active{
+    background-color: red;
+}
+
+.warning {
+    visibility: hidden;
+}
+
+#badgename .warning {
+    color: red;
+}
+
+#cam {
+}
+
+.panel {
+    text-align: center;
+}
+
+#badgeCanvas {
+    height: 300px;
+    width: 300px;
+    border-style: dashed;
+    border-width: 2px;
+    background-image: url(http://img3.wikia.nocookie.net/__cb20060419021703/uncyclopedia/images/0/01/DramaticQuestionMark.png);
+    background-repeat: no-repeat;
+    background-size: 300px 300px;
+}
+
+#badgeCanvas.ready {
+    background-image: none;
+    border-style: none;
+}
+

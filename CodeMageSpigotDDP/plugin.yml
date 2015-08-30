@@ -1,0 +1,8 @@
+name: CodeMageDDP
+main: org.gamestartschool.codemage.ddp.CodeMageDDPSpigotPlugin
+version: 1.0.0
+commands:
+  ddp:
+    description: Run python command
+    usage: |
+      /ddp

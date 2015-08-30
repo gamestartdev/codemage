@@ -1,0 +1,31 @@
+# Meteor packages used by this project, one per line.
+#
+# 'meteor add' and 'meteor remove' will edit this file for you,
+# but you can also edit it by hand.
+
+standard-app-packages
+coffeescript
+underscore
+accounts-password
+accounts-base
+accounts-facebook
+
+#mrt:accounts-persona
+
+jquery
+check
+audit-argument-checks
+iron:router
+themeteorchef:jquery-validation
+jparker:crypto-sha256
+jparker:crypto-base64
+service-configuration
+http
+ewall:foundation
+useraccounts:foundation
+email
+
+sanjo:jasmine
+velocity:html-reporter
+
+matb33:collection-hooks

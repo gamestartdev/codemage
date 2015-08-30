@@ -1,0 +1,12 @@
+<template name="email_badge_list">
+  {{#if isAdmin}}
+    <h1>Email Peeps</h1>
+    {{#each users}}
+      <div class="row">
+        <button class="sendEmail">{{username}}</button> - {{#each emails}}{{address}} {{/each}}
+      </div>
+    {{/each}}
+  {{else}}
+    <h1>Not Admin</h1>
+  {{/if}}
+</template>

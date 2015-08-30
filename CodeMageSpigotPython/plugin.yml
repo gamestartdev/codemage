@@ -1,0 +1,8 @@
+name: CodeMagePython
+main: org.gamestartschool.codemage.python.CodeMagePythonSpigotPlugin
+version: 1.0.0
+commands:
+  python:
+    description: Run python command
+    usage: |
+      /python

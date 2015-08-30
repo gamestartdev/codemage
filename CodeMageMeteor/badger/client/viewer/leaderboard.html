@@ -1,0 +1,25 @@
+<template name="leaderboard">
+    <div class="row">
+        <div class="small-3 columns">Players: {{player_count}}</div>
+        <div class="small-3 columns">Badges: {{badge_count}}</div>
+        <div class="small-3 columns">Earned: {{badges_earned_count}}</div>
+        <div class="small-3 columns">Organizations: {{organization_count}}</div>
+    </div>
+
+    <table style="width:100%">
+
+    {{#each players}}
+        <tr>
+            <td>{{username}}</td>
+            {{#with badge_data}}
+                <td>{{count}} / {{badge_count}}</td>
+                {{#each badges}}
+                <td style="margin:0;padding:0"><img src="{{badge_image}}" width="72" height="72"></td>
+                {{/each}}
+            {{/with}}
+        </tr>
+    {{/each}}
+    </table>
+
+
+</template>

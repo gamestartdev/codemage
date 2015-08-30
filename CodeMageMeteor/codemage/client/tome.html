@@ -1,0 +1,32 @@
+<template name="tome">
+    {{#if _id}}
+    <div class="row">
+        <a class="remove-tome expand" style="color:red;float:right">Delete Tome</a>
+        <h2 class="tome-name"><a href="#">{{name}}</a></h2>
+    </div>
+
+    {{#each spells}}
+    <div class="row">
+        <div class="panel">
+            <div class="small-5 columns">
+                <a href="{{pathFor 'codeMage.spell'}}">{{name}}</a>
+            </div>
+            <div class="small-5 columns">
+                {{message}}
+            </div>
+            <div class="small-2 columns">
+
+                <a href="#" class="spellStatus">
+                    {{#if status}}
+                        <img src="/icons/ic_stop_black_24dp_1x.png">
+                    {{else}}
+                        <img src="/icons/ic_play_arrow_black_24dp_1x.png">
+                    {{/if}}
+                </a>
+            </div>
+        </div>
+    </div>
+    {{/each}}
+    <button class="add-spell expand">New Spell</button>
+    {{/if}}
+</template>

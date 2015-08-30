@@ -1,0 +1,67 @@
+<template name="admin" xmlns="http://www.w3.org/1999/html">
+    {{#with currentUser }}
+        {{#each myOrganizations}}
+            {{> admin_organization }}
+        {{/each}}
+        {{#if isAdmin}}
+            <a href="{{pathFor 'issuerOrganization'}}" class="button expand">Create New Organization</a>
+        {{/if}}
+    {{/with}}
+</template>
+
+<template name="admin_organization">
+    <div class="panel" style="text-align: center">
+        <div class="row">
+            <div class="small-9 columns">
+                <h1>{{name}}</h1>
+            </div>
+            <div class="small-3 columns">
+                <h1><a href="{{pathFor 'issuerOrganization'}}" class="button expand"
+                       style="background-color:green">Edit Org</a></h1>
+            </div>
+        </div>
+
+        {{#each badgesForOrg}}
+            <div class="row">
+                <div class="small-4 columns">
+                    <h4>{{name}}</h4><a href="{{pathFor 'viewBadge'}}"><h6>award this badge</h6></a>
+                </div>
+                <div class="small-2 columns">
+                    <img src="{{badge_image}}" width="50">
+                </div>
+                <div class="small-3 columns">
+                    <button class="editBadge expand" style="background-color: red">Edit Badge</button>
+                </div>
+            </div>
+        {{/each}}
+
+        {{#if isAdmin}}
+        <div class="row">
+            <div class="small-12 columns">
+                <button class="createBadgeClass expand">Create New Badge</button>
+            </div>
+        </div>
+        <div class="row">
+            <h3>Current members:</h3>
+            {{#each usersForOrg}}
+                {{username}} <a href="#" class="removeUserFromOrganization" style="font-size:10px;padding-bottom:5px">X</a> -
+            {{/each}}
+        </div>
+        <div class="row">
+            {{> usernameSearch 'addUserToOrganizationRow'}}
+        </div>
+        {{/if}}
+
+    </div>
+</template>
+
+
+<template name="addUserToOrganizationRow">
+    <form class="addUserToOrganizationRow">
+        <div class="small-9 columns">{{ username }}</div>
+        <div class="small-3 columns">
+            <input type="hidden" value="{{../..}}">
+            <input type="submit" class="button expand" value="Add as Member">
+        </div>
+    </form>
+</template>

@@ -1,0 +1,68 @@
+<template name="create">
+    {{> badge_builder }}
+</template>
+
+<template name="badge_builder">
+
+    <div class="small-12 columns">
+        {{#with badge}}
+            <div class="row">
+                {{#with organization}}
+                    <label>{{name}} ({{ url }})
+                    <input id="selectedOrganization" type="hidden" value="{{_id}}" disabled>
+                    </label>
+                {{/with}}
+            </div>
+            <div class="row">
+                <input type="text" id="badgename" placeholder="Badge Name" value="{{name}}">
+            </div>
+
+            <div class="row">
+                <textarea id="badge-description" placeholder="Badge Description...">{{description}}</textarea>
+            </div>
+            <div class="row">
+                <textarea id="badge-criteria" placeholder="Badge Criteria...">{{criteria}}</textarea>
+            </div>
+            <div class="row">
+                <textarea id="badge-tags" placeholder="Badge Tags...">{{#with tags}}{{this}}{{/with}}</textarea>
+            </div>
+
+            <div class="panel">
+                <div class="row">
+                    <img src="" id="badge-image"><br>
+                </div>
+
+                <div class="row">
+                    <div class="small-5 columns">
+                        <input type="file" id="cam" accept="image/*;capture=camera"><br>
+                    </div>
+                    <div class="small-2 columns"> OR</div>
+                    <div class="small-5 columns">
+                        <button class="expand useBadgeBuilder">Use Badge Designer</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <canvas id="badgeCanvas"></canvas>
+                    <br>
+                </div>
+            </div>
+            <div class="row">
+                {{#if _id}}
+                    <div class="small-4 columns">
+                        <button class="cameraSubmit expand" data-_id="{{_id}}">Update Existing</button>
+                    </div>
+
+                    <div class="small-4 columns">
+                        <button class="cameraSubmit expand">Create New</button>
+                    </div>
+
+                    <div class="small-4 columns">
+                        <button class="removeBadgeClass expand" style="background-color: red">Delete</button>
+                    </div>
+                {{else}}
+                    <button class="cameraSubmit expand">Create Badge</button>
+                {{/if}}
+            </div>
+        {{/with}}
+    </div>
+</template>

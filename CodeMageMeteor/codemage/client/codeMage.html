@@ -1,0 +1,39 @@
+<template name="codeMage">
+
+    <div class="row">
+        {{#with user}}
+            <h1>You're a Wizard, {{username}}.</h1>
+            <h4>Minecraft Id:<a href="#" class="minecraft-id-input">{{minecraftPlayerId}}</a></h4>
+        {{/with}}
+    </div>
+    <div class="small-4 columns">
+        <div class="panel">
+            {{#each tomes}}<a href="{{pathFor 'codeMage.tome'}}">{{name}}</a><hr style="margin:3px">{{/each}}
+            <a href="#" class="add-tome"><b>+</b></a>
+        </div>
+
+        <div class="panel">
+            {{#each enchantmentsForUser user}}<a href="{{pathFor 'codeMage.enchantment'}}">{{name}}</a><hr style="margin:3px">{{/each}}
+            <a href="#" class="add-enchantment"><b>+</b></a>
+        </div>
+
+        <div class="panel">
+            {{>userList}}
+        </div>
+    </div>
+
+    <div class="small-8 columns">
+    {{#with enchantment}}
+        {{>enchantment}}
+    {{/with}}
+    {{#if spell}}
+            {{#with spell}}
+                {{>spell}}
+            {{/with}}
+        {{else}}
+        {{#with tome}}
+            {{>tome}}
+        {{/with}}
+        {{/if}}
+    </div>
+</template>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="CodeMageSpigot" default="buildSpigotServer" basedir=".">
 
-	<property file="spigot.config" />
+	<property file="build.properties" />
 
 	<target name="CodeMageSpigotDDPJar">
 		<ant antfile="../CodeMageSpigotDDP/build.xml" target="makeJar" inheritAll="false">

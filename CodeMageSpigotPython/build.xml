@@ -4,7 +4,7 @@
 
     <target name="makeJar">
 	 	<copy file="lib/jython.jar" todir="${spigotServerPath}/plugins/lib/"/>
-        <jar destfile="${spigotServerPath}/plugins/CodeMageSpigotPython.jar">
+        <jar destfile="${spigotServerPath}/plugins/${ant.project.name}.jar">
             <fileset dir="bin"></fileset>
             <fileset file="plugin.yml"></fileset>
             <manifest>

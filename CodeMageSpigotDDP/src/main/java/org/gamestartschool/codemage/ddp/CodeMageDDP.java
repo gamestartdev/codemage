@@ -210,12 +210,20 @@ public class CodeMageDDP  {
 	public void disconnect() {
 		ddpClient.disconnect();
 	}
+	
+	public IUser getUser(String minecraftPlayerId) {
+		for (IUser user : users.getAll()) {
+			if(minecraftPlayerId.equals(user.getMinecraftUserId())){
+				return user;
+			}
+		}
+		return NullUser.NULL;
+	}
 
 	private void reportCodeMageServerStatus(CodeMageServerStatus status) {
 		String dummyCodeMageServerIp = "127.0.0.1";
 		String dummyCodeMageServerPort = "54175";
 		new MeteorMethodCaller().serverStatus(dummyCodeMageServerIp, dummyCodeMageServerPort, status);
-		
 		System.out.println(status);
 	}
 	
@@ -237,14 +245,5 @@ public class CodeMageDDP  {
 				System.out.println("Logged in: "+resultFields);
 			}
 		});
-	}
-
-	protected IUser getUser(String minecraftPlayerId) {
-		for (IUser user : users.getAll()) {
-			if(minecraftPlayerId.equals(user.getMinecraftUserId())){
-				return user;
-			}
-		}
-		return NullUser.NULL;
 	}
 }

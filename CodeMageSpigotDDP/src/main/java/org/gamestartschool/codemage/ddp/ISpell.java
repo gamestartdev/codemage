@@ -1,6 +1,6 @@
 package org.gamestartschool.codemage.ddp;
 
-interface ISpell {
+public interface ISpell {
 	public String getCode();
 	public String getName();
 	public void setSpellMessage(String string);

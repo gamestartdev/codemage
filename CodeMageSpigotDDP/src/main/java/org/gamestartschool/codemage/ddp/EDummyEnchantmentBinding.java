@@ -1,7 +1,7 @@
 package org.gamestartschool.codemage.ddp;
 
 
-enum EDummyEnchantmentBinding implements IEnchantmentBinding {
+public enum EDummyEnchantmentBinding implements IEnchantmentBinding {
 
 	// These values are nonsense atm, replace them with minecraft'y versions
 	// please

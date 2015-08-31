@@ -1,181 +1,165 @@
 package org.gamestartschool.codemage.python;
 
 import java.net.URISyntaxException;
+import java.util.List;
+import java.util.UUID;
 
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.command.Command;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.gamestartschool.codemage.ddp.CodeMageDDP;
+import org.gamestartschool.codemage.ddp.EDummyEnchantmentBinding;
+import org.gamestartschool.codemage.ddp.EDummyEnchantmentTrigger;
+import org.gamestartschool.codemage.ddp.IEnchantment;
+import org.gamestartschool.codemage.ddp.ISpell;
+import org.gamestartschool.codemage.ddp.IUser;
+import org.hamcrest.core.IsInstanceOf;
 import org.python.core.PyException;
-import org.python.core.PyInteger;
 import org.python.core.PyObject;
 import org.python.core.PySyntaxError;
 import org.python.util.PythonInterpreter;
 
-import jnr.ffi.Struct.pid_t;
-
 public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 
-	private class PlayerMoveListener implements Listener {
+	public class PlayerInteractListener implements Listener {
+
 		@EventHandler
-		public void onPlayerMove(PlayerMoveEvent event) {
-			Location loc = event.getPlayer().getLocation();
-			loc.setY(loc.getY() + 5);
-			Block b = loc.getBlock();
-			b.setType(Material.STONE);
+		public void onPlayerInteract(PlayerInteractEvent event) {
+			
+			// Location loc = event.getPlayer().getLocation();
+			// loc.setY(loc.getY() + 5);
+			// Block b = loc.getBlock();
+			// b.setType(Material.STONE);
+			Player player = event.getPlayer();
+			event.getItem();
+			event.hasItem();
+
+			log("onPlayerInteract "+ player.getName());
+
+			IUser user = ddp.getUser(player.getName());
+			List<IEnchantment> enchantments = user.getEnchantments();
+			
+			log("enchantments "+ enchantments.size());
+			for (IEnchantment e : enchantments) {
+				if (EDummyEnchantmentTrigger.PRIMARY.equals(e.getTrigger())
+						&& EDummyEnchantmentBinding.WOODEN_SWORD.equals(e.getBinding())) {
+					List<ISpell> spells = e.getSpells();
+					log("spells: "+ spells.size());
+					for (ISpell spell : spells) {
+						// spell.setStatus(true);
+						log("runningCode: "+ spell.getCode());
+						runCode(player, spell.getCode());
+					}
+				}
+			}
 		}
 	}
 
-	protected PluginManager pm;
+	public class PlayerMoveListener implements Listener {
 
-	public void onDisable() {
+		@EventHandler
+		public void onPlayerMove(PlayerMoveEvent event) {
+			// Location loc = event.getPlayer().getLocation();
+			// loc.setY(loc.getY() + 5);
+			// Block b = loc.getBlock();
+			// b.setType(Material.STONE);
+			Player player = event.getPlayer();
+			// player.getUniqueId();
+			// runCode(player, codeProvider.getCode());
+		}
+	}
+
+	String meteorIp = "localhost";
+	int meteorPort = 3000;
+	String meterUsername = "admin2";
+	String meteorPassword = "asdf";
+	String minecraftPlayerId1 = "GameStartSchool";
+	String minecraftPlayerId2 = "denrei";
+	CodeMageDDP ddp = null;
+
+	private void log(String message) {
+		getServer().getLogger().info(message);
 	}
 
 	public void onEnable() {
-		getServer().getLogger().severe("CodeMagePython Enabled");
-		getServer().getPluginManager().registerEvents(new PlayerMoveListener(), this);
-	}
+		this.getCommand("python").setExecutor(new PythonCommand(this));
 
-	@Override
-	public void onLoad() {
-		getServer().getLogger().severe("CodeMagePython Loaded");
-	}
+		PluginManager pluginManager = getServer().getPluginManager();
+		pluginManager.registerEvents(new PlayerMoveListener(), this);
+		pluginManager.registerEvents(new PlayerInteractListener(), this);
 
-	private void log(String msg) {
-		getServer().getLogger().severe(msg);
-	}
-
-	public static String WORDS = "Omfg";
-	public static void blink(Player player) {
-		Location loc = player.getLocation();
-		loc.setY(loc.getY() + 50);
-		player.teleport(loc);
-	}
-	
-	private String getCode() {
-		String code = "import sys\n";
-		code += "from org.bukkit.event import EventPriority\n";
-		code += "from org.gamestartschool.codemage.python import CodeMagePythonSpigotPlugin\n";
-		code += "from org.bukkit.entity import Player as _Player\n";
-		code += "class PlayerWrap():\n";
-		code += "	def __init__(self, p):\n"; //, *args, **kwargs
-		code += "		self.p = p\n";
-		code += "		print 'doing it'\n";
-		code += "	def blink(self):\n";
-		code += "		loc = self.p.getLocation()\n";
-		code += "		print loc\n";
-		code += "		loc.setY(100)\n";
-		code += "		print loc\n";
-		code += "		self.p.teleport(loc)\n";
-		code += "		print 'teleported!'\n";
-		code += "p = PlayerWrap(player)\n";
-		
-//		code += "loc = player.getLocation()\n";
-//		code += "loc.setY(200)\n";
-//		code += "player.teleport(loc)\n";
-		code += "p.blink()\n";
-		code += "print 'Done Blinking'\n";
-		
-		// code += "import org.bukkit as bukkit\n";
-		// code += "from java.util.logging import Level\n";
-		// code += "import org.cyberlis.pyloader.PythonPlugin as
-		// PythonPlugin\n";
-		// code += "import org.cyberlis.pyloader.PythonListener as
-		// _PythonListener\n";
-		code += "result=789\n";
-		return code;
-	}
-
-	public final boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-		if (cmd.getName().equalsIgnoreCase("blink")) {
-			if (sender instanceof Player) {
-				Player player = (Player) sender;
-				executePython(player, getCode());
-				// Sets loc to five above where it used to be. Note that this
-				// doesn't change the player's position.
-			} else {
-				sender.sendMessage("You must be a player!");
-				return false;
-			}
-		}
-
-		if (cmd.getName().equalsIgnoreCase("python")) {
-//			executePython(sender, getCode());
-
-			// String code = args[0].toString();
-			// String ddpResult = ddp(sender);
-			// log("Operation: " + ddpResult);
-		}
-		return false;
-	}
-
-	private void executePython(Player sender, String code) {
-		if (sender instanceof Player) {
-			try {
-				PythonInterpreter pi = new PythonInterpreter();
-				Player player = (Player) sender;
-				pi.set("player", player);
-				pi.exec(code);
-				PyObject pyResult = pi.get("result");
-				String resultMessage = pyResult.toString();
-				log(resultMessage);
-				sender.sendMessage("Result of code: " + resultMessage);
-				pi.close();
-			} catch (PySyntaxError e) {
-				e.printStackTrace();
-			} catch (PyException e) {
-				e.printStackTrace();
-			}
-//			Location loc = player.getLocation();
-			// Sets loc to five above where it used to be. Note that this
-			// doesn't change the player's position.
-//			loc.setY(200);
-//			player.teleport(loc);
-		}
-
-	}
-
-	static String meteorIp = "localhost";
-	static int meteorPort = 3000;
-	static String meterUsername = "admin2";
-	static String meteorPassword = "asdf";
-	static String minecraftPlayerId1 = "GameStartSchool";
-	static String minecraftPlayerId2 = "denrei";
-	CodeMageDDP ddp = null;
-
-	public String ddp(CommandSender sender) {
 		try {
 			log("DDP Plugin being invoked from CodeMagePython.");
 			ddp = new CodeMageDDP(meteorIp, meteorPort);
 			log("DDP Plugin attempting to connect....");
 			ddp.connect(meterUsername, meteorPassword);
-
-			String code = "result=98765"; // Main.runWoodenSwordSwingCodeForPlayer(ddp,
-											// minecraftPlayerId2);
-			System.out.println("FOUND CODE: " + code);
-//			executePython(sender, code);
-
-			System.out.println("Shutting down in 3...");
-			Thread.sleep(1000);
-			System.out.println("2...");
-			Thread.sleep(1000);
-			System.out.println("1...");
-			Thread.sleep(1000);
-			ddp.disconnect();
-			return "DDP SUCCESS";
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
-		return "DDP Failure.";
+	}
+
+	public void onDisable() {
+		ddp.disconnect();
+	}
+
+	public void runCode(CommandSender sender, String code) {
+		try {
+			PythonInterpreter pi = new PythonInterpreter();
+			if(sender instanceof Player){
+				Player player = (Player)sender;
+				sender.sendMessage("Found you as Player: " + player.getName());
+				pi.set("player", player);
+				
+				String preCode = "";
+//				preCode += "import pdb\n";
+				preCode += "from org.bukkit.event import EventPriority\n";
+//				preCode += "from org.gamestartschool.codemage.python import CodeMagePythonSpigotPlugin\n";
+				preCode += "from org.bukkit.entity import Player as _Player\n";
+//				preCode += "import __builtin__\n";
+//				preCode += "__builtin__.__import__, __builtin__.reload = None, None\n";
+				preCode += "class PlayerWrap():\n";
+				preCode += "	def __init__(self, p):\n"; //, *args, **kwargs
+				preCode += "		self.p = p\n";
+				preCode += "		print 'doing it'\n";
+				preCode += "	def blink(self):\n";
+				preCode += "		loc = self.p.getLocation()\n";
+				preCode += "		print loc\n";
+				preCode += "		loc.setY(100)\n";
+				preCode += "		print loc\n";
+				preCode += "		self.p.teleport(loc)\n";
+				preCode += "		print 'teleported!'\n";
+				preCode += "p = PlayerWrap(player)\n";
+				
+//				preCode += "loc = player.getLocation()\n";
+//				preCode += "loc.setY(200)\n";
+//				preCode += "player.teleport(loc)\n";
+//				preCode += "print 'setting trace...'\n";
+//				preCode += "pdb.set_trace()\n";
+//				preCode += "for x in range(['carlos', 'matt', 'nate']):\n";
+//				preCode += "	print x\n";
+//				preCode += "p.blink()\n";
+				preCode += "print 'Done Blinking'\n";
+				code = preCode + code;
+			}
+			
+			sender.sendMessage("About to execute code...: " + code);
+			pi.set("result", 5);
+			pi.exec(code);
+			PyObject pyResult = pi.get("result");
+			sender.sendMessage("Finished executing code!");
+			pi.close();
+		} catch (PySyntaxError e) {
+			e.printStackTrace();
+		} catch (PyException e) {
+			e.printStackTrace();
+		}
 	}
 }

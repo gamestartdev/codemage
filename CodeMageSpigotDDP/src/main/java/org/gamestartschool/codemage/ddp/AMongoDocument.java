@@ -2,6 +2,7 @@ package org.gamestartschool.codemage.ddp;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public abstract class AMongoDocument implements IMongoDocument {
 
@@ -24,7 +25,9 @@ public abstract class AMongoDocument implements IMongoDocument {
 	}
 	
 	public void changed(Map<String, Object> fields){
-		this.fields = fields;
+		for (Entry<String, Object> entry : fields.entrySet()) {
+			this.fields.put(entry.getKey(), entry.getValue());
+		}
 	}
 
 	private Object getField(String key) {

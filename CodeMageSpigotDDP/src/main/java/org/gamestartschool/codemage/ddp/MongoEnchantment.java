@@ -2,6 +2,7 @@ package org.gamestartschool.codemage.ddp;
 
 import static ch.lambdaj.Lambda.convert;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -43,6 +44,11 @@ class MongoEnchantment extends AMongoDocument implements IEnchantment {
 	
 	@Override
 	public List<ISpell> getSpells() {
+		if(removed) {
+			System.out.println("Trying to get spells from a removed enchantment!! "+ id);
+			return new ArrayList<ISpell>();
+		}
+		
 		return convert(getSpellIds(), new Converter<String, ISpell>(){
 			public ISpell convert(String id) {
 	                return spells.get(id);
@@ -53,6 +59,12 @@ class MongoEnchantment extends AMongoDocument implements IEnchantment {
 	@Override
 	public String getId() {
 		return id;
+	}
+
+	private boolean removed = false;
+	@Override
+	public void removed() {
+		removed = true;
 	}
 
 }

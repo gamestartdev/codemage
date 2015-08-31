@@ -1,8 +1,12 @@
 package org.gamestartschool.codemage.ddp.example;
 
 import java.net.URISyntaxException;
+import java.util.List;
 
 import org.gamestartschool.codemage.ddp.CodeMageDDP;
+import org.gamestartschool.codemage.ddp.IEnchantment;
+import org.gamestartschool.codemage.ddp.ISpell;
+import org.gamestartschool.codemage.ddp.IUser;
 
 public class Main {
 
@@ -19,14 +23,24 @@ public class Main {
 		CodeMageDDP ddp = new CodeMageDDP(meteorIp, meteorPort);
 		ddp.connect(meterUsername, meteorPassword);
 		//runWoodenSwordSwingCodeForPlayer(ddp, minecraftPlayerId2);
-		System.out.println("Shutting down in 3...");
-		Thread.sleep(1000);
-		System.out.println("2...");
-		Thread.sleep(1000);
-		System.out.println("1...");
-		Thread.sleep(1000);
-//		ddp.disconnect();
-		System.out.println("Done!");
+		
+		while(true){
+			Thread.sleep(3000);
+			System.out.println("Swinging..");
+			IUser user = ddp.getUser("GameStartSchool");
+			List<IEnchantment> enchantments = user.getEnchantments();
+			for (IEnchantment enchantment : enchantments) {
+				System.out.println("Enchantment! : "+enchantment);
+				List<ISpell> spells = enchantment.getSpells();
+				for (ISpell spell : spells) {
+					System.out.println("Spell! : "+spell.getCode());
+				}
+			}
+		}
+		
+
+		//		ddp.disconnect();
+//		System.out.println("Done!");
 	}
 //
 //	public static String runWoodenSwordSwingCodeForPlayer(CodeMageDDP ddp, String minecraftPlayerId)

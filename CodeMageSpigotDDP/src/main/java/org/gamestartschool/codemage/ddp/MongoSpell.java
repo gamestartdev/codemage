@@ -50,4 +50,9 @@ class MongoSpell extends AMongoDocument implements ISpell {
 			}
 		}
 	}
+
+	@Override
+	public void removed() {
+		observers.clear();
+	}
 }

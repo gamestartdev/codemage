@@ -6,5 +6,7 @@ interface IMongoDocument {
 	public String getId();
 
 	public void changed(Map<String, Object> fields);
+
+	public void removed();
 	
 }

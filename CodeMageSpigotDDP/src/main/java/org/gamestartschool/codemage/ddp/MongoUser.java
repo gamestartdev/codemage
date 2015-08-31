@@ -1,59 +1,37 @@
 package org.gamestartschool.codemage.ddp;
 
-
 import static ch.lambdaj.Lambda.filter;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import ch.lambdaj.function.matcher.Predicate;
 
+class MongoUser extends AMongoDocument implements IUser {
 
-class MongoUser implements IMongoDocument, IUser {
-
-	private String id;
-	private String meteorUsername;
-	private String minecraftPlayerId;
-	private String role;
 	private ICodeMageCollection<MongoSpell> spells;
 	private ICodeMageCollection<MongoEnchantment> enchantments;
 	private IUserMeteorMethods meteorMethods;
 
-	public MongoUser(
-			ICodeMageCollection<MongoSpell> spells,
-			ICodeMageCollection<MongoEnchantment> enchantments, 
-			String id, 
-			String meteorUsername, String minecraftPlayerId, String role, IUserMeteorMethods meteorMethods) {
-		this.meteorMethods = meteorMethods;
+	public MongoUser(ICodeMageCollection<MongoSpell> spells, ICodeMageCollection<MongoEnchantment> enchantments,
+			String id, Map<String, Object> fields, IUserMeteorMethods methodCaller) {
+		super(id, fields);
 		this.spells = spells;
 		this.enchantments = enchantments;
-		this.id = id;
-		this.meteorUsername = meteorUsername;
-		this.minecraftPlayerId = minecraftPlayerId;
-		this.role = role;
+		meteorMethods = methodCaller;
 	}
 
 	@Override
 	public String getMinecraftUserId() {
-		return minecraftPlayerId;
-	}
-	
-	public void updateHealth(int health){
-		meteorMethods.healthUpdate(id, health);
-	}
-	
-	@Override
-	public String toString() {
-		return "MongoUser [id=" + id + ", meteorUsername=" + meteorUsername + ", minecraftPlayerId=" + minecraftPlayerId
-				+ ", role=" + role + "]";
+		return getStringField("minecraftPlayerId");
 	}
 
-	@Override
-	public String getId() {
-		return id;
+	public void updateHealth(int health) {
+		meteorMethods.healthUpdate(id, health);
 	}
-	
+
 	public List<IEnchantment> getEnchantments() {
 		Collection<? extends IEnchantment> all = enchantments.getAll();
 		List<IEnchantment> enchantments = new ArrayList<IEnchantment>(all);
@@ -64,9 +42,9 @@ class MongoUser implements IMongoDocument, IUser {
 
 		@Override
 		public boolean apply(MongoEnchantment e) {
-			return id.equals(e.userId);
+			return id.equals(e.userId());
 		}
-		
+
 	}
-	
+
 }

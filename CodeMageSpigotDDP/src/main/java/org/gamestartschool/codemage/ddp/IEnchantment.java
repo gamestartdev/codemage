@@ -7,4 +7,5 @@ public interface IEnchantment {
 	public IEnchantmentBinding getBinding();
 	public IEnchantmentTrigger getTrigger();
 	public List<ISpell> getSpells();
+	public String userId();
 }

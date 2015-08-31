@@ -3,52 +3,47 @@ package org.gamestartschool.codemage.ddp;
 import static ch.lambdaj.Lambda.convert;
 
 import java.util.List;
+import java.util.Map;
 
 import ch.lambdaj.function.convert.Converter;
 
-class MongoEnchantment implements IEnchantment, IMongoDocument {
-	public final String name;
-	public final IEnchantmentTrigger trigger;
-	public IEnchantmentBinding binding;
-	public List<String> spellIds;
-	public String id;
-	public String userId;
+class MongoEnchantment extends AMongoDocument implements IEnchantment {
+	
 	private ICodeMageCollection<MongoSpell> spells;
-	
-	public MongoEnchantment(ICodeMageCollection<MongoSpell> spells, String id, String userId, String name, IEnchantmentBinding binding, IEnchantmentTrigger trigger, List<String> spellIds) {
+
+	public MongoEnchantment(ICodeMageCollection<MongoSpell> spells, String id, Map<String, Object> fields) {
+		super(id, fields);
 		this.spells = spells;
-		this.id = id;
-		this.userId = userId;
-		this.name = name;
-		this.binding = binding;
-		this.trigger = trigger;
-		this.spellIds = spellIds;
-	}
-	
-	@Override
-	public String toString() {
-		return "MongoEnchantment [name=" + name + ", trigger=" + trigger + ", binding=" + binding + ", spells=" + spellIds
-				+ ", id=" + id + ", userId=" + userId + "]";
 	}
 
 	@Override
 	public String getName() {
-		return name;
+		return getStringField("name");
 	}
-	
+
+	@Override
+	public String userId() {
+		return getStringField("userId");
+	}
 	@Override
 	public IEnchantmentBinding getBinding() {
-		return binding;
+		String bindingString = getStringField("binding");
+		return EDummyEnchantmentBinding.valueOf(bindingString.toUpperCase());
 	}
 
 	@Override
 	public IEnchantmentTrigger getTrigger() {
-		return trigger;
+		String bindingTrigger= getStringField("trigger");
+		return EDummyEnchantmentTrigger.valueOf(bindingTrigger.toUpperCase());
 	}
 
+	private List<String> getSpellIds() {
+		return getStringListField("spellIds");
+	}
+	
 	@Override
 	public List<ISpell> getSpells() {
-		return convert(spellIds, new Converter<String, ISpell>(){
+		return convert(getSpellIds(), new Converter<String, ISpell>(){
 			public ISpell convert(String id) {
 	                return spells.get(id);
 	        }
@@ -59,4 +54,5 @@ class MongoEnchantment implements IEnchantment, IMongoDocument {
 	public String getId() {
 		return id;
 	}
+
 }

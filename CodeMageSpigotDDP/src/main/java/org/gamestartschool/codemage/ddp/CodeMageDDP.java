@@ -14,6 +14,7 @@ import com.keysolutions.ddpclient.DDPListener;
 import com.keysolutions.ddpclient.UsernameAuth;
 import com.keysolutions.ddpclient.DDPClient.DdpMessageField;
 import com.keysolutions.ddpclient.DDPClient.DdpMessageType;
+import com.sun.org.apache.xerces.internal.util.Status;
 
 public class CodeMageDDP  {
 	
@@ -54,28 +55,23 @@ public class CodeMageDDP  {
 		private String name;
 		private boolean isReady = false;
 		
-		public String getName() {
-			return name;
-		}
-		
 		public ACodeMageCollection(String name) {
 			this.name = name;
 		}
 		
+		public String getName() {
+			return name;
+		}
+
+		public boolean isReady() {
+			return isReady;
+		}
+
 		private Map<String, T> documents = new HashMap<String, T>();
 		public T get(String id) { return documents.get(id); }
 		public Collection<T> getAll() { return documents.values(); }
 		
-		abstract T ConstructEntity(String id, Map<String, Object> fields);
-		abstract void Changed(String id, Map<String, Object> fields, T entity);
-		
-		public T Added(String id, Map<String, Object> fields) {
-			T instance = ConstructEntity(id, fields);
-			documents.put(id, instance);
-			System.out.println("Adding: " + instance);
-			return instance;
-		}
-		
+		abstract T documentAdded(String id, Map<String, Object> fields);
 		
 		@Override
 		public void onReady(String callId) {
@@ -89,28 +85,32 @@ public class CodeMageDDP  {
 	    public void update(Observable client, Object jsonObject) {
 	        if (jsonObject instanceof Map<?, ?>) {
 	            Map<String, Object> json = (Map<String, Object>) jsonObject;
-	            
 	            if(name.equals(json.get(DdpMessageField.COLLECTION))) {
-	                String msgtype = (String) json.get(DDPClient.DdpMessageField.MSG);
-	                if (msgtype.equals(DdpMessageType.ADDED)) {
-	                	try {
-	                		this.Added((String) json.get(DdpMessageField.ID), (Map<String, Object>) json.get(DdpMessageField.FIELDS));
-	                	} catch (RuntimeException e){
-	                		System.out.println("Failed to decode DDP object: "+json);
-	                	}
-	                }
-	                if (msgtype.equals(DdpMessageType.CHANGED)) {
-	                	String id = (String) json.get(DdpMessageField.ID);
-                		this.Changed(id, (Map<String, Object>) json.get(DdpMessageField.FIELDS), this.documents.get(id));
-	                }
-	                
+	                handleCollection(json);
 	            };
 	        }
 	    }
 
-
-		public boolean isReady() {
-			return isReady;
+		private void handleCollection(Map<String, Object> json) {
+			String msgtype = (String) json.get(DDPClient.DdpMessageField.MSG);
+			String id = (String) json.get(DdpMessageField.ID);
+			Map<String, Object> fields = (Map<String, Object>) json.get(DdpMessageField.FIELDS);
+			
+			if (msgtype.equals(DdpMessageType.ADDED)) {
+				try {
+					documents.put(id, documentAdded(id, fields));
+				} catch (RuntimeException e){
+					System.out.println("ADDED notification FAILED: "+json);
+				}
+			}
+			if (msgtype.equals(DdpMessageType.CHANGED)) {
+				try {
+					IMongoDocument document = documents.get(id);
+					document.changed(fields);
+				} catch (RuntimeException e){
+					System.out.println("CHANGED notification FAILED: "+json);
+				}
+			}
 		}
 	}
 	
@@ -120,35 +120,16 @@ public class CodeMageDDP  {
 	private final ACodeMageCollection<MongoUser> users = new ACodeMageCollection<MongoUser>("users") {
 
 		@Override
-		MongoUser ConstructEntity(String id, Map<String, Object> fields) {
-			String meteorUsername = (String) fields.get("username");
-			String minecraftPlayerId = (String) fields.get("minecraftPlayerId");
-			String role = (String) fields.get("role");
-			return new MongoUser(spells, enchantments, id, meteorUsername, minecraftPlayerId, role, methodCaller);
+		MongoUser documentAdded(String id, Map<String, Object> fields) {
+			return new MongoUser(spells, enchantments, id, fields, methodCaller);
 		}
-
-		@Override
-		void Changed(String id, Map<String, Object> fields, MongoUser entity) {
-		}
-
 	};
 
 	private final ACodeMageCollection<MongoSpell> spells = new ACodeMageCollection<MongoSpell>("spells") {
 
 		@Override
-		MongoSpell ConstructEntity(String id, Map<String, Object> fields) {
-			String tomeId = (String) fields.get("tomeId");
-			String name = (String) fields.get("name");
-			String code = (String) fields.get("code");
-			boolean status = (boolean) fields.get("status");
-			return new MongoSpell(id, tomeId, name, code, status, methodCaller);
-		}
-
-		@Override
-		void Changed(String id, Map<String, Object> fields, MongoSpell entity) {
-			boolean status = (boolean)fields.get("status");
-			System.out.println("Status Changed: " + status);
-			entity.NotifyStatusChanged(status);
+		MongoSpell documentAdded(String id, Map<String, Object> fields) {
+			return new MongoSpell(id, fields, methodCaller);
 		}
 	};
 
@@ -156,24 +137,9 @@ public class CodeMageDDP  {
 			"enchantments") {
 
 		@Override
-		MongoEnchantment ConstructEntity(String id, Map<String, Object> fields) {
-			
-			String userId = (String) fields.get("userId");
-			String name = (String) fields.get("name");
-			String bindingString = (String) fields.get("binding");
-			String bindingTrigger = (String) fields.get("trigger");
-			List<String> spellIds = (List<String>)fields.get("spellIds");
-			
-			IEnchantmentBinding binding =  EDummyEnchantmentBinding.valueOf(bindingString.toUpperCase());
-			IEnchantmentTrigger trigger =  EDummyEnchantmentTrigger.valueOf(bindingTrigger.toUpperCase());
-			
-			return new MongoEnchantment(spells, id, userId, name, binding, trigger, spellIds);
+		MongoEnchantment documentAdded(String id, Map<String, Object> fields) {			
+			return new MongoEnchantment(spells, id, fields);
 		}
-
-		@Override
-		void Changed(String id, Map<String, Object> fields, MongoEnchantment entity) {
-		}
-
 	};
 	
 	private boolean isReady() { 

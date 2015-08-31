@@ -9,5 +9,4 @@ public class CodeMageDDPSpigotPlugin extends JavaPlugin {
 
 	public void onEnable() {
 	}
-	
 }

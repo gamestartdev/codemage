@@ -17,17 +17,17 @@ updateTomeName = (tomeId, tomeName) ->
   check(tomeName, String)
   tomes.update tomeId, {$set: {name: tomeName}}
 
-addEnchantment = (userId, name, binding, trigger, spellIds) ->
+addEnchantment = (userId, name, itemMaterial, action, spellIds) ->
   check(userId, String)
   check(name, String)
-  check(binding, String)
-  check(trigger, String)
+  check(itemMaterial, String)
+  check(action, String)
   check(spellIds, Match.Optional(Array))
   enchantments.insert
     userId: userId
     name: name
-    binding: binding
-    trigger: trigger
+    itemMaterial: itemMaterial
+    action: action
     spellIds: spellIds? or []
     code: "from codemage import *"
     version: share.codeMageConstants.currentVersion

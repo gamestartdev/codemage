@@ -11,9 +11,9 @@
             </div>
             <div class="row">
                 <div class="small-6 columns">
-                    <select class="updateEnchantmentBinding">
-                        {{#each bindings}}
-                            {{#if isBindingSelected ..}}
+                    <select class="updateEnchantmentItemMaterial">
+                        {{#each itemMaterials}}
+                            {{#if isItemMaterialSelected ..}}
                                 <option value="{{this}}" selected>{{this}}</option>
                             {{else}}
                                 <option value="{{this}}">{{this}}</option>
@@ -22,9 +22,9 @@
                     </select>
                 </div>
                 <div class="small-6 columns">
-                    <select class="updateEnchantmentTrigger">
-                        {{#each triggers}}
-                            {{#if isTriggerSelected ..}}
+                    <select class="updateEnchantmentAction">
+                        {{#each actions}}
+                            {{#if isActionSelected ..}}
                                 <option value="{{this}}" selected>{{this}}</option>
                             {{else}}
                                 <option value="{{this}}">{{this}}</option>

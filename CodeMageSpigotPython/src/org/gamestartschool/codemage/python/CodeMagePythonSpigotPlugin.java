@@ -5,17 +5,17 @@ import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.gamestartschool.codemage.ddp.CodeMageDDP;
-import org.gamestartschool.codemage.ddp.EDummyEnchantmentBinding;
-import org.gamestartschool.codemage.ddp.EDummyEnchantmentTrigger;
 import org.gamestartschool.codemage.ddp.IEnchantment;
 import org.gamestartschool.codemage.ddp.ISpell;
 import org.gamestartschool.codemage.ddp.IUser;
@@ -27,41 +27,7 @@ import org.python.util.PythonInterpreter;
 
 public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 
-	public class PlayerInteractListener implements Listener {
-
-		@EventHandler
-		public void onPlayerInteract(PlayerInteractEvent event) {
-			
-			// Location loc = event.getPlayer().getLocation();
-			// loc.setY(loc.getY() + 5);
-			// Block b = loc.getBlock();
-			// b.setType(Material.STONE);
-			Player player = event.getPlayer();
-			event.getItem();
-			event.hasItem();
-
-			log("onPlayerInteract "+ player.getName());
-
-			IUser user = ddp.getUser(player.getName());
-			List<IEnchantment> enchantments = user.getEnchantments();
-			
-			log("enchantments "+ enchantments.size());
-			for (IEnchantment e : enchantments) {
-				if (EDummyEnchantmentTrigger.PRIMARY.equals(e.getTrigger())
-						&& EDummyEnchantmentBinding.WOODEN_SWORD.equals(e.getBinding())) {
-					List<ISpell> spells = e.getSpells();
-					log("spells: "+ spells.size());
-					for (ISpell spell : spells) {
-						// spell.setStatus(true);
-						log("runningCode: "+ spell.getCode());
-						runCode(player, spell.getCode());
-					}
-				}
-			}
-		}
-	}
-
-	public class PlayerMoveListener implements Listener {
+	public class TriggerListener implements Listener {
 
 		@EventHandler
 		public void onPlayerMove(PlayerMoveEvent event) {
@@ -72,6 +38,30 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 			Player player = event.getPlayer();
 			// player.getUniqueId();
 			// runCode(player, codeProvider.getCode());
+		}
+
+		@EventHandler
+		public void onPlayerInteract(PlayerInteractEvent event) {
+			if(event.hasItem()){
+				Player player = event.getPlayer();
+				IUser user = ddp.getUser(player.getName());
+				
+				Material material = event.getItem().getType();
+				Action action = event.getAction();
+
+				System.out.println("Item Type: " + material);
+				System.out.println("Binding Type: " + action);
+				
+				List<IEnchantment> enchantments = user.getEnchantments(material, action);
+				for (IEnchantment e : enchantments) {
+					List<ISpell> spells = e.getSpells();
+					for (ISpell spell : spells) {
+						log("runningCode: " + spell.getCode());
+						runCode(player, spell.getCode());
+					}
+				}
+				
+			}
 		}
 	}
 
@@ -91,8 +81,7 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 		this.getCommand("python").setExecutor(new PythonCommand(this));
 
 		PluginManager pluginManager = getServer().getPluginManager();
-		pluginManager.registerEvents(new PlayerMoveListener(), this);
-		pluginManager.registerEvents(new PlayerInteractListener(), this);
+		pluginManager.registerEvents(new TriggerListener(), this);
 
 		try {
 			log("DDP Plugin being invoked from CodeMagePython.");
@@ -113,20 +102,22 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 	public void runCode(CommandSender sender, String code) {
 		try {
 			PythonInterpreter pi = new PythonInterpreter();
-			if(sender instanceof Player){
-				Player player = (Player)sender;
+			if (sender instanceof Player) {
+				Player player = (Player) sender;
 				sender.sendMessage("Found you as Player: " + player.getName());
 				pi.set("player", player);
-				
+
 				String preCode = "";
-//				preCode += "import pdb\n";
+				// preCode += "import pdb\n";
 				preCode += "from org.bukkit.event import EventPriority\n";
-//				preCode += "from org.gamestartschool.codemage.python import CodeMagePythonSpigotPlugin\n";
+				// preCode += "from org.gamestartschool.codemage.python import
+				// CodeMagePythonSpigotPlugin\n";
 				preCode += "from org.bukkit.entity import Player as _Player\n";
-//				preCode += "import __builtin__\n";
-//				preCode += "__builtin__.__import__, __builtin__.reload = None, None\n";
+				// preCode += "import __builtin__\n";
+				// preCode += "__builtin__.__import__, __builtin__.reload =
+				// None, None\n";
 				preCode += "class PlayerWrap():\n";
-				preCode += "	def __init__(self, p):\n"; //, *args, **kwargs
+				preCode += "	def __init__(self, p):\n"; // , *args, **kwargs
 				preCode += "		self.p = p\n";
 				preCode += "		print 'doing it'\n";
 				preCode += "	def blink(self):\n";
@@ -137,19 +128,19 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 				preCode += "		self.p.teleport(loc)\n";
 				preCode += "		print 'teleported!'\n";
 				preCode += "p = PlayerWrap(player)\n";
-				
-//				preCode += "loc = player.getLocation()\n";
-//				preCode += "loc.setY(200)\n";
-//				preCode += "player.teleport(loc)\n";
-//				preCode += "print 'setting trace...'\n";
-//				preCode += "pdb.set_trace()\n";
-//				preCode += "for x in range(['carlos', 'matt', 'nate']):\n";
-//				preCode += "	print x\n";
-//				preCode += "p.blink()\n";
+
+				// preCode += "loc = player.getLocation()\n";
+				// preCode += "loc.setY(200)\n";
+				// preCode += "player.teleport(loc)\n";
+				// preCode += "print 'setting trace...'\n";
+				// preCode += "pdb.set_trace()\n";
+				// preCode += "for x in range(['carlos', 'matt', 'nate']):\n";
+				// preCode += " print x\n";
+				// preCode += "p.blink()\n";
 				preCode += "print 'Done Blinking'\n";
 				code = preCode + code;
 			}
-			
+
 			sender.sendMessage("About to execute code...: " + code);
 			pi.set("result", 5);
 			pi.exec(code);

@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Material;
+import org.bukkit.event.block.Action;
+
 import ch.lambdaj.function.convert.Converter;
 
 class MongoEnchantment extends AMongoDocument implements IEnchantment {
@@ -26,16 +29,17 @@ class MongoEnchantment extends AMongoDocument implements IEnchantment {
 	public String userId() {
 		return getStringField("userId");
 	}
+	
 	@Override
-	public IEnchantmentBinding getBinding() {
-		String bindingString = getStringField("binding");
-		return EDummyEnchantmentBinding.valueOf(bindingString.toUpperCase());
+	public Material getMaterial() {
+		String bindingString = getStringField("itemMaterial");
+		return Material.valueOf(bindingString.toUpperCase());
 	}
 
 	@Override
-	public IEnchantmentTrigger getTrigger() {
-		String bindingTrigger= getStringField("trigger");
-		return EDummyEnchantmentTrigger.valueOf(bindingTrigger.toUpperCase());
+	public Action getAction() {
+		String bindingTrigger= getStringField("action");
+		return Action.valueOf(bindingTrigger.toUpperCase());
 	}
 
 	private List<String> getSpellIds() {

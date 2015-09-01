@@ -7,6 +7,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Material;
+import org.bukkit.event.block.Action;
+
 import ch.lambdaj.function.matcher.Predicate;
 
 class MongoUser extends AMongoDocument implements IUser {
@@ -30,16 +33,32 @@ class MongoUser extends AMongoDocument implements IUser {
 	}
 
 	public void updateHealth(int health) {
-		if(removed)return;
+		if (removed)
+			return;
 		meteorMethods.healthUpdate(id, health);
 	}
 
 	public List<IEnchantment> getEnchantments() {
-		if(removed)return new ArrayList<IEnchantment>();
+		if (removed) return new ArrayList<IEnchantment>();
+		
+		Predicate<MongoEnchantment> enchantmentsForUser = new Predicate<MongoEnchantment>() {
+			@Override
+			public boolean apply(MongoEnchantment e) {
+				return id.equals(e.userId());
+			}
+		};
+		return filter(enchantmentsForUser, new ArrayList<IEnchantment>(enchantments.getAll()));
+	}
 
-		Collection<? extends IEnchantment> all = enchantments.getAll();
-		List<IEnchantment> enchantments = new ArrayList<IEnchantment>(all);
-		return filter(new EnchantmentsByPlayer(), enchantments);
+	@Override
+	public List<IEnchantment> getEnchantments(final Material material, final Action action) {
+		Predicate<MongoEnchantment> enchantmentsForTriggerBinding = new Predicate<MongoEnchantment>() {
+			@Override
+			public boolean apply(MongoEnchantment e) {
+				return material.equals(e.getMaterial()) && action.equals(e.getAction());
+			}
+		};
+		return filter(enchantmentsForTriggerBinding, getEnchantments());
 	}
 
 	class EnchantmentsByPlayer extends Predicate<MongoEnchantment> {
@@ -54,4 +73,5 @@ class MongoUser extends AMongoDocument implements IUser {
 	public void removed() {
 		removed = true;
 	}
+
 }

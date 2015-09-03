@@ -8,7 +8,7 @@ addTome = (userId, name) ->
 removeTome = (tomeId) ->
   check(tomeId, String)
   console.log "Removing tome: " + tomeId
-  for spell in spells.find {tomeId: tomeId}
+  for spell in spells.find({tomeId: tomeId}).fetch()
     removeSpell(spell._id)
   tomes.remove tomeId
 
@@ -63,14 +63,14 @@ addSpell = (tomeId, name, code) ->
     name: name
     code: code
     message: ""
-    status: false
+    status: "creating"
     version: share.codeMageConstants.currentVersion
     namespace: share.codeMageConstants.defaultNamespace
 
 updateSpell = (spellId, code) ->
   check(spellId, String)
   check(code, String)
-  spells.update spellId, {$set:{code: code}}
+  spells.update spellId, {$set:{code: code, status: false}}
 
 updateSpellName = (spellId, spellName) ->
   check(spellId, String)

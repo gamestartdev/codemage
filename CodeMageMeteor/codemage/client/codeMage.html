@@ -6,7 +6,7 @@
             <h4>Minecraft Id:<a href="#" class="minecraft-id-input">{{minecraftPlayerId}}</a></h4>
         {{/with}}
     </div>
-    <div class="small-4 columns">
+    <div class="small-4 medium-3 large-2 columns">
         <div class="panel">
             {{#each tomes}}<a href="{{pathFor 'codeMage.tome'}}">{{name}}</a><hr style="margin:3px">{{/each}}
             <a href="#" class="add-tome"><b>+</b></a>
@@ -21,8 +21,7 @@
             {{>userList}}
         </div>
     </div>
-
-    <div class="small-8 columns">
+    <div class="small-8 medium-9 large-10 columns">
     {{#with enchantment}}
         {{>enchantment}}
     {{/with}}

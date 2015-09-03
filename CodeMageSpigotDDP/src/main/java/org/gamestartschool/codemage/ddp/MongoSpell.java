@@ -6,7 +6,6 @@ import java.util.Map;
 
 class MongoSpell extends AMongoDocument implements ISpell {
 	private ISpellMeteorMethodCaller meteorCaller;
-	private List<ISpellObserver> observers = new ArrayList<ISpellObserver>();
 
 	public MongoSpell(String id, Map<String, Object> fields, ISpellMeteorMethodCaller methodCaller) {
 		super(id, fields);
@@ -24,35 +23,18 @@ class MongoSpell extends AMongoDocument implements ISpell {
 	}
 	
 	@Override
-	public void setSpellMessage(String string) {
-		meteorCaller.spellMessage(id, string);
-	}
-
-	@Override
-	public void addObserver(ISpellObserver observer) {
-		this.observers.add(observer);
-	}
-
-	@Override
-	public void setStatus(boolean status) {
-		meteorCaller.spellStatus(id, status);		
-	}
-
-	@Override
 	public boolean getStatus() {
 		return getBooleanField("status");
 	}
 
-	public void NotifyStatusChanged(boolean status) {
-		if(status){
-			for (ISpellObserver observer : observers) {
-				observer.requestCodeExecutionFromBrowser(this);
-			}
+	@Override
+	public void changed(Map<String, Object> fields) {
+		super.changed(fields);
+		if("executeRequest".equals(getStatus())) {
 		}
 	}
 
 	@Override
 	public void removed() {
-		observers.clear();
 	}
 }

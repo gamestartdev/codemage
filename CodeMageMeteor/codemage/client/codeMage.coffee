@@ -1,11 +1,12 @@
 Template.codeMage.helpers
   enchantmentsForUser: (user) ->
-    return enchantments.find {userId: user._id}
+    return enchantments.find {userId: user?._id}
 
 Template.codeMage.events
   'click .minecraft-id-input': (e, t) ->
-    newName = prompt('GameStart Player Id:', Meteor.user()?.minecraftPlayerId)
-    Meteor.call 'updateMinecraftPlayerId', newName
+    if t.data.user._id == Meteor.userId()
+      newName = prompt('GameStart Player Id:', Meteor.user()?.minecraftPlayerId)
+      Meteor.call 'updateMinecraftPlayerId', newName
   'click .add-tome': (e,t) ->
     user = t.data.user
     tomeName = user?.username + " Tome " + tomes.find({userId: user._id}).count()
@@ -13,4 +14,4 @@ Template.codeMage.events
   'click .add-enchantment': (e,t) ->
     user = t.data.user
     enchantmentName = user.username + "'s New Enchantment"
-    Meteor.call 'addEnchantment', user._id, enchantmentName, "wooden_sword", "primary"
+    Meteor.call 'addEnchantment', user._id, enchantmentName, share.codeMageConstants.itemMaterials[0], share.codeMageConstants.actions[0]

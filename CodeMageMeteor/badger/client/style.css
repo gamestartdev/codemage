@@ -2,6 +2,11 @@ body {
     background-color: floralwhite;
 }
 
+#editor {
+    width: 100%;
+    height: 600px;
+}
+
 #badgedesigner {
     overflow: hidden;
     width: 100%;

@@ -42,7 +42,7 @@ public class CodeMageDDP {
 		}
 
 		@Override
-		public void spellStatus(String spellId, boolean status) {
+		public void spellStatus(String spellId, String status) {
 			call("spellStatus", spellId, status);
 		}
 	}

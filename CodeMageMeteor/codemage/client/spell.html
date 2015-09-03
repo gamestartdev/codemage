@@ -1,18 +1,12 @@
 <template name="spell">
     <div class="row">
-        <div class="small-8 columns">
+        <div class="small-8 medium-9 large-10 columns">
             <h3><a href="#" class="spell-name">{{name}}</a></h3>
-        </div>
-        <div class="small-4 columns">
-            <h5><a href="#" style="color:red" class="remove-spell">Delete</a></h5>
-        </div>
-    </div>
-    <div class="row">
-        <div class="small-8 columns">
-            <textarea class="code-area" rows="6" cols="50">{{code}}</textarea>
+            {{>aceEditor}}
         </div>
 
-        <div class="small-4 columns">
+        <div class="small-4 medium-3 large-2 columns">
+            <h5><a href="#" style="color:red" class="remove-spell">Delete</a></h5>
             {{#each enchantmentsForSpell}}
                 {{#if isSpellAssignedToEnchantment ..}}
                     <a class="removeSpellFromEnchantment" style="background-color:lightblue">{{name}}</a>
@@ -22,6 +16,6 @@
             {{/each}}
         </div>
     </div>
-    <a href="#" style="color:green" class="spellStatus"><b>Execute</b></a>
+    <a href="#" style="color:green" class="spellStatus spellStatus-{{status}}"><b>{{status}}</b></a>
     {{#if message}}<span style="color:red">{{ message }}</span>{{/if}}
 </template>

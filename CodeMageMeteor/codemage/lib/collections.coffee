@@ -2,9 +2,15 @@
 @spells = new Mongo.Collection "spells"
 @enchantments = new Mongo.Collection "enchantments"
 
+createdAt = (userId, doc) ->
+  doc.createdAt = new Date()
+  doc.updatedAt = new Date()
+updatedAt = (userId, doc, fieldNames, modifier, options) ->
+  modifier.$set = modifier.$set or {}
+  modifier.$set.updatedAt = new Date()
+
 if Meteor.isServer
-  tomes.before.insert (userId, doc) ->
-    doc.createdAt = new Date()
-  tomes.before.update (userId, doc, fieldNames, modifier, options) ->
-    modifier.$set = modifier.$set or {}
-    modifier.$set.updatedAt = new Date()
+  collections = [tomes, spells, enchantments]
+  for c in collections
+    c.before.insert createdAt
+    c.before.update updatedAt

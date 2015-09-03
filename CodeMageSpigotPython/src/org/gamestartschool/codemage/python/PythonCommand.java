@@ -1,8 +1,11 @@
 package org.gamestartschool.codemage.python;
 
+import java.util.ArrayList;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.gamestartschool.codemage.ddp.ISpell;
 import org.python.core.PyException;
 import org.python.core.PyObject;
 import org.python.core.PySyntaxError;

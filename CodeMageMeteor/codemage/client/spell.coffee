@@ -7,9 +7,14 @@ Template.spell.helpers
     return enchantments.find({_id:enchantmentId, spellIds: spell._id}).count() != 0
 
 Template.spell.events
+  'click .togglePreprocess': (e,t) ->
+    preprocess = spells.findOne(this._id).preprocess
+    console.log preprocess
+    Meteor.call 'updateSpell', this._id, {preprocess: !preprocess}
+
   'click .spell-name': (e, t) ->
     newName = prompt("Spell name:", this.name)
-    Meteor.call 'updateSpellName', this._id, newName
+    Meteor.call 'updateSpell', this._id, {name: newName}
 
   'click .addSpellToEnchantment': (e,t) ->
     Meteor.call 'addSpellToEnchantment', t.data._id, this._id

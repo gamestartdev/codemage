@@ -64,29 +64,15 @@ addSpell = (tomeId, name, code) ->
     code: code
     message: ""
     status: "creating"
+    preprocess: false
     version: share.codeMageConstants.currentVersion
     namespace: share.codeMageConstants.defaultNamespace
 
-updateSpell = (spellId, code) ->
+updateSpell = (spellId, data) ->
   check(spellId, String)
-  check(code, String)
-  spells.update spellId, {$set:{code: code, status: false}}
-
-updateSpellName = (spellId, spellName) ->
-  check(spellId, String)
-  check(spellName, String)
-  spells.update spellId, {$set: {name: spellName}}
-
-spellMessage = (spellId, message) ->
-  check(spellId, String)
-  check(message, String)
-  spells.update spellId, {$set:{message: message}}
-
-spellStatus = (spellId, status) ->
-  check(spellId, String)
-  check(status, Boolean)
-  console.log "SpellStatus " + spellId + " " + status
-  spells.update spellId, {$set:{status: status}}
+  check(data, Object)
+  console.log data
+  spells.update spellId, {$set:data}
 
 removeSpell = (spellId) ->
   check(spellId, String)
@@ -115,10 +101,7 @@ Meteor.methods
 
   addSpell: addSpell
   updateSpell: updateSpell
-  updateSpellName: updateSpellName
   removeSpell: removeSpell
-  spellMessage: spellMessage
-  spellStatus: spellStatus
 
   addSpellToEnchantment: addSpellToEnchantment
   removeSpellFromEnchantment: removeSpellFromEnchantment

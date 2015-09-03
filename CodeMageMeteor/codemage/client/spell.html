@@ -6,6 +6,8 @@
         </div>
 
         <div class="small-4 medium-3 large-2 columns">
+            <h5><a href="#" style="{{#if preprocess}}color:red{{/if}}" class="togglePreprocess">Preprocess</a></h5>
+
             <h5><a href="#" style="color:red" class="remove-spell">Delete</a></h5>
             {{#each enchantmentsForSpell}}
                 {{#if isSpellAssignedToEnchantment ..}}

@@ -1,6 +1,7 @@
 package org.gamestartschool.codemage.python;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 
@@ -48,12 +49,14 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 				System.out.println("Item Type: " + material);
 				System.out.println("Binding Type: " + action);
 
+				List<ISpell> gameWrappers = user.getGameWrappers();
+				
 				List<IEnchantment> enchantments = user.getEnchantments(material, action);
 				for (IEnchantment e : enchantments) {
 					List<ISpell> spells = e.getSpells();
 					for (ISpell spell : spells) {
 						log("runningCode: " + spell.getCode());
-						runCode(player, spell.getCode());
+						runCode(player, spell.getCode(), gameWrappers);
 					}
 				}
 
@@ -106,6 +109,10 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 	}
 
 	public void runCode(final CommandSender sender, final String code) {
+		runCode(sender, code, new ArrayList<ISpell>());
+	}
+	
+	public void runCode(final CommandSender sender, final String code, List<ISpell> gameWrappers) {
 		// PythonInterpreter pi =
 		// PythonInterpreter.threadLocalStateInterpreter(new
 		// PyDictionary());
@@ -156,7 +163,11 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 			preCode += "		print 'teleported!'\n";
 			preCode += "p = PlayerWrap(player)\n";
 		}
-
+		
+		for (ISpell spell : gameWrappers) {
+			preCode += spell.getCode() +"\n";
+		}
+		
 		// sender.sendMessage("About to execute code...: " + code);
 		pi.set("result", 5);
 		pi.exec(preCode + code);

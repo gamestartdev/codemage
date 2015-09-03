@@ -17,19 +17,35 @@ import com.sun.org.apache.xerces.internal.util.Status;
 
 public class CodeMageDDP {
 
-	private class MeteorMethodCaller implements ISpellMeteorMethodCaller, IUserMeteorMethods {
+	private class MeteorMethodCaller implements ISpellMeteorMethodCaller,
+			IUserMeteorMethods {
 
-		public void serverStatus(String serverIp, String serverPort, CodeMageServerStatus status) {
-			System.out.println("Sending serverStatus " + serverIp + " " + serverPort + " " + status);
+		private void sendMap(final String spellId, final String message,
+				final String key) {
+			HashMap<String, String> map = new HashMap<String, String>() {
+				{
+					put(key, message);
+				}
+			};
+			call("updateSpell", spellId, map);
+		}
+		
+		public void serverStatus(String serverIp, String serverPort,
+				CodeMageServerStatus status) {
+			System.out.println("Sending serverStatus " + serverIp + " "
+					+ serverPort + " " + status);
 			call("serverStatus", serverIp, serverPort, status);
 		}
 
-		public void spellMessage(String spellId, String message) {
-			call("spellMessage", spellId, message);
+		public void spellMessage(final String spellId, final String message) {
+			final String key = "message";
+			sendMap(spellId, message, key);
 		}
 
-		public void healthUpdate(String userId, int health) {
-			call("healthUpdate", userId, health);
+
+		@Override
+		public void spellStatus(String spellId, String status) {
+			sendMap("spellStatus", spellId, status);
 		}
 
 		private int call(String methodName, Object... params) {
@@ -42,15 +58,15 @@ public class CodeMageDDP {
 		}
 
 		@Override
-		public void spellStatus(String spellId, String status) {
-			call("spellStatus", spellId, status);
+		public void healthUpdate(String userId, int health) {
 		}
+
 	}
 
 	private MeteorMethodCaller methodCaller = new MeteorMethodCaller();
 
-	private abstract class ACodeMageCollection<T extends IMongoDocument> extends DDPListener
-			implements ICodeMageCollection<T> {
+	private abstract class ACodeMageCollection<T extends IMongoDocument>
+			extends DDPListener implements ICodeMageCollection<T> {
 
 		private String name;
 		private boolean isReady = false;
@@ -92,7 +108,8 @@ public class CodeMageDDP {
 			if (jsonObject instanceof Map<?, ?>) {
 
 				Map<String, Object> json = (Map<String, Object>) jsonObject;
-				String msgtype = (String) json.get(DDPClient.DdpMessageField.MSG);
+				String msgtype = (String) json
+						.get(DDPClient.DdpMessageField.MSG);
 
 				if (name.equals(json.get(DdpMessageField.COLLECTION))) {
 					handleCollection(json);
@@ -103,7 +120,8 @@ public class CodeMageDDP {
 		private void handleCollection(Map<String, Object> json) {
 			String msgtype = (String) json.get(DDPClient.DdpMessageField.MSG);
 			String id = (String) json.get(DdpMessageField.ID);
-			Map<String, Object> fields = (Map<String, Object>) json.get(DdpMessageField.FIELDS);
+			Map<String, Object> fields = (Map<String, Object>) json
+					.get(DdpMessageField.FIELDS);
 
 			if (msgtype.equals(DdpMessageType.ADDED)) {
 				try {
@@ -129,7 +147,8 @@ public class CodeMageDDP {
 			}
 
 			else {
-				System.out.println("Unhandled DDP COLLECTION Message! " + msgtype + " " + fields.toString());
+				System.out.println("Unhandled DDP COLLECTION Message! "
+						+ msgtype + " " + fields.toString());
 
 			}
 		}
@@ -138,7 +157,8 @@ public class CodeMageDDP {
 	private DDPClient ddpClient;
 	private List<ACodeMageCollection<?>> subscriptions = new ArrayList<ACodeMageCollection<?>>();
 
-	private final ACodeMageCollection<MongoUser> users = new ACodeMageCollection<MongoUser>("users") {
+	private final ACodeMageCollection<MongoUser> users = new ACodeMageCollection<MongoUser>(
+			"users") {
 
 		@Override
 		MongoUser documentAdded(String id, Map<String, Object> fields) {
@@ -146,7 +166,8 @@ public class CodeMageDDP {
 		}
 	};
 
-	private final ACodeMageCollection<MongoSpell> spells = new ACodeMageCollection<MongoSpell>("spells") {
+	private final ACodeMageCollection<MongoSpell> spells = new ACodeMageCollection<MongoSpell>(
+			"spells") {
 
 		@Override
 		MongoSpell documentAdded(String id, Map<String, Object> fields) {
@@ -171,11 +192,13 @@ public class CodeMageDDP {
 		return true;
 	}
 
-	public CodeMageDDP(String meteorServerIp, Integer meteorServerPort) throws URISyntaxException {
+	public CodeMageDDP(String meteorServerIp, Integer meteorServerPort)
+			throws URISyntaxException {
 		ddpClient = new DDPClient(meteorServerIp, meteorServerPort);
 	}
 
-	public void connect(String username, String password) throws InterruptedException {
+	public void connect(String username, String password)
+			throws InterruptedException {
 		ddpClient.connect();
 		Thread.sleep(200);
 
@@ -211,7 +234,8 @@ public class CodeMageDDP {
 	private void reportCodeMageServerStatus(CodeMageServerStatus status) {
 		String dummyCodeMageServerIp = "127.0.0.1";
 		String dummyCodeMageServerPort = "54175";
-		new MeteorMethodCaller().serverStatus(dummyCodeMageServerIp, dummyCodeMageServerPort, status);
+		new MeteorMethodCaller().serverStatus(dummyCodeMageServerIp,
+				dummyCodeMageServerPort, status);
 		System.out.println(status);
 	}
 

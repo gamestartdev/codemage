@@ -74,4 +74,16 @@ class MongoUser extends AMongoDocument implements IUser {
 		removed = true;
 	}
 
+	@Override
+	public List<ISpell> getGameWrappers() {
+		Predicate<MongoSpell> gameWrappersForUser = new Predicate<MongoSpell>() {
+			@Override
+			public boolean apply(MongoSpell s) {
+				
+				return s.getId() .equals(e.getMaterial()) && action.equals(e.getAction());
+			}
+		};
+		return filter(gameWrappersForUser, spells.getAll());
+	}
+
 }

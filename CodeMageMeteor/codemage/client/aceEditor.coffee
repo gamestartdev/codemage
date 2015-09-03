@@ -9,8 +9,7 @@ Template.aceEditor.onRendered ->
     showPrintMargin: true
   editor.setValue(spell.code, -1)
   editor.ace.getSession().on 'change', (e) ->
-    Meteor.call 'updateSpell', spell._id, editor.value()
-  editor.resize()
+    Meteor.call 'updateSpell', spell._id, {code: editor.value()}
 
 #Template.aceEditor.onRendered ->
 #  this.autorun ->

@@ -1,15 +1,10 @@
 package org.gamestartschool.codemage.python;
 
-import java.util.ArrayList;
+import java.io.IOException;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.gamestartschool.codemage.ddp.ISpell;
-import org.python.core.PyException;
-import org.python.core.PyObject;
-import org.python.core.PySyntaxError;
-import org.python.util.PythonInterpreter;
 
 public class PythonCommand implements CommandExecutor {
 
@@ -24,7 +19,7 @@ public class PythonCommand implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (command.getName().equalsIgnoreCase("python") && args.length == 1) {
 			String code = args[0].toString();
-			plugin.runCode(sender, code);
+			new CodeRunner().runCode(code, sender);
 			return true;
 		} else {
 			sender.sendMessage("Sry, the `python` command only understands a single line without spaces right now...");

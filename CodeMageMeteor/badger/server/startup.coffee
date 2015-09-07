@@ -6,7 +6,10 @@ Meteor.startup ->
   Meteor.users.remove {}
   users = [
     { username:"admin", email: "admin@gamestartschool.org", password: "asdf", roles:['admin', 'issuer'], minecraftPlayerId: "GameStartSchool"},
-    { username:"denrei", email: "denrei@gamestartschool.org", password: "asdf", roles:['admin', 'issuer'], minecraftPlayerId: "denrei"},
+    { username:"gss1", email: "denrei@gamestartschool.org", password: "asdf", roles:['admin', 'issuer'], minecraftPlayerId: "gss1"},
+    { username:"gss2", email: "denrei@gamestartschool.org", password: "asdf", roles:['admin', 'issuer'], minecraftPlayerId: "gss2"},
+    { username:"gss3", email: "denrei@gamestartschool.org", password: "asdf", roles:['admin', 'issuer'], minecraftPlayerId: "gss3"},
+
   ]
   for user in users
     userId = Accounts.createUser

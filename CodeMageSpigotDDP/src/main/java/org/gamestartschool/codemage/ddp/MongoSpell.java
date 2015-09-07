@@ -35,4 +35,8 @@ class MongoSpell extends AMongoDocument implements ISpell {
 	@Override
 	public void removed() {
 	}
+
+	public boolean isGameWrapper() {
+		return getBooleanField("preprocess");
+	}
 }

@@ -12,6 +12,7 @@ public abstract class AMongoDocument implements IMongoDocument {
 	protected AMongoDocument(String id, Map<String, Object> fields) {
 		this.id = id;
 		this.fields = fields;
+		System.out.println("Fields: " + fields);
 	}
 	
 	@Override
@@ -32,7 +33,11 @@ public abstract class AMongoDocument implements IMongoDocument {
 
 	private Object getField(String key) {
 		try{
-			return fields.get(key);
+			if(fields.containsKey(key)){
+				return fields.get(key);
+			} else {
+				System.out.println("Error! Trying to access field: " + key + " from " + this);
+			}
 		} catch (Exception e){
 			System.out.println("Error getting field: " + key + " from " + this);
 		}

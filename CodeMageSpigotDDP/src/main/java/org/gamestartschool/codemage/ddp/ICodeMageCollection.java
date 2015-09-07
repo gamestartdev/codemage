@@ -1,7 +1,6 @@
 package org.gamestartschool.codemage.ddp;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.Observer;
 
 interface ICodeMageCollection<T extends IMongoDocument> extends Observer {

@@ -10,76 +10,115 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.gamestartschool.codemage.ddp.ISpell;
-import org.python.core.Py;
-import org.python.core.PyCode;
-import org.python.core.PySystemState;
-import org.python.core.ThreadState;
+import org.gamestartschool.codemage.python.CodeMagePythonSpigotPlugin.CodeMageAsyncProcessor;
+import org.python.core.PyObject;
 import org.python.util.InteractiveInterpreter;
-import org.python.util.PythonInterpreter;
 
 public class CodeRunner {
+
+	private CodeMageAsyncProcessor codeMageAsyncProcessor;
+
+	public CodeRunner(CodeMageAsyncProcessor codeMageAsyncProcessor) {
+		this.codeMageAsyncProcessor = codeMageAsyncProcessor;
+	}
+
 
 	public void runCode(final String code, final CommandSender sender) {
 		runCode(code, sender, new ArrayList<ISpell>());
 	}
-
-	public static void traceFunction() throws InterruptedException {
-		System.out.println("Java sleeping...!");
-		Thread.sleep(20);
-	}
-
-	public static String console(CommandSender sender, String cmd)
-			throws InterruptedException, ExecutionException, IOException {
-		System.out.println(sender);
-		sender.getServer().dispatchCommand(sender, cmd);
-		return "console complete";
+	
+	public class CodeMageJavaAuthority {
+		private CodeMageAsyncProcessor codeMageAsyncProcessor;
+		public CodeMageJavaAuthority(CodeMageAsyncProcessor codeMageAsyncProcessor){
+			this.codeMageAsyncProcessor = codeMageAsyncProcessor;
+		}
+		public void traceFunction() throws InterruptedException {
+			System.out.println("Java tracing...!");
+//			Thread.sleep(20);
+		}
+		
+		public PyObject call(PyObject method, PyObject[] args) throws InterruptedException {
+			System.out.println("CodeMageJavaAuthority call");
+			PythonMethodCall pythonMethodCall = new PythonMethodCall(method, args);
+			codeMageAsyncProcessor.cmds.offer(pythonMethodCall);
+			System.out.println("CodeMageJavaAuthority offered");
+			while(!pythonMethodCall.isDone()) {
+				System.out.println("!pythonMethodCall.isDone()");
+				Thread.sleep(1);
+			}
+			return pythonMethodCall.get();
+		}
 	}
 
 	private final ExecutorService interpreterPool = Executors.newFixedThreadPool(10);
 
 	public void runCode(final String code, final CommandSender sender, List<ISpell> gameWrappers) {
-		Future<String> result = executeCodeConcurrently(code, sender);
+		Future<String> result = executeCodeConcurrently(code, sender,  codeMageAsyncProcessor);
+//		System.out.println(result.get());
 	}
-
-	public Future<String> executeCodeConcurrently(final String code, final CommandSender sender) {
+	
+	
+	public Future<String> executeCodeConcurrently(final String code, final CommandSender sender, final CodeMageAsyncProcessor codeMageAsyncProcessor) {
 		return interpreterPool.submit(new Callable<String>() {
 			@Override
 			public String call() {
-				PythonInterpreter pi = new PythonInterpreter();
-				pi.set("player", sender);
-
-				String preCode = "import sys\n";
-				preCode += "from org.gamestartschool.codemage.python import CodeRunner\n";
-				preCode += "def trace_function(frame, event, arg):\n";
-				preCode += "	CodeRunner.traceFunction()\n";
-				preCode += "	return trace_function\n";
-				preCode += "def console(cmd):\n";
-				preCode += "	CodeRunner.console(player, cmd)\n\n";
-				preCode += "def teleport(x, y, z):\n";
-				preCode += "	CodeRunner.console(player, 'tp %s %s %s' % (x,y,z))\n\n";
-				preCode += "def setblock(x, y, z, type):\n";
-				preCode += "	CodeRunner.console(player, 'setblock %s %s %s %s' % (x,y,z, type.lower()))\n\n";
-				preCode += "sys.settrace(trace_function)\n";
-
-				preCode += code;
-
-				// for (ISpell spell : gameWrappers) {
-				// preCode += spell.getCode() +"\n";
-				// }
-
-				// sender.sendMessage("About to execute code...: " + code);
-				try {
-					System.out.println("Running Code...");
-					pi.exec(preCode);
-					System.out.println("Done running...");
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				return "success.";
+				return executeCode(code, sender, new CodeMageJavaAuthority(codeMageAsyncProcessor));
 			}
 		});
 	}
+
+	private static String preCode;
+	private String executeCode(String code, final CommandSender sender, CodeMageJavaAuthority authority) {
+		InteractiveInterpreter pi = new InteractiveInterpreter();
+		pi.set("player", (Player)sender);
+		pi.set("authority", authority);
+		pi.set("x", 0);
+		
+		preCode = "import sys\n";
+		preCode += "from org.bukkit import Location, Material\n";
+		preCode += "from org.bukkit.Material import *\n";
+		preCode += "def trace_function(frame, event, arg):\n";
+		preCode += "	authority.traceFunction()\n";
+		preCode += "	return trace_function\n";
+		preCode += "def call(method, *args):\n";
+		preCode += "	return authority.call(method, args)\n";
+		
+		preCode += "def loc(x,y,z):\n";
+		preCode += "	loc = player.getLocation()\n";
+		preCode += "	loc.setX(x)\n";		
+		preCode += "	loc.setY(y)\n";		
+		preCode += "	loc.setZ(z)\n";				
+		preCode += "	return loc\n\n";
+		
+		preCode += "def setblock(x,y,z, type):\n";
+		preCode += "	return call(loc(x,y,z).getBlock().setType, type)\n\n";
+		
+		preCode += "def teleport(x,y,z):\n";
+		preCode += "	return call(player.teleport, loc(x,y,z))\n\n";
+		preCode += "def getPlayerLoc():\n";
+		preCode += "	return call(player.getLocation)\n\n";
+		preCode += "sys.settrace(trace_function)\n";
+		preCode += code;
+		// for (ISpell spell : gameWrappers) {
+		// preCode += spell.getCode() +"\n";
+		// }
+
+		// sender.sendMessage("About to execute code...: " + code);
+		try {
+			System.out.println("Running Code...");
+			pi.exec(preCode);
+			System.out.println("Done running...");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		pi.close();
+		return "success.";
+	}
+	
+
 
 }

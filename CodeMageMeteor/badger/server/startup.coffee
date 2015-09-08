@@ -1,6 +1,6 @@
 Meteor.startup ->
   #Need to manually reboot the sever for edits here
-  console.log "Main Server Startup"
+  console.log "Badger Module Startup"
   if Meteor.users.find().count() > 0
     return
   Meteor.users.remove {}

@@ -1,10 +1,11 @@
 package org.gamestartschool.codemage.python;
 
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.bukkit.Material;
+import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -71,25 +72,19 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 	}
 
 	public void onEnable() {
-		this.getCommand("python").setExecutor(new PythonCommand(this));
-
-		// BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-		// scheduler.scheduleSyncRepeatingTask(this, new Runnable() {
-		// @Override
-		// public void run() {
-		// System.out.println("Task!");
-		// }
-		// }, 0L, 20L);
-
+		CodeMageAsyncProcessor codeMageAsyncProcessor = new CodeMageAsyncProcessor(getServer());
+		codeRunner = new CodeRunner(codeMageAsyncProcessor);
+		this.getCommand("python").setExecutor(new PythonCommand(this, codeRunner));
 		PluginManager pluginManager = getServer().getPluginManager();
 		pluginManager.registerEvents(new TriggerListener(), this);
-
+		
+		getServer().getScheduler().scheduleSyncRepeatingTask(this, codeMageAsyncProcessor, 0L, 1L);
+		
 		try {
 			log("DDP Plugin being invoked from CodeMagePython.");
 			ddp = new CodeMageDDP(meteorIp, meteorPort);
 			log("DDP Plugin attempting to connect....");
 			ddp.connect(meterUsername, meteorPassword);
-			codeRunner = new CodeRunner();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} catch (URISyntaxException e) {
@@ -100,5 +95,30 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 	public void onDisable() {
 		ddp.disconnect();
 	}
+	
+	public final class CodeMageAsyncProcessor implements Runnable {
 
+		private Server server;
+		public ConcurrentLinkedQueue<PythonMethodCall> cmds = new ConcurrentLinkedQueue<PythonMethodCall>();
+		
+		public CodeMageAsyncProcessor(Server server) {
+			this.server = server;
+		}
+
+		@Override
+		public void run() {
+			PythonMethodCall pythonMethodCall = cmds.poll();
+			if(pythonMethodCall != null) {
+				System.out.println("PULLED ONE");
+				try{
+					pythonMethodCall.result = pythonMethodCall.method.__call__(pythonMethodCall.args);
+				} catch (Exception e) {
+					e.printStackTrace();
+					pythonMethodCall.message = e.toString();
+				} finally{
+					pythonMethodCall.isDone = true;
+				}
+			}
+		}
+	}
 }

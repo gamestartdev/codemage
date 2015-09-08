@@ -1,41 +1,33 @@
 package org.gamestartschool.codemage.python;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.gamestartschool.codemage.ddp.ISpell;
-import org.gamestartschool.codemage.python.CodeMagePythonSpigotPlugin.CodeMageAsyncProcessor;
 import org.python.core.PyObject;
 import org.python.util.InteractiveInterpreter;
 
 public class CodeRunner {
 
-	private CodeMageAsyncProcessor codeMageAsyncProcessor;
+	private ConcurrentLinkedQueue<PythonMethodCall> pythonMethodQueue;
 
-	public CodeRunner(CodeMageAsyncProcessor codeMageAsyncProcessor) {
-		this.codeMageAsyncProcessor = codeMageAsyncProcessor;
+	public CodeRunner(ConcurrentLinkedQueue<PythonMethodCall> pythonMethodQueue) {
+		this.pythonMethodQueue = pythonMethodQueue;
 	}
-
 
 	public void runCode(final String code, final CommandSender sender) {
 		runCode(code, sender, new ArrayList<ISpell>());
 	}
 	
 	public class CodeMageJavaAuthority {
-		private CodeMageAsyncProcessor codeMageAsyncProcessor;
-		public CodeMageJavaAuthority(CodeMageAsyncProcessor codeMageAsyncProcessor){
-			this.codeMageAsyncProcessor = codeMageAsyncProcessor;
-		}
+		
 		public void traceFunction() throws InterruptedException {
 			System.out.println("Java tracing...!");
 //			Thread.sleep(20);
@@ -44,7 +36,7 @@ public class CodeRunner {
 		public PyObject call(PyObject method, PyObject[] args) throws InterruptedException {
 			System.out.println("CodeMageJavaAuthority call");
 			PythonMethodCall pythonMethodCall = new PythonMethodCall(method, args);
-			codeMageAsyncProcessor.cmds.offer(pythonMethodCall);
+			pythonMethodQueue.offer(pythonMethodCall);
 			System.out.println("CodeMageJavaAuthority offered");
 			while(!pythonMethodCall.isDone()) {
 				System.out.println("!pythonMethodCall.isDone()");
@@ -57,16 +49,14 @@ public class CodeRunner {
 	private final ExecutorService interpreterPool = Executors.newFixedThreadPool(10);
 
 	public void runCode(final String code, final CommandSender sender, List<ISpell> gameWrappers) {
-		Future<String> result = executeCodeConcurrently(code, sender,  codeMageAsyncProcessor);
-//		System.out.println(result.get());
+		Future<String> result = executeCodeConcurrently(code, sender);
 	}
 	
-	
-	public Future<String> executeCodeConcurrently(final String code, final CommandSender sender, final CodeMageAsyncProcessor codeMageAsyncProcessor) {
+	public Future<String> executeCodeConcurrently(final String code, final CommandSender sender) {
 		return interpreterPool.submit(new Callable<String>() {
 			@Override
 			public String call() {
-				return executeCode(code, sender, new CodeMageJavaAuthority(codeMageAsyncProcessor));
+				return executeCode(code, sender, new CodeMageJavaAuthority());
 			}
 		});
 	}

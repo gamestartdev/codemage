@@ -70,15 +70,16 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 	private void log(String message) {
 		getServer().getLogger().info(message);
 	}
+	public ConcurrentLinkedQueue<PythonMethodCall> pythonMethodQueue = new ConcurrentLinkedQueue<PythonMethodCall>();
 
 	public void onEnable() {
-		CodeMageAsyncProcessor codeMageAsyncProcessor = new CodeMageAsyncProcessor(getServer());
-		codeRunner = new CodeRunner(codeMageAsyncProcessor);
+		
+		codeRunner = new CodeRunner(pythonMethodQueue);
 		this.getCommand("python").setExecutor(new PythonCommand(this, codeRunner));
 		PluginManager pluginManager = getServer().getPluginManager();
 		pluginManager.registerEvents(new TriggerListener(), this);
 		
-		getServer().getScheduler().scheduleSyncRepeatingTask(this, codeMageAsyncProcessor, 0L, 1L);
+		getServer().getScheduler().scheduleSyncRepeatingTask(this, pythonCommandExecutionQueue, 0L, 1L);
 		
 		try {
 			log("DDP Plugin being invoked from CodeMagePython.");
@@ -96,20 +97,12 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 		ddp.disconnect();
 	}
 	
-	public final class CodeMageAsyncProcessor implements Runnable {
-
-		private Server server;
-		public ConcurrentLinkedQueue<PythonMethodCall> cmds = new ConcurrentLinkedQueue<PythonMethodCall>();
-		
-		public CodeMageAsyncProcessor(Server server) {
-			this.server = server;
-		}
+	public final class PythonCommandExecutionQueue implements Runnable {
 
 		@Override
 		public void run() {
-			PythonMethodCall pythonMethodCall = cmds.poll();
+			PythonMethodCall pythonMethodCall = pythonMethodQueue.poll();
 			if(pythonMethodCall != null) {
-				System.out.println("PULLED ONE");
 				try{
 					pythonMethodCall.result = pythonMethodCall.method.__call__(pythonMethodCall.args);
 				} catch (Exception e) {

@@ -3,7 +3,7 @@ package org.gamestartschool.codemage.python;
 import java.io.IOException;
 
 import org.bukkit.command.CommandSender;
-import org.gamestartschool.codemage.python.CodeMagePythonSpigotPlugin.CodeMageAsyncProcessor;
+import org.gamestartschool.codemage.python.CodeMagePythonSpigotPlugin.PythonCommandExecutionQueue;
 
 public class Main {
 

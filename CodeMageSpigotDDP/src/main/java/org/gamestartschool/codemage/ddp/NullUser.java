@@ -33,10 +33,4 @@ class NullUser implements IUser {
 		
 	}
 
-	@Override
-	public List<ISpell> getGameWrappers() {
-		return new ArrayList<ISpell>();
-	}
-
-
 }

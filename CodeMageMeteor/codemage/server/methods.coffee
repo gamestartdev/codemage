@@ -71,7 +71,6 @@ addSpell = (tomeId, name, code) ->
 updateSpell = (spellId, data) ->
   check(spellId, String)
   check(data, Object)
-  console.log data
   spells.update spellId, {$set:data}
 
 removeSpell = (spellId) ->

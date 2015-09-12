@@ -53,6 +53,7 @@ public abstract class AMongoDocument implements IMongoDocument {
 		return (boolean) getField(key);
 	}
 	
+	@SuppressWarnings("unchecked")
 	protected List<String> getStringListField(String key){
 		return (List<String>) getField(key);
 	}

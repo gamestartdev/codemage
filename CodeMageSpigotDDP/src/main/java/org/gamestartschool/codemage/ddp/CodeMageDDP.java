@@ -1,5 +1,7 @@
 package org.gamestartschool.codemage.ddp;
 
+import static ch.lambdaj.Lambda.filter;
+
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,7 +15,8 @@ import com.keysolutions.ddpclient.DDPListener;
 import com.keysolutions.ddpclient.UsernameAuth;
 import com.keysolutions.ddpclient.DDPClient.DdpMessageField;
 import com.keysolutions.ddpclient.DDPClient.DdpMessageType;
-import com.sun.org.apache.xerces.internal.util.Status;
+
+import ch.lambdaj.function.matcher.Predicate;
 
 public class CodeMageDDP {
 
@@ -22,11 +25,8 @@ public class CodeMageDDP {
 
 		private void sendMap(final String spellId, final String message,
 				final String key) {
-			HashMap<String, String> map = new HashMap<String, String>() {
-				{
-					put(key, message);
-				}
-			};
+			HashMap<String, String> map = new HashMap<String, String>();
+			map.put(key, message);
 			call("updateSpell", spellId, map);
 		}
 		
@@ -106,10 +106,8 @@ public class CodeMageDDP {
 		@Override
 		public void update(Observable client, Object jsonObject) {
 			if (jsonObject instanceof Map<?, ?>) {
-
 				Map<String, Object> json = (Map<String, Object>) jsonObject;
-				String msgtype = (String) json
-						.get(DDPClient.DdpMessageField.MSG);
+//				String msgtype = (String) json.get(DDPClient.DdpMessageField.MSG);
 
 				if (name.equals(json.get(DdpMessageField.COLLECTION))) {
 					handleCollection(json);
@@ -120,6 +118,7 @@ public class CodeMageDDP {
 		private void handleCollection(Map<String, Object> json) {
 			String msgtype = (String) json.get(DDPClient.DdpMessageField.MSG);
 			String id = (String) json.get(DdpMessageField.ID);
+			@SuppressWarnings("unchecked")
 			Map<String, Object> fields = (Map<String, Object>) json
 					.get(DdpMessageField.FIELDS);
 
@@ -162,7 +161,7 @@ public class CodeMageDDP {
 
 		@Override
 		MongoUser documentAdded(String id, Map<String, Object> fields) {
-			return new MongoUser(spells, enchantments, id, fields, methodCaller);
+			return new MongoUser(enchantments, id, fields, methodCaller);
 		}
 	};
 
@@ -231,6 +230,22 @@ public class CodeMageDDP {
 		return NullUser.NULL;
 	}
 
+	public List<ISpell> getAllGameWrappers() {
+		Predicate<MongoSpell> gameWrappersForUser = new Predicate<MongoSpell>() {
+			
+			@Override
+			public boolean apply(MongoSpell s) {
+				return s.isGameWrapper();
+			}
+		};
+		Collection<MongoSpell> allSpells = spells.getAll();
+		System.out.println("allSpells: " + allSpells.size());
+		List<MongoSpell> gameWrappers = filter(gameWrappersForUser, allSpells);
+		System.out.println("gameWrappers1: " + gameWrappers.size());
+		return new ArrayList<ISpell>(gameWrappers);
+	}
+	
+	
 	private void reportCodeMageServerStatus(CodeMageServerStatus status) {
 		String dummyCodeMageServerIp = "127.0.0.1";
 		String dummyCodeMageServerPort = "54175";

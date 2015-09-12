@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="CodeMageSpigotPython" default="makeJar" basedir=".">
-	<property name="spigotServerPath" value="../spigotServer"/>
+	<property name="spigotServerPath" value="../spigotServer" />
 
-    <target name="makeJar">
-	 	<copy file="lib/jython.jar" todir="${spigotServerPath}/plugins/lib/"/>
-        <jar destfile="${spigotServerPath}/plugins/${ant.project.name}.jar">
-            <fileset dir="bin"></fileset>
-            <fileset file="plugin.yml"></fileset>
-            <manifest>
-              <attribute name="Class-Path" value="./lib/jython.jar"/>
-            </manifest>
-        </jar>
-    </target>
+	<target name="makeJar">
+		<copy file="lib/jython.jar" todir="${spigotServerPath}/plugins/lib/" />
+
+		<jar destfile="${spigotServerPath}/plugins/${ant.project.name}.jar">
+			<fileset dir="bin">
+			</fileset>
+			<fileset file="plugin.yml">
+			</fileset>
+			<manifest>
+				<attribute name="Class-Path" value="./lib/jython.jar" />
+			</manifest>
+		</jar>
+	</target>
 
 </project>

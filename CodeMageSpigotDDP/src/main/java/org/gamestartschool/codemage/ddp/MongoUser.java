@@ -3,7 +3,6 @@ package org.gamestartschool.codemage.ddp;
 import static ch.lambdaj.Lambda.filter;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -14,15 +13,13 @@ import ch.lambdaj.function.matcher.Predicate;
 
 class MongoUser extends AMongoDocument implements IUser {
 
-	private ICodeMageCollection<MongoSpell> spells;
 	private ICodeMageCollection<MongoEnchantment> enchantments;
 	private IUserMeteorMethods meteorMethods;
 	private boolean removed;
 
-	public MongoUser(ICodeMageCollection<MongoSpell> spells, ICodeMageCollection<MongoEnchantment> enchantments,
+	public MongoUser(ICodeMageCollection<MongoEnchantment> enchantments,
 			String id, Map<String, Object> fields, IUserMeteorMethods methodCaller) {
 		super(id, fields);
-		this.spells = spells;
 		this.enchantments = enchantments;
 		meteorMethods = methodCaller;
 	}
@@ -73,21 +70,4 @@ class MongoUser extends AMongoDocument implements IUser {
 	public void removed() {
 		removed = true;
 	}
-
-	@Override
-	public List<ISpell> getGameWrappers() {
-		Predicate<MongoSpell> gameWrappersForUser = new Predicate<MongoSpell>() {
-			
-			@Override
-			public boolean apply(MongoSpell s) {
-				return s.isGameWrapper();
-			}
-		};
-		Collection<MongoSpell> allSpells = spells.getAll();
-		System.out.println("allSpells: " + allSpells.size());
-		List<MongoSpell> gameWrappers = filter(gameWrappersForUser, allSpells);
-		System.out.println("gameWrappers1: " + gameWrappers.size());
-		return new ArrayList<ISpell>(gameWrappers);
-	}
-
 }

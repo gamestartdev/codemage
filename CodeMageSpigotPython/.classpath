@@ -3,11 +3,12 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CodeMageSpigotDDP"/>
-	<classpathentry kind="lib" path="lib/spigot-api-1.8.8-R0.1-SNAPSHOT-shaded.jar">
+	<classpathentry kind="lib" path="lib/spigot-api-1.8.8-R0.1-SNAPSHOT-shaded.jar" sourcepath="/spigAPI/src">
 		<attributes>
 			<attribute name="javadoc_location" value="https://hub.spigotmc.org/javadocs/spigot/"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/jython.jar" sourcepath="/codemage-jython/src"/>
+	<classpathentry kind="lib" path="lib/javassist.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

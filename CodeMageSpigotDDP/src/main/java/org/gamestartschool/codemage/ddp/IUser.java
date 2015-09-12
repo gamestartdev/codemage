@@ -10,5 +10,4 @@ public interface IUser {
 	List<IEnchantment> getEnchantments();
 	List<IEnchantment> getEnchantments(Material material, Action action);
 	void updateHealth(int health);
-	List<ISpell> getGameWrappers();
 }

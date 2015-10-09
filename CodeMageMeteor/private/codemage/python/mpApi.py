@@ -17,4 +17,8 @@ def myY():
 def myZ():
 	return mc(player.getLocation).getZ()
 
+def yell(message):
+	print "Yelling: " + message
+	mc(player.chat(message))
+
 from org.bukkit.Material import *

@@ -11,6 +11,8 @@ import org.bukkit.entity.Player;
 import org.gamestartschool.codemage.ddp.ISpell;
 import org.python.util.InteractiveInterpreter;
 
+import com.avaje.ebeaninternal.server.deploy.BeanDescriptor.EntityType;
+
 public class CodeRunner implements Runnable {
 	private static boolean exhaustQueueEachTick = true;
 	public ConcurrentLinkedQueue<PythonMethodCall> pythonMethodQueue = new ConcurrentLinkedQueue<PythonMethodCall>();
@@ -48,6 +50,10 @@ public class CodeRunner implements Runnable {
 				pi.set("player", player);
 				pi.set("pythonMethodQueue", pythonMethodQueue);
 
+				for (org.bukkit.entity.EntityType e : org.bukkit.entity.EntityType.values()) {
+					pi.set(e.toString(), e);
+				}
+				
 				String wrapperCode = "";
 				for (ISpell spell : gameWrappers) {
 					wrapperCode += spell.getCode() + "\n";

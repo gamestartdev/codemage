@@ -19,6 +19,9 @@ def myZ():
 
 def yell(message):
 	print "Yelling: " + message
-	mc(player.chat(message))
+	mc(player.chat, message)
+	
+def spawnentity(x, y, z, entity):
+    mc(player.getWorld().spawnCreature, loc(x, y, z), entity)
 
 from org.bukkit.Material import *

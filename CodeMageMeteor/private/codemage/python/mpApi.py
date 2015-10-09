@@ -21,5 +21,7 @@ def yell(message):
 	print "Yelling: " + message
 	mc(player.chat, message)
 	
-def spawnentity(x, y, z, entity):
-    mc(player.getWorld().spawnEntity, loc(x, y, z), entity)
+import time
+def spawnentity(x, y, z, entity, data="{}"):
+    entity = mc(player.getWorld().spawnEntity, loc(x, y, z), entity)
+    yell("/entitydata " + entity.getUniqueId().toString() + " " + data)

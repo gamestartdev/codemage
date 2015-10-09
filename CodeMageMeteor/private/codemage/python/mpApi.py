@@ -22,4 +22,4 @@ def yell(message):
 	mc(player.chat, message)
 	
 def spawnentity(x, y, z, entity):
-    mc(player.getWorld().spawnCreature, loc(x, y, z), entity)
+    mc(player.getWorld().spawnEntity, loc(x, y, z), entity)

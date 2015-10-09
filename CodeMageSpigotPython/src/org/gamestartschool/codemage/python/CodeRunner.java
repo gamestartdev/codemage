@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.gamestartschool.codemage.ddp.ISpell;
 import org.python.util.InteractiveInterpreter;
@@ -52,6 +53,10 @@ public class CodeRunner implements Runnable {
 
 				for (org.bukkit.entity.EntityType e : org.bukkit.entity.EntityType.values()) {
 					pi.set(e.toString(), e);
+				}
+				
+				for (Material m : Material.values()) {
+					pi.set(m.toString(), m);
 				}
 				
 				String wrapperCode = "";

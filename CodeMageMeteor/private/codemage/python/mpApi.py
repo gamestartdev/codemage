@@ -23,5 +23,3 @@ def yell(message):
 	
 def spawnentity(x, y, z, entity):
     mc(player.getWorld().spawnCreature, loc(x, y, z), entity)
-
-from org.bukkit.Material import *

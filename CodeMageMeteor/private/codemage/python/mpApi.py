@@ -20,8 +20,47 @@ def myZ():
 def yell(message):
 	print "Yelling: " + message
 	mc(player.chat, message)
-	
-import time
-def spawnentity(x, y, z, entity, data="{}"):
+
+def toNBT(thing):
+    from net.minecraft.server.v1_8_R3 import NBTTagCompound, NBTTagList, NBTTagInt, \
+    NBTTagLong, NBTTagByteArray, NBTTagIntArray, NBTTagLong, NBTTagShort, NBTTagByte, \
+    NBTTagString #don't show in eclipse for some reason
+    if isinstance(thing, basestring):
+        return NBTTagString(thing)
+
+def spawnentity(x, y, z, entity, data={}): #compound/list tags not implemented
+    import jarray #                        #arrays of ints/bytes work, though
+    from net.minecraft.server.v1_8_R3 import NBTTagCompound #doesn't show up in eclipse
     entity = mc(player.getWorld().spawnEntity, loc(x, y, z), entity)
-    yell("/entitydata " + entity.getUniqueId().toString() + " " + data)
+    entityhandle = entity.getHandle()
+    tag = entityhandle.getNBTTag()
+    if tag == None:
+        tag = NBTTagCompound()
+    mc(entityhandle.c, tag)
+    for tagname in data:
+        value = data[tagname]
+        if isinstance(value, basestring):
+            tag.setString(tagname, value)
+        elif isinstance(value, int):
+            tag.setInt(tagname, value)
+        elif isinstance(value, float):
+            tag.setFloat(tagname, value)
+        elif isinstance(value, long):
+            tag.setLong(tagname, value)
+        elif isinstance(value, list):
+            isints = True
+            for e in value:
+                if not isinstance(int, e):
+                    isints = False
+            if isints:
+                isbytes = True
+                for e in value:
+                    if not isinstance(int, e) and e in range(-128, 128):
+                        isbytes = False
+                if isbytes:
+                    javaarray = jarray.array(value, b)
+                    tag.setByteArray(tagname, javaarray)
+                else:
+                    javaarray = jarray.array(value, i)
+                    tag.setIntArray(tagname, javaarray)
+    mc(entityhandle.f, tag)

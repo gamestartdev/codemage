@@ -21,21 +21,47 @@ def yell(message):
 	print "Yelling: " + message
 	mc(player.chat, message)
 
-def spawnentity(x, y, z, entity, data="{}"): 
+def spawnentity(x, y, z, entity, data={}): 
     entity = mc(player.getWorld().spawnEntity, loc(x, y, z), entity)
-    cmd = "entitydata " + entity.getUniqueId().toString() + " " + data
+    cmd = "entitydata " + entity.getUniqueId().toString() + " " + toNbt(data)
     mc(player.getServer().dispatchCommand, player.getServer().getConsoleSender(), cmd)
 
-def spawnitem(x, y, z, item=DIRT, count=1, damage=0, data="{}"):
+def isNumber(var):
+	try:
+		dummy = var - 1
+	except TypeError:
+		return False
+	return True
+
+def toNbt(data, isSelfcalled=False):
+	nbt = ""
+	if isinstance(data, dict):
+		nbt = nbt + "{"
+		for key in data.keys():
+			nbt = nbt + key + ":" + toNbt(data[key], True) + ","
+		if nbt[-1:] == ",":	
+			nbt = nbt[:-1] #Remove extra comma
+		nbt = nbt + "}"
+	elif not isSelfcalled:
+		raise TypeError("The outermost NBT tag must be a dictionary!")
+	if isNumber(data):
+		nbt = nbt + str(data)
+	if isinstance(data, list) or isinstance(data, tuple):
+		nbt = nbt + "["
+		for item in data:
+			nbt = nbt + toNbt(item, True) + ","
+		if nbt[-1:] == ",":	
+			nbt = nbt[:-1] #Remove extra comma
+		nbt = nbt + "]"
+	if isinstance(data, basestring):
+		nbt = nbt + '"' + data + '"'
+	return nbt
+
+def spawnitem(x, y, z, item=DIRT, count=1, damage=0, data={}):
     from org.bukkit.inventory import ItemStack
-    import json
     dictdata = dict()
     dictdata["Item"] = {"Count":count,"Damage":damage,"id":item.toString().lower()}
-    dictdata["Item"]["tag"] = json.loads(data)
-    strdata = json.dumps(dictdata)
-    #itemstack = ItemStack(item, count, damage)
-    #itementity = mc(player.getWorld().dropItem, loc(x, y, z), itemstack)
+    dictdata["Item"]["tag"] = data
+    strdata = toNbt(dictdata)
     cmd = "summon Item " + str(x) + " " + str(y) + " " + str(z) + " " + strdata
-    print cmd
     mc(player.getServer().dispatchCommand, player.getServer().getConsoleSender(), cmd)
-    #spawnentity(x, y, z, DROPPED_ITEM, strdata)

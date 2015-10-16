@@ -9,13 +9,25 @@ def teleport(x,y,z):
 	return mc(player.teleport, loc(x,y,z))
 
 def myX():
-	return mc(player.getLocation).getX()
+	return player.getLocation().getX()
 
 def myY():
-	return mc(player.getLocation).getY()
+	return player.getLocation().getY()
 
 def myZ():
-	return mc(player.getLocation).getZ()
+	return player.getLocation().getZ()
+
+def lookVector():
+    return player.getLocation().getDirection().normalize()
+
+def lookX():
+    return lookVector().getX()
+    
+def lookY():
+    return lookVector().getY()
+    
+def lookZ():
+    return lookVector().getZ()
 
 def yell(message):
 	print "Yelling: " + message

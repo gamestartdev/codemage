@@ -24,6 +24,9 @@ def yell(message):
 def spawnentity(x, y, z, entity, data={}): 
     entity = mc(player.getWorld().spawnEntity, loc(x, y, z), entity)
     cmd = "entitydata " + entity.getUniqueId().toString() + " " + toNbt(data)
+    __command(cmd)
+
+def __command(cmd):
     mc(player.getServer().dispatchCommand, player.getServer().getConsoleSender(), cmd)
 
 def isNumber(var):
@@ -64,4 +67,4 @@ def spawnitem(x, y, z, item=DIRT, count=1, damage=0, data={}):
     dictdata["Item"]["tag"] = data
     strdata = toNbt(dictdata)
     cmd = "summon Item " + str(x) + " " + str(y) + " " + str(z) + " " + strdata
-    mc(player.getServer().dispatchCommand, player.getServer().getConsoleSender(), cmd)
+    __command(cmd)

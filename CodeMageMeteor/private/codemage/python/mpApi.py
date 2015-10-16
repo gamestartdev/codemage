@@ -75,6 +75,16 @@ def toNbt(data, isSelfcalled=False):
 		nbt = nbt + '"' + data + '"'
 	return nbt
 
+def buildCommand(cmd, args):
+    ret = cmd
+    for arg in args:
+        ret = ret + " " + str(arg)
+    return ret
+
+def spawnParticle(x, y, z, particle, howMany, speed=0, xd=0.5, yd=0.5,zd=0.5):
+    cmd = buildCommand("particle", [particle, x, y, z, xd, yd, zd, speed, howMany])
+    __command(cmd)
+
 def spawnitem(x, y, z, item=DIRT, count=1, damage=0, data={}):
     from org.bukkit.inventory import ItemStack
     dictdata = dict()

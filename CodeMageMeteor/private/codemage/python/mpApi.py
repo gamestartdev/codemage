@@ -29,6 +29,9 @@ def lookY():
 def lookZ():
     return lookVector().getZ()
 
+def explosion(x, y, z, power=5):
+    mc(player.getWorld().createExplosion, x, y, z, power, False, True)
+
 def yell(message):
 	print "Yelling: " + message
 	mc(player.chat, message)

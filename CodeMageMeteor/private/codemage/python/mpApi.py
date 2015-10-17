@@ -51,6 +51,14 @@ def isNumber(var):
 		return False
 	return True
 
+def getblock(x, y, z):
+    mat = player.getWorld().getBlockAt(loc(x, y, z)).getType()
+    mst = mat.toString()
+    if mat != None:
+        return LAVA if "LAVA" in mst else WATER if "WATER" in mst else mat
+    else:
+        return AIR
+
 def toNbt(data, isSelfcalled=False):
 	nbt = ""
 	if isinstance(data, dict):

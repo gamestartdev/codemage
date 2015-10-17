@@ -59,6 +59,9 @@ def getblock(x, y, z):
     else:
         return AIR
 
+def playsound(x, y, z, sound,pitch=1,volume=1):
+    mc(player.getWorld().playSound,loc(x,y,z),sound,1,1)
+
 def toNbt(data, isSelfcalled=False):
 	nbt = ""
 	if isinstance(data, dict):

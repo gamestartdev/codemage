@@ -9,6 +9,7 @@ import java.util.concurrent.Future;
 
 import org.bukkit.Effect;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.gamestartschool.codemage.ddp.ISpell;
 import org.python.util.InteractiveInterpreter;
@@ -62,6 +63,10 @@ public class CodeRunner implements Runnable {
 				
 				for (Effect e : Effect.values()) {
 					pi.set(e.toString(), e);
+				}
+				
+				for (Sound s : Sound.values()) {
+					pi.set(s.toString(), s);
 				}
 				
 				String wrapperCode = "";

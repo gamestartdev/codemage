@@ -91,5 +91,5 @@ def spawnitem(x, y, z, item=DIRT, count=1, damage=0, data={}):
     dictdata["Item"] = {"Count":count,"Damage":damage,"id":item.toString().lower()}
     dictdata["Item"]["tag"] = data
     strdata = toNbt(dictdata)
-    cmd = "summon Item " + str(x) + " " + str(y) + " " + str(z) + " " + strdata
+    cmd = buildCommand("summon Item", [str(x), str(y), str(z), strdata])
     __command(cmd)

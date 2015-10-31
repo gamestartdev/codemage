@@ -46,11 +46,6 @@ def yell(message):
     print "Yelling: " + message
     mc(player.chat, message)
 
-def spawnentity(x, y, z, entity, data={}): 
-    entity = mc(player.getWorld().spawnEntity, loc(x, y, z), entity)
-    cmd = "entitydata " + entity.getUniqueId().toString() + " " + toNbt(data)
-    _command(cmd)
-
 def _command(cmd):
     mc(player.getServer().dispatchCommand, player.getServer().getConsoleSender(), cmd)
 
@@ -102,83 +97,23 @@ def buildCommand(cmd, args):
         ret = ret + " " + str(arg)
     return ret
 
-def parseLazyJSON(json):
-    print json
-    import re
-    print "compound check"
-    if re.match(r"^{[\s\S]*}$", json):
-        #print "compound 1"
-        #json = re.sub(r"^{", r"", json)
-        #print "compound 2"
-        #json = re.sub(r"}$", r"", json)
-        asdict = {}
-        for pair in json[1:-1].split(","):
-            pos = pair.find(":")
-            key = pair[:pos]
-            value = pair[pos+1:]
-            asdict[str(key)] = parseLazyJSON(value)
-        return asdict
-    elif  re.match(r"^(?:\d|-\d)[\d.]*[LlDdFfBbIiSs]?$", json):
-        print "number 1"
-        print json, type(json)
-        json = re.sub(r"[^\d.]", "", json)
-        print json, type(json)
-        if "." in json:
-            return float(json)
-        else:
-            return long(json)
-    elif printret("string test") and re.match(r"^\"[\s\S]*\"$", json):
-        return str(json)[1:-1]
-    elif printret("list test") and re.match(r"^\[[\s\S]*\]$", json):
-        print "list 1"
-        json = re.sub(r"[[,]\d+:", "", json)
-        yell("TEST")
-        #print "list 2"
-        #json = re.sub(r"^\[", "", json)
-        #print "list 3"
-        #json = re.sub(r"]$", "", json)
-        aslist = []
-        for value in json[1:-1].split(","):
-            aslist.append(parseLazyJSON(value))
-        return aslist
-    print json
-    
-def printret(string):
-    print string
-    return True
-
-def test(x, y, z, entity, nbt):
-    import json
-    import copy
-    print "thing happened"
+def spawnentity(x, y, z, entity, nbt={}):
     NBTTagCompound = _importNms("NBTTagCompound")
     MojangsonParser = _importNms("MojangsonParser")
-    MojangsonParseException = _importNms("MojangsonParseException")
-    #$print NBTTagCompound.__dict__
     entity = mc(player.getWorld().spawnEntity, loc(x, y, z), entity).getHandle()
     tag = entity.getNBTTag()
     if tag == None:
         tag = NBTTagCompound()
     entity.c(tag)
-    print parseLazyJSON(tag.toString())
-    startdict = parseLazyJSON(tag.toString())
-    print startdict
-    '''try:
-        startdict.update(nbt)
-        print startdict, "startdict"
-        mojson = toMojangson(startdict)
-        print startdict
-        print mojson
-        print type(u'')
-        tag = MojangsonParser.parse(mojson)
-    except MojangsonParseException, e:
-        e.printStackTrace()
-        print "thank mr skeltal"
-        thank = "mr skeltal" #doot doot (Python complains if there isn't code here.)
-    mc(entity.f, tag)'''
-    
-    
-    
+    tagclass = tag.getClass() #Reflection, because there's no getmap or setmap.
+    mapField = tagclass.getDeclaredField("map")
+    mapField.setAccessible(True)
+    entityMap = mapField.get(tag)
+    suppliedTag = MojangsonParser.parse(toMojangson(nbt))
+    suppliedMap = mapField.get(suppliedTag)
+    entityMap.putAll(suppliedMap)
+    mapField.set(tag, entityMap)
+    mc(entity.f, tag)
 
 def spawnparticle(x, y, z, particle, howMany, speed=0, xd=0.5, yd=0.5,zd=0.5):
     mc(player.getWorld().spigot().playEffect,loc(x,y,z),particle,0,0,xd,yd,zd,speed,

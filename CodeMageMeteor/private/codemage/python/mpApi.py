@@ -1,6 +1,3 @@
-#If you're here because ImportErrors started happening after a server update:
-#change the import below to v(major minecraft version, replace . with _)
-#_R(spigot revision)
 from org.bukkit import Bukkit
 _version = Bukkit.getServer().getClass().getPackage().getName()
 _version = _version.split(".")[3]
@@ -8,26 +5,27 @@ _nmsPath = "net.minecraft.server." + _version
 
 def _importNms(classname):
     import importlib
-    return importlib.import_module( _nmsPath).__dict__[classname]
+    m = getattr(importlib.import_module(_nmsPath), classname)
+    return m
     
 def loc(x,y,z):
     from org.bukkit import Location
     return Location(player.getWorld(), x, y, z)
 
 def setblock(x,y,z, mat):
-	return mc(loc(x,y,z).getBlock().setType, mat)
+    return mc(loc(x,y,z).getBlock().setType, mat)
 
 def teleport(x,y,z):
-	return mc(player.teleport, loc(x,y,z))
+    return mc(player.teleport, loc(x,y,z))
 
 def myX():
-	return player.getLocation().getX()
+    return player.getLocation().getX()
 
 def myY():
-	return player.getLocation().getY()
+    return player.getLocation().getY()
 
 def myZ():
-	return player.getLocation().getZ()
+    return player.getLocation().getZ()
 
 def lookVector():
     return player.getLocation().getDirection().normalize()
@@ -45,8 +43,8 @@ def explosion(x, y, z, power=5):
     mc(player.getWorld().createExplosion, x, y, z, power, False, True)
 
 def yell(message):
-	print "Yelling: " + message
-	mc(player.chat, message)
+    print "Yelling: " + message
+    mc(player.chat, message)
 
 def spawnentity(x, y, z, entity, data={}): 
     entity = mc(player.getWorld().spawnEntity, loc(x, y, z), entity)
@@ -57,11 +55,11 @@ def _command(cmd):
     mc(player.getServer().dispatchCommand, player.getServer().getConsoleSender(), cmd)
 
 def isNumber(var):
-	try:
-		dummy = var - 1
-	except TypeError:
-		return False
-	return True
+    try:
+        dummy = var - 1
+    except TypeError:
+        return False
+    return True
 
 def getblock(x, y, z):
     mat = player.getWorld().getBlockAt(loc(x, y, z)).getType()
@@ -75,28 +73,28 @@ def playsound(x, y, z, sound,pitch=1,volume=1):
     mc(player.getWorld().playSound,loc(x,y,z),sound,1,1)
 
 def toMojangson(data, isSelfcalled=False):
-	nbt = ""
-	if isinstance(data, dict):
-		nbt = nbt + "{"
-		for key in data.keys():
-			nbt = nbt + key + ":" + toMojangson(data[key], True) + ","
-		if nbt[-1:] == ",":	
-			nbt = nbt[:-1] #Remove extra comma
-		nbt = nbt + "}"
-	elif not isSelfcalled:
-		raise TypeError("The outermost NBT tag must be a dictionary!")
-	if isNumber(data):
-		nbt = nbt + str(data)
-	if isinstance(data, list) or isinstance(data, tuple):
-		nbt = nbt + "["
-		for item in data:
-			nbt = nbt + toMojangson(item, True) + ","
-		if nbt[-1:] == ",":	
-			nbt = nbt[:-1] #Remove extra comma
-		nbt = nbt + "]"
-	if isinstance(data, basestring):
-		nbt = nbt + '"' + data + '"'
-	return nbt
+    nbt = ""
+    if isinstance(data, dict):
+        nbt = nbt + "{"
+        for key in data.keys():
+            nbt = nbt + key + ":" + toMojangson(data[key], True) + ","
+        if nbt[-1:] == ",": 
+            nbt = nbt[:-1] #Remove extra comma
+        nbt = nbt + "}"
+    elif not isSelfcalled:
+        raise TypeError("The outermost NBT tag must be a dictionary!")
+    if isNumber(data):
+        nbt = nbt + str(data)
+    if isinstance(data, list) or isinstance(data, tuple):
+        nbt = nbt + "["
+        for item in data:
+            nbt = nbt + toMojangson(item, True) + ","
+        if nbt[-1:] == ",": 
+            nbt = nbt[:-1] #Remove extra comma
+        nbt = nbt + "]"
+    if isinstance(data, basestring) or isinstance(data, unicode):
+        nbt = nbt + '"' + data + '"'
+    return nbt
 
 def buildCommand(cmd, args):
     ret = cmd
@@ -104,41 +102,80 @@ def buildCommand(cmd, args):
         ret = ret + " " + str(arg)
     return ret
 
-def strictifyJSON(j):
-    import re #Python hates non--strict json. Minecraft hates strict json.
-    j = re.sub(r"{\s*'?(\w)", r'{"\1', j)
-    print 1
-    j = re.sub(r",\s*'?(\w)", r',"\1', j)
-    print 2
-    j = re.sub(r"(\w)'?\s*:", r'\1":', j)
-    print 3
-    j = re.sub(r":\s*'(\w+)'\s*([,}])", r':"\1"\2', j)
-    print 4
-    j = re.sub(r"(:[)\"?\d\":", r'\1', j)
-    print 5
-    #j = re.sub(r"\"\d\":", r)
-    return j
+def parseLazyJSON(json):
+    print json
+    import re
+    print "compound check"
+    if re.match(r"^{[\s\S]*}$", json):
+        #print "compound 1"
+        #json = re.sub(r"^{", r"", json)
+        #print "compound 2"
+        #json = re.sub(r"}$", r"", json)
+        asdict = {}
+        for pair in json[1:-1].split(","):
+            pos = pair.find(":")
+            key = pair[:pos]
+            value = pair[pos+1:]
+            asdict[str(key)] = parseLazyJSON(value)
+        return asdict
+    elif  re.match(r"^(?:\d|-\d)[\d.]*[LlDdFfBbIiSs]?$", json):
+        print "number 1"
+        print json, type(json)
+        json = re.sub(r"[^\d.]", "", json)
+        print json, type(json)
+        if "." in json:
+            return float(json)
+        else:
+            return long(json)
+    elif printret("string test") and re.match(r"^\"[\s\S]*\"$", json):
+        return str(json)[1:-1]
+    elif printret("list test") and re.match(r"^\[[\s\S]*\]$", json):
+        print "list 1"
+        json = re.sub(r"[[,]\d+:", "", json)
+        yell("TEST")
+        #print "list 2"
+        #json = re.sub(r"^\[", "", json)
+        #print "list 3"
+        #json = re.sub(r"]$", "", json)
+        aslist = []
+        for value in json[1:-1].split(","):
+            aslist.append(parseLazyJSON(value))
+        return aslist
+    print json
     
+def printret(string):
+    print string
+    return True
 
 def test(x, y, z, entity, nbt):
     import json
+    import copy
+    print "thing happened"
     NBTTagCompound = _importNms("NBTTagCompound")
     MojangsonParser = _importNms("MojangsonParser")
     MojangsonParseException = _importNms("MojangsonParseException")
-    print NBTTagCompound.__dict__
+    #$print NBTTagCompound.__dict__
     entity = mc(player.getWorld().spawnEntity, loc(x, y, z), entity).getHandle()
     tag = entity.getNBTTag()
     if tag == None:
         tag = NBTTagCompound()
     entity.c(tag)
-    print strictifyJSON(tag.toString())
-    startdict = json.loads(strictifyJSON(tag.toString()))
-    try:
+    print parseLazyJSON(tag.toString())
+    startdict = parseLazyJSON(tag.toString())
+    print startdict
+    '''try:
         startdict.update(nbt)
-        tag = MojangsonParser.parse(toMojangson(startdict))
-    except MojangsonParseException:
+        print startdict, "startdict"
+        mojson = toMojangson(startdict)
+        print startdict
+        print mojson
+        print type(u'')
+        tag = MojangsonParser.parse(mojson)
+    except MojangsonParseException, e:
+        e.printStackTrace()
+        print "thank mr skeltal"
         thank = "mr skeltal" #doot doot (Python complains if there isn't code here.)
-    entity.f(tag)
+    mc(entity.f, tag)'''
     
     
     

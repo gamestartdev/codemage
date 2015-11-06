@@ -52,9 +52,6 @@ def yell(message):
     print "Yelling: " + message
     mc(player.chat, message)
 
-def _command(cmd):
-    mc(player.getServer().dispatchCommand, player.getServer().getConsoleSender(), cmd)
-
 def isNumber(var):
     try:
         dummy = var - 1
@@ -96,12 +93,6 @@ def toMojangson(data, isSelfcalled=False):
     if isinstance(data, basestring) or isinstance(data, unicode):
         nbt = nbt + '"' + data + '"'
     return nbt
-
-def buildCommand(cmd, args):
-    ret = cmd
-    for arg in args:
-        ret = ret + " " + str(arg)
-    return ret
 
 def spawnentity(x, y, z, entity, nbt={}):
     NBTTagCompound = _importNms("NBTTagCompound")

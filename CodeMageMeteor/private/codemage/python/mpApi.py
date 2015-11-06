@@ -59,6 +59,17 @@ def isNumber(var):
         return False
     return True
 
+def lightning(x, y, z):
+    mc(player.getWorld().strikeLightning, loc(x, y, z))
+
+def getplayernames():
+    from org.bukkit import Bukkit
+    players = Bukkit.getOnlinePlayers()
+    playernames = []
+    for player in players:
+        playernames.append(str(player.getDisplayName()))
+    return playernames
+
 def getblock(x, y, z):
     mat = player.getWorld().getBlockAt(loc(x, y, z)).getType()
     mst = mat.toString()

@@ -13,7 +13,17 @@ def _importCraft(package, classname):
     import importlib
     m = getattr(importlib.import_module(_craftPath + package), classname)
     return m
-    
+
+def cube(x, y, z, size, block):
+    from math import floor
+    x = int(x)
+    y = int(y)
+    z = int(z)
+    for x2 in range(x, x + size):
+        for y2 in range(y, y + size):
+            for z2 in range(z, z + size):
+                setblock(x2, y2, z2, block)
+
 def loc(x,y,z):
     from org.bukkit import Location
     return Location(player.getWorld(), x, y, z)

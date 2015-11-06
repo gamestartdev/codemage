@@ -10,11 +10,10 @@ import java.util.concurrent.Future;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.gamestartschool.codemage.ddp.ISpell;
 import org.python.util.InteractiveInterpreter;
-
-import com.avaje.ebeaninternal.server.deploy.BeanDescriptor.EntityType;
 
 public class CodeRunner implements Runnable {
 	private static boolean exhaustQueueEachTick = true;
@@ -53,7 +52,7 @@ public class CodeRunner implements Runnable {
 				pi.set("player", player);
 				pi.set("pythonMethodQueue", pythonMethodQueue);
 
-				for (org.bukkit.entity.EntityType e : org.bukkit.entity.EntityType.values()) {
+				for (EntityType e : EntityType.values()) {
 					pi.set(e.toString(), e);
 				}
 				

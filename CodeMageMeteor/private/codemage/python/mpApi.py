@@ -2,10 +2,16 @@ from org.bukkit import Bukkit
 _version = Bukkit.getServer().getClass().getPackage().getName()
 _version = _version.split(".")[3]
 _nmsPath = "net.minecraft.server." + _version
+_craftPath = "org.bukkit.craftbukkit." + _version + "."
 
 def _importNms(classname):
     import importlib
     m = getattr(importlib.import_module(_nmsPath), classname)
+    return m
+    
+def _importCraft(package, classname):
+    import importlib
+    m = getattr(importlib.import_module(_craftPath + package), classname)
     return m
     
 def loc(x,y,z):
@@ -111,7 +117,7 @@ def spawnentity(x, y, z, entity, nbt={}):
     entityMap = mapField.get(tag)
     suppliedTag = MojangsonParser.parse(toMojangson(nbt))
     suppliedMap = mapField.get(suppliedTag)
-    entityMap.putAll(suppliedMap)
+    entityMap.putAll(suppliedMap)  #Merges the tag maps.
     mapField.set(tag, entityMap)
     mc(entity.f, tag)
 
@@ -120,10 +126,11 @@ def spawnparticle(x, y, z, particle, howMany, speed=0, xd=0.5, yd=0.5,zd=0.5):
     howMany,16)
 
 def spawnitem(x, y, z, item=DIRT, count=1, damage=0, data={}):
-    from org.bukkit.inventory import ItemStack
+    CraftItemStack = _importCraft("inventory", "CraftItemStack")
+    ItemStack = _importNms("ItemStack")
+    MojangsonParser = _importNms("MojangsonParser")
     dictdata = dict()
-    dictdata["Item"] = {"Count":count,"Damage":damage,"id":item.toString().lower()}
-    dictdata["Item"]["tag"] = data
-    strdata = toNbt(dictdata)
-    cmd = buildCommand("summon Item", [str(x), str(y), str(z), strdata])
-    _command(cmd)
+    dictdata = {"Count":count,"Damage":damage,"id":item.toString().lower(),"tag":data}
+    tag = MojangsonParser.parse(toMojangson(dictdata))
+    itemStack = ItemStack.createStack(tag)
+    mc(player.getWorld().dropItem, loc(x,y,z), CraftItemStack.asCraftMirror(itemStack))

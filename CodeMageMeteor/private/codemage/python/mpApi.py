@@ -67,6 +67,11 @@ def getblock(x, y, z):
     else:
         return AIR
 
+def propel(x, y, z):
+    from org.bukkit.util import Vector
+    vec = Vector(x, y, z)
+    mc(player.setVelocity, vec)
+    
 def playsound(x, y, z, sound,pitch=1,volume=1):
     mc(player.getWorld().playSound,loc(x,y,z),sound,1,1)
 

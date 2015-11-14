@@ -3,6 +3,12 @@ _version = Bukkit.getServer().getClass().getPackage().getName()
 _version = _version.split(".")[3]
 _nmsPath = "net.minecraft.server." + _version
 _craftPath = "org.bukkit.craftbukkit." + _version + "."
+Bukkit = None
+
+def killall():
+    from org.gamestartschool.codemage.python import KillallUtils
+    KillallUtils.killall(player.getWorld())
+    #player.getWorld.getEntities
 
 def _importNms(classname):
     import importlib
@@ -30,13 +36,13 @@ def teleport(x,y,z):
     return mc(player.teleport, loc(x,y,z))
 
 def myX():
-    return player.getLocation().getX()
+    return int(player.getLocation().getX())
 
 def myY():
-    return player.getLocation().getY()
+    return int(player.getLocation().getY())
 
 def myZ():
-    return player.getLocation().getZ()
+    return int(player.getLocation().getZ())
 
 def lookVector():
     return player.getLocation().getDirection().normalize()

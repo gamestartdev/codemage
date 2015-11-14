@@ -30,10 +30,10 @@ def loc(x,y,z):
     return Location(player.getWorld(), x, y, z)
 
 def setblock(x,y,z, mat):
-    return mc(loc(x,y,z).getBlock().setType, mat)
+    mc_fast(loc(x,y,z).getBlock().setType, mat)
 
 def teleport(x,y,z):
-    return mc(player.teleport, loc(x,y,z))
+    mc_fast(player.teleport, loc(x,y,z))
 
 def myX():
     return int(player.getLocation().getX())
@@ -57,11 +57,11 @@ def lookZ():
     return lookVector().getZ()
 
 def explosion(x, y, z, power=5):
-    mc(player.getWorld().createExplosion, x, y, z, power, False, True)
+    mc_fast(player.getWorld().createExplosion, x, y, z, power, False, True)
 
 def yell(message):
     print "Yelling: " + message
-    mc(player.chat, message)
+    mc_fast(player.chat, message)
 
 def isNumber(var):
     try:
@@ -71,7 +71,7 @@ def isNumber(var):
     return True
 
 def lightning(x, y, z):
-    mc(player.getWorld().strikeLightning, loc(x, y, z))
+    mc_fast(player.getWorld().strikeLightning, loc(x, y, z))
 
 def getplayernames():
     from org.bukkit import Bukkit
@@ -92,10 +92,10 @@ def getblock(x, y, z):
 def propel(x, y, z):
     from org.bukkit.util import Vector
     vec = Vector(x, y, z)
-    mc(player.setVelocity, vec)
+    mc_fast(player.setVelocity, vec)
     
 def playsound(x, y, z, sound,pitch=1,volume=1):
-    mc(player.getWorld().playSound,loc(x,y,z),sound,1,1)
+    mc_fast(player.getWorld().playSound,loc(x,y,z),sound,1,1)
 
 def toMojangson(data, isSelfcalled=False):
     nbt = ""
@@ -137,10 +137,10 @@ def spawnentity(x, y, z, entity, nbt={}):
     suppliedMap = mapField.get(suppliedTag)
     entityMap.putAll(suppliedMap)  #Merges the tag maps.
     mapField.set(tag, entityMap)
-    mc(entity.f, tag)
+    mc_fast(entity.f, tag)
 
 def spawnparticle(x, y, z, particle, howMany, speed=0, xd=0.5, yd=0.5,zd=0.5):
-    mc(player.getWorld().spigot().playEffect,loc(x,y,z),particle,0,0,xd,yd,zd,speed,
+    mc_fast(player.getWorld().spigot().playEffect,loc(x,y,z),particle,0,0,xd,yd,zd,speed,
     howMany,16)
 
 def spawnitem(x, y, z, item=DIRT, count=1, damage=0, data={}):
@@ -151,7 +151,7 @@ def spawnitem(x, y, z, item=DIRT, count=1, damage=0, data={}):
     dictdata = {"Count":count,"Damage":damage,"id":item.toString().lower(),"tag":data}
     tag = MojangsonParser.parse(toMojangson(dictdata))
     itemStack = ItemStack.createStack(tag)
-    mc(player.getWorld().dropItem, loc(x,y,z), CraftItemStack.asCraftMirror(itemStack))
+    mc_fast(player.getWorld().dropItem, loc(x,y,z), CraftItemStack.asCraftMirror(itemStack))
 
 __builtins__ = None
 eval = None

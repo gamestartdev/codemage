@@ -5,11 +5,6 @@ _nmsPath = "net.minecraft.server." + _version
 _craftPath = "org.bukkit.craftbukkit." + _version + "."
 Bukkit = None
 
-def killall():
-    from org.gamestartschool.codemage.python import KillallUtils
-    KillallUtils.killall(player.getWorld())
-    #player.getWorld.getEntities
-
 def _importNms(classname):
     import importlib
     m = getattr(importlib.import_module(_nmsPath), classname)
@@ -25,6 +20,11 @@ def cube(x, y, z, size, block):
         for sety in range(y, y + size):
             for setz in range(z, z + size):
                 setblock(setx, sety, setz, block)
+
+def killall():
+    for entity in player.getWorld().getEntities():
+        if type(entity) != type(player):
+            mc_fast(entity.remove)
 
 def loc(x,y,z):
     from org.bukkit import Location

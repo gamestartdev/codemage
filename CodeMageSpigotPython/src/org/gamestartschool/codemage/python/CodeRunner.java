@@ -43,7 +43,10 @@ public class CodeRunner implements Runnable {
 	private final ExecutorService interpreterPool = Executors.newFixedThreadPool(25);
 
 	public void executeCode(final String code, final Player player, final List<ISpell> gameWrappers) {
-		
+		String nonFinalCode = code.replaceAll("import ", "fjhgjkdhldjfnkgfxlnvlizjfdrnboezaiudlouysgrhn ");
+		nonFinalCode = nonFinalCode.replaceAll("_importNms", "vhsjkdfvgkfxjgvhjfx");
+		nonFinalCode = nonFinalCode.replaceAll("_importCraft", "vkjncjfnjzdnbhxjkvnkjhxbvj");
+		final String importsRemoved = code.replaceAll("__import__", "raise NameError('You do not have permission to do that!')#");
 		Future<InteractiveInterpreter> doNotBlockOnThisResultPlease = interpreterPool.submit(new Callable<InteractiveInterpreter>() {
 			
 			@Override
@@ -81,7 +84,7 @@ public class CodeRunner implements Runnable {
 				}
 
 				try {
-					pi.exec(wrapperCode + code);
+					pi.exec(wrapperCode + importsRemoved);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

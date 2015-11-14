@@ -146,3 +146,8 @@ def spawnitem(x, y, z, item=DIRT, count=1, damage=0, data={}):
     tag = MojangsonParser.parse(toMojangson(dictdata))
     itemStack = ItemStack.createStack(tag)
     mc(player.getWorld().dropItem, loc(x,y,z), CraftItemStack.asCraftMirror(itemStack))
+
+__builtins__ = None
+eval = None
+dir = None
+import time

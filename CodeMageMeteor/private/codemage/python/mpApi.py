@@ -21,9 +21,10 @@ def _importCraft(package, classname):
     return m
 
 def cube(x, y, z, size, block):
-    from org.gamestartschool.codemage.python import CubeUtils
-    world = player.getWorld()
-    mc(CubeUtils.setRect, int(x), int(y),int(z), size, size, size, block, world)
+    for setx in range(x, x + size):
+        for sety in range(y, y + size):
+            for setz in range(z, z + size):
+                setblock(setx, sety, setz, block)
 
 def loc(x,y,z):
     from org.bukkit import Location

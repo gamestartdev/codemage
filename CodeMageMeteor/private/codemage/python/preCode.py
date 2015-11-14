@@ -9,6 +9,13 @@ def mc(method, *args):
         time.sleep(.01)
     return methodCall.get()
 
+def mc_fast(method, *args):
+    from org.gamestartschool.codemage.python import PythonMethodCall
+    import time
+    methodCall = PythonMethodCall(method, args)
+    #This variable injected from Java
+    pythonMethodQueue.offer(methodCall)
+
 ECHO = True
 def trace_function(frame, event, arg):
     method_name = frame.f_code.co_name

@@ -86,8 +86,6 @@ public class CodeRunner implements Runnable {
 				for (ISpell spell : gameWrappers) {
 					wrapperCode += spell.getCode() + "\n";
 				}
-				player.chat(wrapperCode + sanitizedCode);
-				System.out.println(wrapperCode + sanitizedCode);
 				
 				try {
 					pi.exec(wrapperCode + sanitizedCode);

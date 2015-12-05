@@ -43,10 +43,14 @@ public class CodeRunner implements Runnable {
 	private final ExecutorService interpreterPool = Executors.newFixedThreadPool(25);
 
 	public void executeCode(final String code, final Player player, final List<ISpell> gameWrappers) {
-		String nonFinalCode = code.replaceAll("import ", "fjhgjkdhldjfnkgfxlnvlizjfdrnboezaiudlouysgrhn ");
-		nonFinalCode = nonFinalCode.replaceAll("_importNms", "vhsjkdfvgkfxjgvhjfx");
-		nonFinalCode = nonFinalCode.replaceAll("_importCraft", "vkjncjfnjzdnbhxjkvnkjhxbvj");
-		final String importsRemoved = code.replaceAll("__import__", "raise NameError('You do not have permission to do that!')#");
+		String nonFinalCode = code.replaceAll("import ", "iMpOrT ");
+		nonFinalCode = nonFinalCode.replaceAll("_importNms", "_importnms");
+		nonFinalCode = nonFinalCode.replaceAll("_importCraft", "_importcraft");
+		nonFinalCode = nonFinalCode.replaceAll("startTimestamp", "starttimestamp");
+		nonFinalCode = nonFinalCode.replaceAll("\n", "\n	");
+		nonFinalCode = nonFinalCode.replaceAll("studentCode", "studentcode");
+		nonFinalCode = "def studentCode():\n	" + nonFinalCode + "\nstudentCode()";
+		final String sanitizedCode = nonFinalCode.replaceAll("__import__", "raise NameError('You do not have permission to do that!')#");
 		Future<InteractiveInterpreter> doNotBlockOnThisResultPlease = interpreterPool.submit(new Callable<InteractiveInterpreter>() {
 			
 			@Override
@@ -82,9 +86,11 @@ public class CodeRunner implements Runnable {
 				for (ISpell spell : gameWrappers) {
 					wrapperCode += spell.getCode() + "\n";
 				}
-
+				player.chat(wrapperCode + sanitizedCode);
+				System.out.println(wrapperCode + sanitizedCode);
+				
 				try {
-					pi.exec(wrapperCode + importsRemoved);
+					pi.exec(wrapperCode + sanitizedCode);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

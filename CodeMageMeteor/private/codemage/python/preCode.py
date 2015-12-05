@@ -1,3 +1,6 @@
+import time
+startTimestamp = int(time.time())
+
 def mc(method, *args):
     from org.gamestartschool.codemage.python import PythonMethodCall
     import time
@@ -19,6 +22,8 @@ def mc_fast(method, *args):
 ECHO = True
 def trace_function(frame, event, arg):
     method_name = frame.f_code.co_name
+    if int(time.time()) - startTimestamp >= 5:
+        raise Exception("Programs cannot take more than 5 seconds!")
     if ECHO and event == 'call' and method_name != 'mc':
         frame = frame.f_back or frame
         print "LINE: %i: %s" % (frame.f_lineno, method_name)

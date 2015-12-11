@@ -28,5 +28,7 @@ def trace_function(frame, event, arg):
         frame = frame.f_back or frame
         print "LINE: %i: %s" % (frame.f_lineno, method_name)
     return trace_function
-import sys
-sys.settrace(trace_function)
+def settracefunc():
+    import sys
+    sys.settrace(trace_function)
+settracefunc()

@@ -5,6 +5,8 @@ _nmsPath = "net.minecraft.server." + _version
 _craftPath = "org.bukkit.craftbukkit." + _version + "."
 Bukkit = None
 
+import math
+
 def _importNms(classname):
     import importlib
     m = getattr(importlib.import_module(_nmsPath), classname)
@@ -37,13 +39,13 @@ def teleport(x,y,z):
     mc_fast(player.teleport, loc(x,y,z))
 
 def myX():
-    return int(player.getLocation().getX())
+    return int(math.floor(player.getLocation().getX()))
 
 def myY():
-    return int(player.getLocation().getY())
+    return int(math.floor(player.getLocation().getY()))
 
 def myZ():
-    return int(player.getLocation().getZ())
+    return int(math.floor(player.getLocation().getZ()))
 
 def lookVector():
     return player.getLocation().getDirection().normalize()

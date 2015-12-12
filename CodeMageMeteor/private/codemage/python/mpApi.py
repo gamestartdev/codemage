@@ -191,6 +191,8 @@ globals = None
 locals = None
 eval = None
 dir = None
+compile = None
+
 import time
 if not "newsleep" in str(time.sleep):
     def copytime():

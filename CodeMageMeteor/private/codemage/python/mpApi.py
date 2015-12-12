@@ -7,6 +7,36 @@ Bukkit = None
 
 import math
 
+
+'''Python implementation of a player'''
+class PyPlayer(object):
+    
+    @property
+    def x(self):
+        return myX()
+    
+    @property
+    def y(self):
+        return myY()
+    
+    @property
+    def z(self):
+        return myZ()
+    
+    @property
+    def lookx(self):
+        return lookX()
+    
+    @property
+    def looky(self):
+        return lookY()
+    
+    @property
+    def lookz(self):
+        return lookZ()
+
+player = PyPlayer()
+
 def _importNms(classname):
     import importlib
     m = getattr(importlib.import_module(_nmsPath), classname)
@@ -76,7 +106,7 @@ def isNumber(var):
 def lightning(x, y, z):
     mc_fast(jplayer.getWorld().strikeLightning, loc(x, y, z))
 
-def getjplayernames():
+def getplayernames():
     from org.bukkit import Bukkit
     jplayers = Bukkit.getOnlinejplayers()
     jplayernames = []
@@ -157,6 +187,8 @@ def spawnitem(x, y, z, item=DIRT, count=1, damage=0, data={}):
     mc_fast(jplayer.getWorld().dropItem, loc(x,y,z), CraftItemStack.asCraftMirror(itemStack))
 
 __builtins__ = None
+globals = None
+locals = None
 eval = None
 dir = None
 import time

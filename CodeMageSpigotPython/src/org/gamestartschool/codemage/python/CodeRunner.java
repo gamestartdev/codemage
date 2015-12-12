@@ -47,16 +47,17 @@ public class CodeRunner implements Runnable {
 		nonFinalCode = nonFinalCode.replaceAll("_importNms", "_importnms");
 		nonFinalCode = nonFinalCode.replaceAll("_importCraft", "_importcraft");
 		nonFinalCode = nonFinalCode.replaceAll("startTimestamp", "starttimestamp");
+		nonFinalCode = nonFinalCode.replaceAll("jplayer", "Jplayer");
 		nonFinalCode = nonFinalCode.replaceAll("\n", "\n	");
 		nonFinalCode = nonFinalCode.replaceAll("studentCode", "studentcode");
 		nonFinalCode = "def studentCode():\n	" + nonFinalCode + "\nstudentCode()";
-		final String sanitizedCode = nonFinalCode.replaceAll("__import__", "raise NameError('You do not have permission to do that!')#");
+		final String sanitizedCode = nonFinalCode.replaceAll("__import__", "__iMpOrT__");
 		Future<InteractiveInterpreter> doNotBlockOnThisResultPlease = interpreterPool.submit(new Callable<InteractiveInterpreter>() {
 			
 			@Override
 			public InteractiveInterpreter call() {
 				InteractiveInterpreter pi = new InteractiveInterpreter();
-				pi.set("player", player);
+				pi.set("jplayer", player);
 				pi.set("pythonMethodQueue", pythonMethodQueue);
 
 				for (EntityType e : EntityType.values()) {

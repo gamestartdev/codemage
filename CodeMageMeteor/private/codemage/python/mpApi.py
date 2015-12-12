@@ -24,31 +24,31 @@ def cube(x, y, z, size, block):
                 setblock(setx, sety, setz, block)
 
 def killall():
-    for entity in player.getWorld().getEntities():
-        if type(entity) != type(player):
+    for entity in jplayer.getWorld().getEntities():
+        if type(entity) != type(jplayer):
             mc_fast(entity.remove)
 
 def loc(x,y,z):
     from org.bukkit import Location
-    return Location(player.getWorld(), x, y, z)
+    return Location(jplayer.getWorld(), x, y, z)
 
 def setblock(x,y,z, mat):
     mc_fast(loc(x,y,z).getBlock().setType, mat)
 
 def teleport(x,y,z):
-    mc_fast(player.teleport, loc(x,y,z))
+    mc_fast(jplayer.teleport, loc(x,y,z))
 
 def myX():
-    return int(math.floor(player.getLocation().getX()))
+    return int(math.floor(jplayer.getLocation().getX()))
 
 def myY():
-    return int(math.floor(player.getLocation().getY()))
+    return int(math.floor(jplayer.getLocation().getY()))
 
 def myZ():
-    return int(math.floor(player.getLocation().getZ()))
+    return int(math.floor(jplayer.getLocation().getZ()))
 
 def lookVector():
-    return player.getLocation().getDirection().normalize()
+    return jplayer.getLocation().getDirection().normalize()
 
 def lookX():
     return lookVector().getX()
@@ -60,11 +60,11 @@ def lookZ():
     return lookVector().getZ()
 
 def explosion(x, y, z, power=5):
-    mc_fast(player.getWorld().createExplosion, x, y, z, power, False, True)
+    mc_fast(jplayer.getWorld().createExplosion, x, y, z, power, False, True)
 
 def yell(message):
     print "Yelling: " + message
-    mc_fast(player.chat, message)
+    mc_fast(jplayer.chat, message)
 
 def isNumber(var):
     try:
@@ -74,18 +74,18 @@ def isNumber(var):
     return True
 
 def lightning(x, y, z):
-    mc_fast(player.getWorld().strikeLightning, loc(x, y, z))
+    mc_fast(jplayer.getWorld().strikeLightning, loc(x, y, z))
 
-def getplayernames():
+def getjplayernames():
     from org.bukkit import Bukkit
-    players = Bukkit.getOnlinePlayers()
-    playernames = []
-    for player in players:
-        playernames.append(str(player.getDisplayName()))
-    return playernames
+    jplayers = Bukkit.getOnlinejplayers()
+    jplayernames = []
+    for jplayer in jplayers:
+        jplayernames.append(str(jplayer.getDisplayName()))
+    return jplayernames
 
 def getblock(x, y, z):
-    mat = player.getWorld().getBlockAt(loc(x, y, z)).getType()
+    mat = jplayer.getWorld().getBlockAt(loc(x, y, z)).getType()
     mst = mat.toString()
     if mat != None:
         return LAVA if "LAVA" in mst else WATER if "WATER" in mst else mat
@@ -95,10 +95,10 @@ def getblock(x, y, z):
 def propel(x, y, z):
     from org.bukkit.util import Vector
     vec = Vector(x, y, z)
-    mc_fast(player.setVelocity, vec)
+    mc_fast(jplayer.setVelocity, vec)
     
 def playsound(x, y, z, sound,pitch=1,volume=1):
-    mc_fast(player.getWorld().playSound,loc(x,y,z),sound,1,1)
+    mc_fast(jplayer.getWorld().playSound,loc(x,y,z),sound,1,1)
 
 def toMojangson(data, isSelfcalled=False):
     nbt = ""
@@ -127,7 +127,7 @@ def toMojangson(data, isSelfcalled=False):
 def spawnentity(x, y, z, entity, nbt={}):
     NBTTagCompound = _importNms("NBTTagCompound")
     MojangsonParser = _importNms("MojangsonParser")
-    entity = mc(player.getWorld().spawnEntity, loc(x, y, z), entity).getHandle()
+    entity = mc(jplayer.getWorld().spawnEntity, loc(x, y, z), entity).getHandle()
     tag = entity.getNBTTag()
     if tag == None:
         tag = NBTTagCompound()
@@ -143,7 +143,7 @@ def spawnentity(x, y, z, entity, nbt={}):
     mc_fast(entity.f, tag)
 
 def spawnparticle(x, y, z, particle, howMany, speed=0, xd=0.5, yd=0.5,zd=0.5):
-    mc_fast(player.getWorld().spigot().playEffect,loc(x,y,z),particle,0,0,xd,yd,zd,speed,
+    mc_fast(jplayer.getWorld().spigot().playEffect,loc(x,y,z),particle,0,0,xd,yd,zd,speed,
     howMany,16)
 
 def spawnitem(x, y, z, item=DIRT, count=1, damage=0, data={}):
@@ -154,7 +154,7 @@ def spawnitem(x, y, z, item=DIRT, count=1, damage=0, data={}):
     dictdata = {"Count":count,"Damage":damage,"id":item.toString().lower(),"tag":data}
     tag = MojangsonParser.parse(toMojangson(dictdata))
     itemStack = ItemStack.createStack(tag)
-    mc_fast(player.getWorld().dropItem, loc(x,y,z), CraftItemStack.asCraftMirror(itemStack))
+    mc_fast(jplayer.getWorld().dropItem, loc(x,y,z), CraftItemStack.asCraftMirror(itemStack))
 
 __builtins__ = None
 eval = None

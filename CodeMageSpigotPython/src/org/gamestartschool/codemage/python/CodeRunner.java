@@ -50,6 +50,11 @@ public class CodeRunner implements Runnable {
 		nonFinalCode = nonFinalCode.replaceAll("jplayer", "Jplayer");
 		nonFinalCode = nonFinalCode.replaceAll("\n", "\n	");
 		nonFinalCode = nonFinalCode.replaceAll("studentCode", "studentcode");
+		nonFinalCode = nonFinalCode.replaceAll("getattr", "gEtAtTr");
+		nonFinalCode = nonFinalCode.replaceAll("setattr", "sEtAtTr");
+		nonFinalCode = nonFinalCode.replaceAll("mc", "mC");
+		nonFinalCode = nonFinalCode.replaceAll("mc_fast", "mC_fAsT");
+		nonFinalCode = nonFinalCode.replaceAll("studentCode", "StudentCode");
 		nonFinalCode = "def studentCode():\n	" + nonFinalCode + "\nstudentCode()";
 		final String sanitizedCode = nonFinalCode.replaceAll("__import__", "__iMpOrT__");
 		Future<InteractiveInterpreter> doNotBlockOnThisResultPlease = interpreterPool.submit(new Callable<InteractiveInterpreter>() {

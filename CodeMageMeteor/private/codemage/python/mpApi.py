@@ -193,6 +193,10 @@ eval = None
 dir = None
 compile = None
 vars = None
+raw_input = None
+input = None
+open = None
+file = None
 
 import time
 if not "newsleep" in str(time.sleep):

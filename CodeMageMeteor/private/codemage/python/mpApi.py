@@ -192,6 +192,7 @@ locals = None
 eval = None
 dir = None
 compile = None
+vars = None
 
 import time
 if not "newsleep" in str(time.sleep):

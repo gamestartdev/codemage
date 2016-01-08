@@ -34,7 +34,17 @@ class PyPlayer(object):
     @property
     def lookz(self):
         return lookZ()
-
+        
+class FakeTime(object):
+    
+    def sleep(self, length):
+        if length <= 5:
+            from time import sleep as realsleep
+            realsleep(length)
+        else:
+            raise Exception("You cannot time.sleep for more than 5 seconds!")
+            
+time = FakeTime()
 player = PyPlayer()
 
 def _importNms(classname):
@@ -197,19 +207,3 @@ raw_input = None
 input = None
 open = None
 file = None
-
-import time
-if not "newsleep" in str(time.sleep):
-    def copytime():
-        import copy
-        return copy.deepcopy(time).sleep #regular copy doesn't work. don't ask why.
-    realsleep = copytime()
-    print realsleep, time.sleep
-    def newsleep(self, time):
-        if time <= 5:
-            realsleep(time)
-        else:
-            raise Exception("You cannot time.sleep for more than 5 seconds!")
-    #very hacky stuff to make python not complain
-    bound_newsleep = newsleep.__get__(time, type(time))
-    time.sleep = bound_newsleep

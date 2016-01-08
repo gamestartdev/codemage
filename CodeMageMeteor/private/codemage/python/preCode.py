@@ -1,5 +1,3 @@
-import time
-startTimestamp = int(time.time())
 
 def mc(method, *args):
     from org.gamestartschool.codemage.python import PythonMethodCall
@@ -18,9 +16,10 @@ def mc_fast(method, *args):
     methodCall = PythonMethodCall(method, args)
     #This variable injected from Java
     pythonMethodQueue.offer(methodCall)
-
+startTimestamp = 0
 ECHO = True
 def trace_function(frame, event, arg):
+    import time
     method_name = frame.f_code.co_name
     if int(time.time()) - startTimestamp >= 5:
         raise Exception("Programs cannot take more than 5 seconds!")
@@ -29,6 +28,9 @@ def trace_function(frame, event, arg):
         print "LINE: %i: %s" % (frame.f_lineno, method_name)
     return trace_function
 def settracefunc():
+    global startTimestamp
     import sys
+    import time
+    startTimestamp = int(time.time())
     sys.settrace(trace_function)
 settracefunc()

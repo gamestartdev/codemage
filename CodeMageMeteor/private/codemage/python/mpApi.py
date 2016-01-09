@@ -46,9 +46,6 @@ class FakeTime(object):
             
 time = FakeTime()
 player = PyPlayer()
-from copy import deepcopy
-math = deepcopy(math)
-print math
 
 def _importNms(classname):
     import importlib

@@ -7,6 +7,16 @@ Bukkit = None
 
 import math
 
+class LessPickyMath(math):
+    
+    def __getattribute__(self, attr):
+        if "getClass" not in attr and "__class__" not in attr:
+            return object.__getattribute__(self, attr)
+        else:
+            raise AttributeError("Non existant attribute")
+            
+    def __setattr__(self, attr, val):
+        raise AttributeError("Non existant attribute")
 
 '''Python implementation of a player'''
 class PyPlayer(object):
@@ -203,6 +213,9 @@ replaceentity = True
 replacematerial = True
 replacesound = True
 replaceeffect = True
+replacemath = True
+
+math = LessPickyMath()
 
 try:
     dummy = ZOMBIE.__class__
@@ -233,8 +246,6 @@ if replacesound:
     BAT_DEATH.__class__.__getattribute__ = denyattribute
 if replaceeffect:
     CLICK1.__class__.__getattribute__ = denyattribute
-
-math = math()
 
 __builtins__ = None
 globals = None

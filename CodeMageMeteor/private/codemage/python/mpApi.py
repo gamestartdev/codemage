@@ -46,6 +46,9 @@ class FakeTime(object):
             
 time = FakeTime()
 player = PyPlayer()
+from copy import deepcopy
+math = deepcopy(math)
+print math
 
 def _importNms(classname):
     import importlib
@@ -196,10 +199,9 @@ def spawnitem(x, y, z, item=DIRT, count=1, damage=0, data={}):
     itemStack = ItemStack.createStack(tag)
     mc_fast(jplayer.getWorld().dropItem, loc(x,y,z), CraftItemStack.asCraftMirror(itemStack))
 
-def denygetattribute(*args):
+def denyattribute(*args):
     raise AttributeError("Non existant attribute")
     
-
 replaceentity = True
 replacematerial = True
 replacesound = True
@@ -227,13 +229,15 @@ except Exception:
     replaceeffect = False
     
 if replaceentity:
-    ZOMBIE.__class__.__getattribute__ = denygetattribute
+    ZOMBIE.__class__.__getattribute__ = denyattribute
 if replacematerial:
-    SAND.__class__.__getattribute__ = denygetattribute
+    SAND.__class__.__getattribute__ = denyattribute
 if replacesound:
-    BAT_DEATH.__class__.__getattribute__ = denygetattribute
+    BAT_DEATH.__class__.__getattribute__ = denyattribute
 if replaceeffect:
-    CLICK1.__class__.__getattribute__ = denygetattribute
+    CLICK1.__class__.__getattribute__ = denyattribute
+
+math = math()
 
 __builtins__ = None
 globals = None

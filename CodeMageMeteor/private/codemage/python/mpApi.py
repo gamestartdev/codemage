@@ -196,6 +196,45 @@ def spawnitem(x, y, z, item=DIRT, count=1, damage=0, data={}):
     itemStack = ItemStack.createStack(tag)
     mc_fast(jplayer.getWorld().dropItem, loc(x,y,z), CraftItemStack.asCraftMirror(itemStack))
 
+def denygetattribute(*args):
+    raise AttributeError("Non existant attribute")
+    
+
+replaceentity = True
+replacematerial = True
+replacesound = True
+replaceeffect = True
+
+try:
+    dummy = ZOMBIE.__class__
+except Exception:
+    global replaceentity
+    replaceentity = False
+try:
+    dummy = SAND.__class__
+except Exception:
+    global replacematerial
+    replacematerial = False
+try:
+    dummy = BAT_DEATH.__class__
+except Exception:
+    global replacesound
+    replacesound = False
+try:
+    dummy = CLICK1.__class__
+except Exception:
+    global replaceeffect
+    replaceeffect = False
+    
+if replaceentity:
+    ZOMBIE.__class__.__getattribute__ = denygetattribute
+if replacematerial:
+    SAND.__class__.__getattribute__ = denygetattribute
+if replacesound:
+    BAT_DEATH.__class__.__getattribute__ = denygetattribute
+if replaceeffect:
+    CLICK1.__class__.__getattribute__ = denygetattribute
+
 __builtins__ = None
 globals = None
 locals = None

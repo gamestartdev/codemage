@@ -213,29 +213,24 @@ replaceentity = True
 replacematerial = True
 replacesound = True
 replaceeffect = True
-replacemath = True
 
 math = LessPickyMath()
 
 try:
     dummy = ZOMBIE.__class__
 except Exception:
-    global replaceentity
     replaceentity = False
 try:
     dummy = SAND.__class__
 except Exception:
-    global replacematerial
     replacematerial = False
 try:
     dummy = BAT_DEATH.__class__
 except Exception:
-    global replacesound
     replacesound = False
 try:
     dummy = CLICK1.__class__
 except Exception:
-    global replaceeffect
     replaceeffect = False
     
 if replaceentity:

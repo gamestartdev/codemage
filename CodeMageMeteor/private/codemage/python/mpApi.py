@@ -128,7 +128,7 @@ def lightning(x, y, z):
 
 def getplayernames():
     from org.bukkit import Bukkit
-    jplayers = Bukkit.getOnlinejplayers()
+    jplayers = Bukkit.getOnlinePlayers()
     jplayernames = []
     for jplayer in jplayers:
         jplayernames.append(str(jplayer.getDisplayName()))

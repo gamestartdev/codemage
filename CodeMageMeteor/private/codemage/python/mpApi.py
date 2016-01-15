@@ -200,15 +200,19 @@ def spawnitem(x, y, z, item=DIRT, count=1, damage=0, data={}):
     CraftItemStack = _importCraft("inventory", "CraftItemStack")
     ItemStack = _importNms("ItemStack")
     MojangsonParser = _importNms("MojangsonParser")
-    dictdata = dict()
-    dictdata = {"Count":count,"Damage":damage,"id":item.toString().lower(),"tag":data}
+    itemid = str(item).lower()
+    try:
+        itemid = spigot_names[itemid]
+    except Exception:
+        pass
+    dictdata = {"Count":count,"Damage":damage,"id":itemid,"tag":data}
     tag = MojangsonParser.parse(toMojangson(dictdata))
     itemStack = ItemStack.createStack(tag)
     mc_fast(jplayer.getWorld().dropItem, loc(x,y,z), CraftItemStack.asCraftMirror(itemStack))
 
 def denyattribute(*args):
     raise AttributeError("Non existant attribute")
-    
+
 replaceentity = True
 replacematerial = True
 replacesound = True
@@ -241,6 +245,57 @@ if replacesound:
     BAT_DEATH.__class__.__getattribute__ = denyattribute
 if replaceeffect:
     CLICK1.__class__.__getattribute__ = denyattribute
+
+#Spigot doesn't always call things their item id in the enums
+spigot_names = {
+    "ender_portal_frame":"end_portal_frame",
+    "ender_portal":"end_portal",
+    "iron_barding":"iron_horse_armor", #Really, Spigot?
+    "gold_barding":"gold_horse_armor", #It's not called barding anywhere in game.
+    "diamond_barding":"diamond_horse_armor",
+    "explosive_minecart":"tnt_minecart",
+    "hard_clay":"hardened_clay",
+    "ink_sack":"dye",
+    "wood_spade":"wood_shovel",
+    "stone_spade":"stone_shovel",
+    "iron_spade":"iron_shovel",
+    "gold_spade":"gold_shovel",
+    "diamond_spade":"diamond_shovel",
+    "iron_fence":"iron_bars",
+    "leash":"lead",
+    "long_grass":"tallgrass",
+    "monster_eggs":"spawn_egg",
+    "mycel":"mycelium", #Come ON spigot, it's only 3 letters
+    "rails":"rail",
+    "redstone_lamp_on":"redstone_lamp",
+    "redstone_lamp_off":"redstone_lamp",
+    "snow_ball":"snowball",
+    "storage_minecart":"chest_minecart",
+    "sulphur":"gunpowder",
+    "workbench":"crafting_table",
+    "diode":"repeater",
+    "diode_block_off":"repeater",
+    "diode_block_on":"repeater"
+}
+
+REDSTONE_REPEATER = DIODE_BLOCK_OFF
+MYCELIUM = MYCEL
+HARDENED_CLAY = HARD_CLAY
+WOOD_SHOVEL = WOOD_SPADE
+STONE_SHOVEL = STONE_SPADE
+IRON_SHOVEL = IRON_SPADE
+GOLD_SHOVEL = GOLD_SPADE
+DIAMOND_SHOVEL = DIAMOND_SPADE
+REDSTONE_LAMP = REDSTONE_LAMP_OFF
+TNT_MINECART = EXPLOSIVE_MINECART
+CRAFTING_TABLE = WORKBENCH
+IRON_BARS = IRON_FENCE
+IRON_HORSE_ARMOR = IRON_BARDING
+GOLD_HORSE_ARMOR = GOLD_BARDING
+DIAMOND_HORSE_ARMOR = DIAMOND_BARDING
+DYE = INK_SACK
+GUNPOWDER = SULPHUR
+CHEST_MINECART = STORAGE_MINECART
 
 __builtins__ = None
 globals = None

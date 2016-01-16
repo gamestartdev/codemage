@@ -162,7 +162,8 @@ def getblock(x, y, z):
 
 def potioneffect(effect, duration=10, amplifier=1):
     from org.bukkit.potion import PotionEffect
-    mc(jplayer.addPotionEffect, PotionEffect(effect, duration * 20, amplifier - 1))
+    mc_fast(jplayer.removePotionEffect, effect)
+    mc_fast(jplayer.addPotionEffect, PotionEffect(effect, duration * 20, amplifier - 1))
 
 def propel(x, y, z):
     from org.bukkit.util import Vector

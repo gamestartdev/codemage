@@ -21,6 +21,15 @@ class LessPickyMath(math):
 '''Python implementation of a player'''
 class PyPlayer(object):
     
+    def __getattribute__(self, attr):
+        if "getClass" not in attr and "__class__" not in attr:
+            return object.__getattribute__(self, attr)
+        else:
+            raise AttributeError("Non existant attribute")
+            
+    def __setattr__(self, attr, val):
+        raise AttributeError("Non existant attribute")
+    
     @property
     def x(self):
         return myX()
@@ -46,6 +55,15 @@ class PyPlayer(object):
         return lookZ()
         
 class FakeTime(object):
+    
+    def __getattribute__(self, attr):
+        if "getClass" not in attr and "__class__" not in attr:
+            return object.__getattribute__(self, attr)
+        else:
+            raise AttributeError("Non existant attribute")
+            
+    def __setattr__(self, attr, val):
+        raise AttributeError("Non existant attribute")
     
     def sleep(self, length):
         if length <= 5:
@@ -308,4 +326,7 @@ raw_input = None
 input = None
 open = None
 type = None
+FakeTime = None
+PyPlayer = None
+LessPickyMath = None
 file = None

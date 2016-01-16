@@ -1,5 +1,6 @@
 package org.gamestartschool.codemage.python;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -12,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffectType;
 import org.gamestartschool.codemage.ddp.ISpell;
 import org.python.util.InteractiveInterpreter;
 
@@ -66,7 +68,12 @@ public class CodeRunner implements Runnable {
 				InteractiveInterpreter pi = new InteractiveInterpreter();
 				pi.set("jplayer", player);
 				pi.set("pythonMethodQueue", pythonMethodQueue);
-
+				for (PotionEffectType p: PotionEffectType.values()) {
+					if(p != null) //Someone thought it would be a good idea to put a null at the start.
+					{
+						pi.set(p.getName(), p);
+					}
+				}
 				for (EntityType e : EntityType.values()) {
 					pi.set(e.toString(), e);
 				}

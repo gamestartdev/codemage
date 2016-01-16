@@ -56,7 +56,7 @@ public class CodeRunner implements Runnable {
 		nonFinalCode = nonFinalCode.replaceAll("setattr", "sEtAtTr");
 		nonFinalCode = nonFinalCode.replaceAll("mc", "mC");
 		nonFinalCode = nonFinalCode.replaceAll("mc_fast", "mC_fAsT");
-		nonFinalCode = nonFinalCode.replaceAll("studentCode", "StudentCode");
+		nonFinalCode = nonFinalCode.replaceAll("pythonMethodQueue", "pYtHoNmEtHoDqUeUe");
 		nonFinalCode = nonFinalCode.replaceAll("exec", "eXeC");
 		nonFinalCode = nonFinalCode.replaceAll("trace_function", "TrAcE_fUnCtIoN");
 		nonFinalCode = "def studentCode():\n	" + nonFinalCode + "\nstudentCode()";

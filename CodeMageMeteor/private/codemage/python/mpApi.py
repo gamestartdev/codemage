@@ -75,7 +75,7 @@ def cube(x, y, z, size, block):
 
 def killall():
     for entity in jplayer.getWorld().getEntities():
-        if type(entity) != type(jplayer):
+        if entity.__class__ != jplayer.__class__:
             mc_fast(entity.remove)
 
 def loc(x,y,z):
@@ -257,4 +257,5 @@ vars = None
 raw_input = None
 input = None
 open = None
+type = None
 file = None

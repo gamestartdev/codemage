@@ -72,6 +72,19 @@ class FakeTime(object):
         else:
             raise Exception("You cannot time.sleep for more than 5 seconds!")
             
+class PyEntity(object):
+    
+    def __init__(self, entitytype, javaentity):
+        self.javaentity = javaentity
+        self.entitytype = entitytype
+    
+    def getHealth(self):
+        return object.__getattribute__(self, "javaentity").getHealth()
+    
+    def setHealth(self, health):
+        mc_fast(object.__getattribute__(self, "javaentity").setHealth(), health)
+
+
 time = FakeTime()
 player = PyPlayer()
 
@@ -165,10 +178,12 @@ def potioneffect(effect, duration=10, amplifier=1):
     mc_fast(jplayer.removePotionEffect, effect)
     mc_fast(jplayer.addPotionEffect, PotionEffect(effect, duration * 20, amplifier - 1))
 
-def propel(x, y, z):
+def propel(x, y, z, target=jplayer):
     from org.bukkit.util import Vector
     vec = Vector(x, y, z)
-    mc_fast(jplayer.setVelocity, vec)
+    if target != jplayer:
+        target = object.__getattribute__(target, "javaentity")
+    mc_fast(target.setVelocity, vec)
     
 def playsound(x, y, z, sound,pitch=1,volume=1):
     mc_fast(jplayer.getWorld().playSound,loc(x,y,z),sound,1,1)
@@ -197,10 +212,11 @@ def toMojangson(data, isSelfcalled=False):
         nbt = nbt + '"' + data + '"'
     return nbt
 
-def spawnentity(x, y, z, entity, nbt={}):
+def spawnentity(x, y, z, entitytype, nbt={}):
     NBTTagCompound = _importNms("NBTTagCompound")
     MojangsonParser = _importNms("MojangsonParser")
-    entity = mc(jplayer.getWorld().spawnEntity, loc(x, y, z), entity).getHandle()
+    craftentity = mc(jplayer.getWorld().spawnEntity, loc(x, y, z), entitytype)
+    entity = craftentity.getHandle()
     tag = entity.getNBTTag()
     if tag == None:
         tag = NBTTagCompound()
@@ -214,6 +230,7 @@ def spawnentity(x, y, z, entity, nbt={}):
     entityMap.putAll(suppliedMap)  #Merges the tag maps.
     mapField.set(tag, entityMap)
     mc_fast(entity.f, tag)
+    return PyEntity(entitytype, craftentity) 
 
 def spawnparticle(x, y, z, particle, howMany, speed=0, xd=0.5, yd=0.5,zd=0.5):
     mc_fast(jplayer.getWorld().spigot().playEffect,loc(x,y,z),particle,0,0,xd,yd,zd,speed,

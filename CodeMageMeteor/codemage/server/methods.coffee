@@ -87,6 +87,7 @@ serverStatus = (codeMageServerIp, codeMageServerPort, status) ->
 
 updateMinecraftPlayerId = (minecraftPlayerId) ->
   check(minecraftPlayerId, String)
+  console.log "ID! " + minecraftPlayerId
   Meteor.users.update Meteor.userId(), {$set: {'minecraftPlayerId': minecraftPlayerId}}
 
 Meteor.methods

@@ -99,6 +99,9 @@ def _importCraft(package, classname):
     return m
 
 def cube(x, y, z, size, block):
+    x = int(math.floor(x))
+    y = int(math.floor(y))
+    z = int(math.floor(z))
     for setx in range(x, x + size):
         for sety in range(y, y + size):
             for setz in range(z, z + size):
@@ -114,19 +117,22 @@ def loc(x,y,z):
     return Location(jplayer.getWorld(), x, y, z)
 
 def setblock(x,y,z, mat):
+    x = int(math.floor(x))
+    y = int(math.floor(y))
+    z = int(math.floor(z))
     mc_fast(loc(x,y,z).getBlock().setType, mat)
 
 def teleport(x,y,z):
     mc_fast(jplayer.teleport, loc(x,y,z))
 
 def myX():
-    return int(math.floor(jplayer.getLocation().getX()))
+    return jplayer.getLocation().getX()
 
 def myY():
-    return int(math.floor(jplayer.getLocation().getY()))
+    return jplayer.getLocation().getY()
 
 def myZ():
-    return int(math.floor(jplayer.getLocation().getZ()))
+    return jplayer.getLocation().getZ()
 
 def lookVector():
     return jplayer.getLocation().getDirection().normalize()

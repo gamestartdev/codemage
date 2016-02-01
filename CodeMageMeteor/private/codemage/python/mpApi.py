@@ -212,6 +212,7 @@ def propel(x, y, z, target=player):
     from org.bukkit.util import Vector
     vec = Vector(x, y, z)
     target = object.__getattribute__(target, "javaversion")
+    mc_fast(target.teleport, target.getLocation().setDirection(vec))
     mc_fast(target.setVelocity, vec)
     
 def playsound(x, y, z, sound,pitch=1,volume=1):

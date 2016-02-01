@@ -18,41 +18,55 @@ class LessPickyMath(math):
     def __setattr__(self, attr, val):
         raise AttributeError("Non existant attribute")
 
-'''Python implementation of a player'''
-class PyPlayer(object):
+class PyEntityBase(object):
     
+    def __init__(self, javaversion):
+        object.__setattr__(self, "javaversion", javaversion)
+    
+    @property
+    def x(self):
+        return object.__getattribute__(self, "javaversion").getLocation().getX()
+    
+    @property
+    def y(self):
+        return object.__getattribute__(self, "javaversion").getLocation().getY()
+    
+    @property
+    def z(self):
+        return object.__getattribute__(self, "javaversion").getLocation().getZ()
+    
+    @property
+    def lookx(self):
+        return object.__getattribute__(self, "javaversion").getLocation().getDirection().normalize().getX()
+    
+    @property
+    def looky(self):
+        return object.__getattribute__(self, "javaversion").getLocation().getDirection().normalize().getY()
+    
+    @property
+    def lookz(self):
+        return object.__getattribute__(self, "javaversion").getLocation().getDirection().normalize().getZ()
+        
     def __getattribute__(self, attr):
-        if "getClass" not in attr and "__class__" not in attr:
+        if "getClass" not in attr and "__class__" not in attr and "javaversion" not in attr:
             return object.__getattribute__(self, attr)
         else:
             raise AttributeError("Non existant attribute")
             
     def __setattr__(self, attr, val):
         raise AttributeError("Non existant attribute")
-    
-    @property
-    def x(self):
-        return myX()
-    
-    @property
-    def y(self):
-        return myY()
-    
-    @property
-    def z(self):
-        return myZ()
-    
-    @property
-    def lookx(self):
-        return lookX()
-    
-    @property
-    def looky(self):
-        return lookY()
-    
-    @property
-    def lookz(self):
-        return lookZ()
+
+'''Python implementation of a player'''
+class PyPlayer(PyEntityBase):
+        
+    def __getattribute__(self, attr):
+        if "getClass" not in attr and "__class__" not in attr and "javaversion" not in attr:
+            return object.__getattribute__(self, attr)
+        else:
+            raise AttributeError("Non existant attribute")
+            
+    def __setattr__(self, attr, val):
+        raise AttributeError("Non existant attribute")
         
 class FakeTime(object):
     
@@ -72,21 +86,30 @@ class FakeTime(object):
         else:
             raise Exception("You cannot time.sleep for more than 5 seconds!")
             
-class PyEntity(object):
+class PyEntity(PyEntityBase):
     
-    def __init__(self, entitytype, javaentity):
-        self.javaentity = javaentity
-        self.entitytype = entitytype
+    def __getattribute__(self, attr):
+        if "getClass" not in attr and "__class__" not in attr and "javaversion" not in attr:
+            return object.__getattribute__(self, attr)
+        else:
+            raise AttributeError("Non existant attribute")
+            
+    def __setattr__(self, attr, val):
+        raise AttributeError("Non existant attribute")
+    
+    def __init__(self, entitytype, javaversion):
+        object.__setattr__(self, "javaversion", javaversion)
+        object.__setattr__(self, "entitytype", entitytype)
     
     def getHealth(self):
-        return object.__getattribute__(self, "javaentity").getHealth()
+        return object.__getattribute__(self, "javaversion").getHealth()
     
     def setHealth(self, health):
-        mc_fast(object.__getattribute__(self, "javaentity").setHealth(), health)
+        mc_fast(object.__getattribute__(self, "javaversion").setHealth, health)
 
 
 time = FakeTime()
-player = PyPlayer()
+player = PyPlayer(jplayer)
 
 def _importNms(classname):
     import importlib
@@ -179,16 +202,16 @@ def getblock(x, y, z):
     else:
         return AIR
 
-def potioneffect(effect, duration=10, amplifier=1):
+def potioneffect(effect, duration=10, amplifier=1, target=player):
     from org.bukkit.potion import PotionEffect
-    mc_fast(jplayer.removePotionEffect, effect)
-    mc_fast(jplayer.addPotionEffect, PotionEffect(effect, duration * 20, amplifier - 1))
+    target = object.__getattribute__(target, "javaversion")
+    mc_fast(target.removePotionEffect, effect)
+    mc_fast(target.addPotionEffect, PotionEffect(effect, duration * 20, amplifier - 1))
 
-def propel(x, y, z, target=jplayer):
+def propel(x, y, z, target=player):
     from org.bukkit.util import Vector
     vec = Vector(x, y, z)
-    if target != jplayer:
-        target = object.__getattribute__(target, "javaentity")
+    target = object.__getattribute__(target, "javaversion")
     mc_fast(target.setVelocity, vec)
     
 def playsound(x, y, z, sound,pitch=1,volume=1):

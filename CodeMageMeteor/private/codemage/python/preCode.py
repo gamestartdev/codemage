@@ -32,5 +32,6 @@ def settracefunc():
     import sys
     import time
     startTimestamp = int(time.time())
+    time.sleep(0.1)
     sys.settrace(trace_function)
 settracefunc()

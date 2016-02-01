@@ -282,7 +282,20 @@ def spawnitem(x, y, z, item=DIRT, count=1, damage=0, data={}):
 
 def denyattribute(*args):
     raise AttributeError("Non existant attribute")
-
+    
+def getplayerswithselector(selector):
+    CommandAbstract = _importNms("CommandAbstract")
+    Entity = _importNms("Entity")
+    print dir(CommandAbstract)
+    print CommandAbstract.c
+    players = CommandAbstract.c(jplayer.getHandle(), selector)
+    print players
+    print PyPlayer
+    print Players.index
+    for aplayer in players:
+        players[players.index(player)] = PyPlayer(aplayer)
+    return players
+print jplayer.getHandle().__class__
 replaceentity = True
 replacematerial = True
 replacesound = True
@@ -371,7 +384,7 @@ __builtins__ = None
 globals = None
 locals = None
 eval = None
-dir = None
+#dir = None
 compile = None
 vars = None
 raw_input = None

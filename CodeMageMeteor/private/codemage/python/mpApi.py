@@ -224,9 +224,7 @@ def getblock(x, y, z):
         return AIR
 
 def potioneffect(effect, duration=10, amplifier=1, target=player):
-    yell("why not")
     MobEffect = _importNms("MobEffect")
-    print MobEffect
     target = object.__getattribute__(target, "javaversion")
     mobeffect = MobEffect(effect.getId(), duration, amplifier, False, True)
     mc_fast(target.addEffect, mobeffect)

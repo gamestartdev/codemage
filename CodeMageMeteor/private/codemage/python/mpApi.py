@@ -55,18 +55,6 @@ class PyEntityBase(object):
             
     def __setattr__(self, attr, val):
         raise AttributeError("Non existant attribute")
-
-'''Python implementation of a player'''
-class PyPlayer(PyEntityBase):
-        
-    def __getattribute__(self, attr):
-        if "getClass" not in attr and "__class__" not in attr and "javaversion" not in attr:
-            return object.__getattribute__(self, attr)
-        else:
-            raise AttributeError("Non existant attribute")
-            
-    def __setattr__(self, attr, val):
-        raise AttributeError("Non existant attribute")
         
 class FakeTime(object):
     
@@ -97,16 +85,36 @@ class PyEntity(PyEntityBase):
     def __setattr__(self, attr, val):
         raise AttributeError("Non existant attribute")
     
-    def __init__(self, entitytype, javaversion):
-        object.__setattr__(self, "javaversion", javaversion)
-        object.__setattr__(self, "entitytype", entitytype)
+    def kill(self):
+        javaversion = object.__getattribute__(self, "javaversion")
+        mc_fast(javaversion.world.kill, javaversion)
     
     def getHealth(self):
         return object.__getattribute__(self, "javaversion").getHealth()
     
     def setHealth(self, health):
         mc_fast(object.__getattribute__(self, "javaversion").setHealth, health)
+    
+    def heal(self, howmuch):
+        mc_fast(object.__getattribute__(self, "javaversion").setHealth, self.getHealth() + howmuch)
+    
+    def damage(self, howmuch):
+        mc_fast(object.__getattribute__(self, "javaversion").setHeath, self.getHealth() - howmuch)
 
+'''Python implementation of a player'''
+class PyPlayer(PyEntity):
+    
+    def kill(self):
+        self.setHealth(0)
+    
+    def __getattribute__(self, attr):
+        if "getClass" not in attr and "__class__" not in attr and "javaversion" not in attr:
+            return object.__getattribute__(self, attr)
+        else:
+            raise AttributeError("Non existant attribute")
+            
+    def __setattr__(self, attr, val):
+        raise AttributeError("Non existant attribute")
 
 time = FakeTime()
 player = PyPlayer(jplayer)
@@ -282,16 +290,21 @@ def spawnitem(x, y, z, item=DIRT, count=1, damage=0, data={}):
 
 def denyattribute(*args):
     raise AttributeError("Non existant attribute")
-    
+
+def getentitieswithselector(selector):
+    return getplayerswithselector(selector)
+
 def getplayerswithselector(selector):
     CommandAbstract = _importNms("CommandAbstract")
-    Entity = _importNms("Entity")
     players = CommandAbstract.c(jplayer.getHandle(), selector)
     pyplayers = []
     for aplayer in players:
-        pyplayers.append(PyPlayer(aplayer))
+        if isinstance(aplayer, jplayer.__class__):
+            pyplayers.append(PyPlayer(aplayer))
+        else:
+            pyplayers.append(PyEntity(aplayer))
     return pyplayers
-print jplayer.getHandle().__class__
+
 replaceentity = True
 replacematerial = True
 replacesound = True

@@ -117,7 +117,7 @@ class PyPlayer(PyEntity):
         raise AttributeError("Non existant attribute")
 
 time = FakeTime()
-player = PyPlayer(jplayer)
+player = PyPlayer(jplayer.getHandle())
 
 def _importNms(classname):
     import importlib
@@ -217,11 +217,8 @@ def potioneffect(effect, duration=10, amplifier=1, target=player):
     mc_fast(target.addPotionEffect, PotionEffect(effect, duration * 20, amplifier - 1))
 
 def propel(x, y, z, target=player):
-    from org.bukkit.util import Vector
-    vec = Vector(x, y, z)
     target = object.__getattribute__(target, "javaversion")
-    mc_fast(target.teleport, target.getLocation().setDirection(vec))
-    mc_fast(target.setVelocity, vec)
+    mc_fast(target.g, x, y, z)
     
 def playsound(x, y, z, sound,pitch=1,volume=1):
     mc_fast(jplayer.getWorld().playSound,loc(x,y,z),sound,1,1)
@@ -268,8 +265,8 @@ def spawnentity(x, y, z, entitytype, nbt={}):
     entityMap.putAll(suppliedMap)  #Merges the tag maps.
     mapField.set(tag, entityMap)
     mc_fast(entity.f, tag)
-    return PyEntity(entitytype, craftentity) 
-
+    return PyEntity(entity) 
+print type(jplayer)
 def spawnparticle(x, y, z, particle, howMany, speed=0, xd=0.5, yd=0.5,zd=0.5):
     mc_fast(jplayer.getWorld().spigot().playEffect,loc(x,y,z),particle,0,0,xd,yd,zd,speed,
     howMany,16)

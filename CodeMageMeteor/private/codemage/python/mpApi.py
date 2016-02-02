@@ -286,15 +286,11 @@ def denyattribute(*args):
 def getplayerswithselector(selector):
     CommandAbstract = _importNms("CommandAbstract")
     Entity = _importNms("Entity")
-    print dir(CommandAbstract)
-    print CommandAbstract.c
     players = CommandAbstract.c(jplayer.getHandle(), selector)
-    print players
-    print PyPlayer
-    print Players.index
+    pyplayers = []
     for aplayer in players:
-        players[players.index(player)] = PyPlayer(aplayer)
-    return players
+        pyplayers.append(PyPlayer(aplayer))
+    return pyplayers
 print jplayer.getHandle().__class__
 replaceentity = True
 replacematerial = True
@@ -384,7 +380,7 @@ __builtins__ = None
 globals = None
 locals = None
 eval = None
-#dir = None
+dir = None
 compile = None
 vars = None
 raw_input = None
@@ -392,6 +388,6 @@ input = None
 open = None
 type = None
 FakeTime = None
-PyPlayer = None
+#PyPlayer = None
 LessPickyMath = None
 file = None

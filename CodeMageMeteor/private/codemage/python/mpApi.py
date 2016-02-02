@@ -56,19 +56,6 @@ class PyEntityBase(object):
     def __setattr__(self, attr, val):
         raise AttributeError("Non existant attribute")
 
-#import random
-#class DenyingRandom(random):
-#    def __getattribute__(self, attr):
-#        if "getClass" not in attr and "__class__" not in attr:
-#            return object.__getattribute__(self, attr)
-#        else:
-#            raise AttributeError("Non existant attribute")
-#            
-#    def __setattr__(self, attr, val):
-#        raise AttributeError("Non existant attribute")
-#
-#random = DenyingRandom()
-
 class FakeTime(object):
     
     def __getattribute__(self, attr):
@@ -130,7 +117,7 @@ class PyPlayer(PyEntity):
         raise AttributeError("Non existant attribute")
 
 time = FakeTime()
-player = PyPlayer(jplayer.getHandle())
+player = PyPlayer(jplayer)
 
 def _importNms(classname):
     import importlib
@@ -314,6 +301,10 @@ def getplayerswithselector(selector):
         else:
             pyplayers.append(PyEntity(aplayer))
     return pyplayers
+
+def randint(lower, upper):
+    from random import randint
+    return randint(lower, upper)
 
 replaceentity = True
 replacematerial = True

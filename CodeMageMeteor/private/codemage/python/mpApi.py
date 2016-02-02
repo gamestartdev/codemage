@@ -55,7 +55,20 @@ class PyEntityBase(object):
             
     def __setattr__(self, attr, val):
         raise AttributeError("Non existant attribute")
-        
+
+#import random
+#class DenyingRandom(random):
+#    def __getattribute__(self, attr):
+#        if "getClass" not in attr and "__class__" not in attr:
+#            return object.__getattribute__(self, attr)
+#        else:
+#            raise AttributeError("Non existant attribute")
+#            
+#    def __setattr__(self, attr, val):
+#        raise AttributeError("Non existant attribute")
+#
+#random = DenyingRandom()
+
 class FakeTime(object):
     
     def __getattribute__(self, attr):
@@ -211,10 +224,12 @@ def getblock(x, y, z):
         return AIR
 
 def potioneffect(effect, duration=10, amplifier=1, target=player):
-    from org.bukkit.potion import PotionEffect
+    yell("why not")
+    MobEffect = _importNms("MobEffect")
+    print MobEffect
     target = object.__getattribute__(target, "javaversion")
-    mc_fast(target.removePotionEffect, effect)
-    mc_fast(target.addPotionEffect, PotionEffect(effect, duration * 20, amplifier - 1))
+    mobeffect = MobEffect(effect.getId(), duration, amplifier, False, True)
+    mc_fast(target.addEffect, mobeffect)
 
 def propel(x, y, z, target=player):
     target = object.__getattribute__(target, "javaversion")
@@ -266,7 +281,7 @@ def spawnentity(x, y, z, entitytype, nbt={}):
     mapField.set(tag, entityMap)
     mc_fast(entity.f, tag)
     return PyEntity(entity) 
-print type(jplayer)
+
 def spawnparticle(x, y, z, particle, howMany, speed=0, xd=0.5, yd=0.5,zd=0.5):
     mc_fast(jplayer.getWorld().spigot().playEffect,loc(x,y,z),particle,0,0,xd,yd,zd,speed,
     howMany,16)
@@ -399,5 +414,6 @@ open = None
 type = None
 FakeTime = None
 #PyPlayer = None
+DenyingRandom = None
 LessPickyMath = None
 file = None

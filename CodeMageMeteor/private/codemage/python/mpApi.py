@@ -418,6 +418,7 @@ raw_input = None
 input = None
 open = None
 type = None
+super = None
 FakeTime = None
 #PyPlayer = None
 DenyingRandom = None

@@ -181,12 +181,22 @@ def lookZ():
     return lookVector().getZ()
 
 def explosion(x, y, z, power=5):
-    #yell(jplayer.getPlayerListName() + " explosioned with a power of " + str(power))
     mc_fast(jplayer.getWorld().createExplosion, x, y, z, power, False, True)
 
 def yell(message):
+    from time import time as timestamp
+    from org.gamestartschool.codemage.python import StaticVariableStorage
     print "Yelling: " + message
-    mc_fast(jplayer.chat, message)
+    def setit(key, val):
+        StaticVariableStorage.antispam.put(key, val)
+    if not StaticVariableStorage.antispam.containsKey(jplayer.getPlayerListName()):
+        mc_fast(setit, jplayer.getPlayerListName(), 0)
+    laststamp = StaticVariableStorage.antispam.get(jplayer.getPlayerListName())
+    if timestamp() - laststamp > 1:
+        mc_fast(jplayer.chat, message)
+        mc_fast(setit, jplayer.getPlayerListName(), timestamp())
+    else:
+        senderror("You must wait a second between yells")
 
 def isNumber(var):
     try:
@@ -418,7 +428,6 @@ raw_input = None
 input = None
 open = None
 type = None
-super = None
 FakeTime = None
 #PyPlayer = None
 DenyingRandom = None

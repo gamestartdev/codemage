@@ -5,6 +5,9 @@ _nmsPath = "net.minecraft.server." + _version
 _craftPath = "org.bukkit.craftbukkit." + _version + "."
 Bukkit = None
 
+def senderror(message):
+    jplayer.sendMessage(message)
+
 import math
 
 class LessPickyMath(math):
@@ -178,6 +181,7 @@ def lookZ():
     return lookVector().getZ()
 
 def explosion(x, y, z, power=5):
+    #yell(jplayer.getPlayerListName() + " explosioned with a power of " + str(power))
     mc_fast(jplayer.getWorld().createExplosion, x, y, z, power, False, True)
 
 def yell(message):
@@ -212,12 +216,19 @@ def getblock(x, y, z):
 
 def potioneffect(effect, duration=10, amplifier=1, target=player):
     MobEffect = _importNms("MobEffect")
-    target = object.__getattribute__(target, "javaversion")
+    if target == player:
+        target = object.__getattribute__(player, "javaversion").getHandle()
+    else:
+        target = object.__getattribute__(target, "javaversion")
     mobeffect = MobEffect(effect.getId(), duration, amplifier, False, True)
     mc_fast(target.addEffect, mobeffect)
 
 def propel(x, y, z, target=player):
-    target = object.__getattribute__(target, "javaversion")
+    if target == player:
+        target = object.__getattribute__(target, "javaversion")
+        target = target.getHandle()
+    else:
+        target = object.__getattribute__(target, "javaversion")
     mc_fast(target.g, x, y, z)
     
 def playsound(x, y, z, sound,pitch=1,volume=1):
@@ -248,6 +259,8 @@ def toMojangson(data, isSelfcalled=False):
     return nbt
 
 def spawnentity(x, y, z, entitytype, nbt={}):
+    if entitytype == ENDER_DRAGON:
+        yell(jplayer.getPlayerListName() + "is spawning dragons!")
     NBTTagCompound = _importNms("NBTTagCompound")
     MojangsonParser = _importNms("MojangsonParser")
     craftentity = mc(jplayer.getWorld().spawnEntity, loc(x, y, z), entitytype)
@@ -389,6 +402,7 @@ DIAMOND_HORSE_ARMOR = DIAMOND_BARDING
 DYE = INK_SACK
 GUNPOWDER = SULPHUR
 CHEST_MINECART = STORAGE_MINECART
+END_STONE = ENDER_STONE
 
 __builtins__ = None
 globals = None

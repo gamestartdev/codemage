@@ -225,11 +225,14 @@ def potioneffect(effect, duration=10, amplifier=1, target=player):
 
 def propel(x, y, z, target=player):
     if target == player:
+        from org.bukkit.util import Vector
+        Entity = _importNms("EntityLiving")
         target = object.__getattribute__(target, "javaversion")
-        target = target.getHandle()
+        vec = Vector(x, y, z)
+        mc_fast(target.setVelocity, vec)
     else:
         target = object.__getattribute__(target, "javaversion")
-    mc_fast(target.g, x, y, z)
+        mc_fast(target.g, x, y, z)
     
 def playsound(x, y, z, sound,pitch=1,volume=1):
     mc_fast(jplayer.getWorld().playSound,loc(x,y,z),sound,1,1)

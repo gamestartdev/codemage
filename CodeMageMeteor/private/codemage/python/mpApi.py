@@ -192,11 +192,11 @@ def yell(message):
     if not StaticVariableStorage.antispam.containsKey(jplayer.getPlayerListName()):
         mc_fast(setit, jplayer.getPlayerListName(), 0)
     laststamp = StaticVariableStorage.antispam.get(jplayer.getPlayerListName())
-    if timestamp() - laststamp > 1:
+    if timestamp() - laststamp > 3:
         mc_fast(jplayer.chat, message)
         mc_fast(setit, jplayer.getPlayerListName(), timestamp())
     else:
-        senderror("You must wait a second between yells")
+        senderror("You must wait a 3 seconds between yells")
 
 def isNumber(var):
     try:

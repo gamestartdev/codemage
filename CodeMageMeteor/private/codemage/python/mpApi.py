@@ -196,7 +196,7 @@ def yell(message):
         mc_fast(jplayer.chat, message)
         mc_fast(setit, jplayer.getPlayerListName(), timestamp())
     else:
-        senderror("You must wait a 3 seconds between yells")
+        senderror("You must wait 3 seconds between yells")
 
 def isNumber(var):
     try:

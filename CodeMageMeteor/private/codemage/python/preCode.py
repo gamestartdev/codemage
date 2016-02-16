@@ -26,7 +26,8 @@ def trace_function(frame, event, arg):
     if ECHO and event == 'call' and method_name != 'mc':
         frame = frame.f_back or frame
         print "LINE: %i: %s" % (frame.f_lineno, method_name)
-    if event == 'exception':
+    randomerrorthatgetscaughtsomewhere = "'module' object has no attribute"
+    if event == 'exception' and randomerrorthatgetscaughtsomewhere not in str(arg[1]):
         senderror(str(arg[1]))
     return trace_function
 def settracefunc():

@@ -120,6 +120,9 @@ class PyPlayer(PyEntity):
             
     def __setattr__(self, attr, val):
         raise AttributeError("Non existant attribute")
+        
+    def getName(self):
+        return object.__getattribute__(self, "javaversion").getPlayerListName()
 
 time = FakeTime()
 player = PyPlayer(jplayer)
@@ -192,7 +195,7 @@ def yell(message):
     def setit(key, val):
         StaticVariableStorage.antispam.put(key, val)
     if not StaticVariableStorage.antispam.containsKey(jplayer.getPlayerListName()):
-        mc_fast(setit, jplayer.getPlayerListName(), 0)
+        mc(setit, jplayer.getPlayerListName(), 0)
     laststamp = StaticVariableStorage.antispam.get(jplayer.getPlayerListName())
     if timestamp() - laststamp > 3:
         mc_fast(jplayer.chat, message)
@@ -228,7 +231,7 @@ def getblock(x, y, z):
 
 def potioneffect(effect, duration=10, amplifier=1, target=player):
     MobEffect = _importNms("MobEffect")
-    if target == player:
+    if object.__getattribute__(target, "__class__") == PyPlayer:
         target = object.__getattribute__(player, "javaversion").getHandle()
     else:
         target = object.__getattribute__(target, "javaversion")

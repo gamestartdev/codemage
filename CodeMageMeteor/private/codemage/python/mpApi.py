@@ -5,6 +5,11 @@ _nmsPath = "net.minecraft.server." + _version
 _craftPath = "org.bukkit.craftbukkit." + _version + "."
 Bukkit = None
 
+'''AttributeError: import_module does not exist investigation:
+Not fixed by complete replace of server files
+Not fixed by reloads
+Possibly fixed by calling importlib.__init__()'''
+
 def senderror(message):
     from org.bukkit import Bukkit
     CraftPlayer = _importCraft("entity", "CraftPlayer")
@@ -335,6 +340,9 @@ def getplayerswithselector(selector):
         else:
             pyplayers.append(PyEntity(aplayer))
     return pyplayers
+    
+def getopponent():
+    return getplayerswithselector("@p[name=!" + player.getName() + ",m=0,r=200]")[0]
 
 def randint(lower, upper):
     from random import randint
@@ -429,7 +437,7 @@ __builtins__ = None
 globals = None
 locals = None
 eval = None
-dir = None
+#dir = None
 compile = None
 vars = None
 raw_input = None

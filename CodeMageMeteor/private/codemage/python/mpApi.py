@@ -6,6 +6,8 @@ _craftPath = "org.bukkit.craftbukkit." + _version + "."
 Bukkit = None
 
 def senderror(message):
+    from org.bukkit import Bukkit
+    CraftPlayer = _importCraft("entity", "CraftPlayer")
     jplayer.sendMessage(message)
 
 import math
@@ -102,7 +104,7 @@ class PyEntity(PyEntityBase):
         mc_fast(object.__getattribute__(self, "javaversion").setHealth, self.getHealth() + howmuch)
     
     def damage(self, howmuch):
-        mc_fast(object.__getattribute__(self, "javaversion").setHeath, self.getHealth() - howmuch)
+        mc_fast(object.__getattribute__(self, "javaversion").setHealth, self.getHealth() - howmuch)
 
 '''Python implementation of a player'''
 class PyPlayer(PyEntity):
@@ -234,7 +236,7 @@ def potioneffect(effect, duration=10, amplifier=1, target=player):
     mc_fast(target.addEffect, mobeffect)
 
 def propel(x, y, z, target=player):
-    if target == player:
+    if object.__getattribute__(target, "__class__") == PyPlayer:
         from org.bukkit.util import Vector
         Entity = _importNms("EntityLiving")
         target = object.__getattribute__(target, "javaversion")
@@ -322,7 +324,10 @@ def getplayerswithselector(selector):
     players = CommandAbstract.c(jplayer.getHandle(), selector)
     pyplayers = []
     for aplayer in players:
-        if isinstance(aplayer, jplayer.__class__):
+        if isinstance(aplayer, jplayer.getHandle().__class__):
+            from org.bukkit import Bukkit
+            CraftPlayer = _importCraft("entity", "CraftPlayer")
+            aplayer = CraftPlayer(Bukkit.getServer(), aplayer)
             pyplayers.append(PyPlayer(aplayer))
         else:
             pyplayers.append(PyEntity(aplayer))

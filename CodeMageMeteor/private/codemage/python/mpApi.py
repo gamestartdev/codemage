@@ -343,9 +343,15 @@ def getplayerswithselector(selector):
         else:
             pyplayers.append(PyEntity(aplayer))
     return pyplayers
-    
+
 def getopponent():
     return getplayerswithselector("@p[name=!" + player.getName() + ",m=0,r=200]")[0]
+
+def getentitiesinrange(radius, x=player.x, y=player.y, z=player.z, etype=None):
+    if radius in range(0, 101) and etype == None:
+        return getentitieswithselector("@e[r=" + str(radius) + "]")
+    elif radius in range(0, 101) and etype != None:
+        return getentitieswithselector("@e[r="+str(radius)+",type=" +str(etype)+"]")
 
 def randint(lower, upper):
     from random import randint

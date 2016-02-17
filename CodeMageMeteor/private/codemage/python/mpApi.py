@@ -203,6 +203,9 @@ def yell(message):
         mc(setit, jplayer.getPlayerListName(), 0)
     laststamp = StaticVariableStorage.antispam.get(jplayer.getPlayerListName())
     if timestamp() - laststamp > 3:
+        if len(message) > 100:
+            senderror("Yells can only be 100 characters long!")
+            return
         mc_fast(jplayer.chat, message)
         mc_fast(setit, jplayer.getPlayerListName(), timestamp())
     else:

@@ -25,7 +25,7 @@ public class CodeRunner implements Runnable {
 	public void run() {
 		PythonMethodCall pythonMethodCall = pythonMethodQueue.poll();
 		int i = 0;
-		while (pythonMethodCall != null && i < 200) {
+		while (pythonMethodCall != null) {
 			i++;
 			try {
 				pythonMethodCall.result = pythonMethodCall.method.__call__(pythonMethodCall.args);

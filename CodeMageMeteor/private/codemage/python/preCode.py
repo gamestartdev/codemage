@@ -27,11 +27,15 @@ def trace_function(frame, event, arg):
         frame = frame.f_back or frame
         print "LINE: %i: %s" % (frame.f_lineno, method_name)
     randomerrorthatgetscaughtsomewhere = "'module' object has no attribute"
-    if event == 'exception' and randomerrorthatgetscaughtsomewhere not in str(arg[1]):
+    if event == "exception" and method_name == "studentCode":
         senderror(str(arg[1]))
     elif event == 'exception' and randomerrorthatgetscaughtsomewhere in str(arg[1]):
         import importlib
-        importlib.__init__() #This serves as a waskeup call to Jython for some reason.
+        try:
+            importlib.__init__() #This serves as a wakeup call to Jython for some reason.
+        except Exception:
+            pass #
+    #elif event == 'exception' and randomerrorthatgetscaughtsomewhere in str(arg[1]):
     return trace_function
 def settracefunc():
     global startTimestamp

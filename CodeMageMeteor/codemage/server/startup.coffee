@@ -19,3 +19,4 @@ Meteor.startup ->
   tomes.update defaultTome, {$set:{ name: defaultTome, userId: Meteor.users.findOne({username:'admin'})._id }},  upsert: true
   addPreprocessSpell('preCode', defaultTome, Assets.getText('codemage/python/preCode.py'))
   addPreprocessSpell('mpApi', defaultTome, Assets.getText('codemage/python/mpApi.py'))
+  addPreprocessSpell('xpRequirements', defaultTome, Assets.getText('codemage/python/xpRequirements.py'))

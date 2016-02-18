@@ -44,7 +44,7 @@ public class CodeRunner implements Runnable {
 
 	private final ExecutorService interpreterPool = Executors.newFixedThreadPool(25);
 
-	public void executeCode(final String code, final Player player, final List<ISpell> gameWrappers) {
+	public void executeCode(final String code, final Player player, final List<ISpell> gameWrappers, final String spellname) {
 		String nonFinalCode = code.replaceAll("import ", "iMpOrT ");
 		nonFinalCode = nonFinalCode.replaceAll("_importNms", "_importnms");
 		nonFinalCode = nonFinalCode.replaceAll("_importCraft", "_importcraft");
@@ -68,6 +68,7 @@ public class CodeRunner implements Runnable {
 				InteractiveInterpreter pi = new InteractiveInterpreter();
 				pi.set("jplayer", player);
 				pi.set("pythonMethodQueue", pythonMethodQueue);
+				pi.set("spellname", spellname);
 				for (PotionEffectType p: PotionEffectType.values()) {
 					if(p != null) //Someone thought it would be a good idea to put a null at the start.
 					{

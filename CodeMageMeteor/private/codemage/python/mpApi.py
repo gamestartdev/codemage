@@ -244,7 +244,10 @@ def potioneffect(effect, duration=10, amplifier=1, target=player):
     else:
         target = object.__getattribute__(target, "javaversion")
     mobeffect = MobEffect(effect.getId(), duration, amplifier - 1, False, True)
-    mc_fast(target.addEffect, mobeffect)
+    try:
+        mc_fast(target.addEffect, mobeffect)
+    except Exception:
+        pass
 
 def propel(x, y, z, target=player):
     if object.__getattribute__(target, "__class__") == PyPlayer:
@@ -348,10 +351,16 @@ def getopponent():
     return getplayerswithselector("@p[name=!" + player.getName() + ",m=0,r=200]")[0]
 
 def getentitiesinrange(radius, x=player.x, y=player.y, z=player.z, etype=None):
+    from math import floor as f
+    xyz = ",x=" + str(int(x)) + ",y=" + str(int(y)) + ",z=" + str(int(z)) + "]"
     if radius in range(0, 101) and etype == None:
-        return getentitieswithselector("@e[r=" + str(radius) + "]")
+        selector = "@e[r=" + str(radius) + xyz
+        senderror(selector)
+        return getentitieswithselector("@e[r=" + str(radius) + xyz)
     elif radius in range(0, 101) and etype != None:
-        return getentitieswithselector("@e[r="+str(radius)+",type=" +str(etype)+"]")
+        selector = "@e[r="+str(radius)+",type=" +str(etype)+xyz
+        senderror(selector)
+        return getentitieswithselector("@e[r="+str(radius)+",type=" +str(etype)+xyz)
 
 def randint(lower, upper):
     from random import randint

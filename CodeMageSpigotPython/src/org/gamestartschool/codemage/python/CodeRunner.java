@@ -75,7 +75,14 @@ public class CodeRunner implements Runnable {
 					}
 				}
 				for (EntityType e : EntityType.values()) {
-					pi.set(e.toString(), e);
+					if(e != EntityType.WITHER)
+					{
+						pi.set(e.toString(), e);
+					}
+					else
+					{
+						pi.set("WITHERBOSS", e);
+					}
 				}
 				
 				for (Material m : Material.values()) {

@@ -33,6 +33,16 @@ class PyEntityBase(object):
     def __init__(self, javaversion):
         object.__setattr__(self, "javaversion", javaversion)
     
+    def __eq__(self, other):
+        objget = object.__getattribute__
+        try:
+            return objget(self, "javaversion") == objget(other, "javaversion")
+        except Exception:
+            return False
+            
+    def __ne__(self, other):
+        return not self.__eq__(other)
+    
     @property
     def x(self):
         return object.__getattribute__(self, "javaversion").getLocation().getX()

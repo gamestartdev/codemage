@@ -355,11 +355,9 @@ def getentitiesinrange(radius, x=player.x, y=player.y, z=player.z, etype=None):
     xyz = ",x=" + str(int(x)) + ",y=" + str(int(y)) + ",z=" + str(int(z)) + "]"
     if radius in range(0, 101) and etype == None:
         selector = "@e[r=" + str(radius) + xyz
-        senderror(selector)
         return getentitieswithselector("@e[r=" + str(radius) + xyz)
     elif radius in range(0, 101) and etype != None:
         selector = "@e[r="+str(radius)+",type=" +str(etype)+xyz
-        senderror(selector)
         return getentitieswithselector("@e[r="+str(radius)+",type=" +str(etype)+xyz)
 
 def randint(lower, upper):

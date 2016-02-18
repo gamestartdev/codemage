@@ -243,7 +243,7 @@ def potioneffect(effect, duration=10, amplifier=1, target=player):
         target = object.__getattribute__(player, "javaversion").getHandle()
     else:
         target = object.__getattribute__(target, "javaversion")
-    mobeffect = MobEffect(effect.getId(), duration, amplifier, False, True)
+    mobeffect = MobEffect(effect.getId(), duration, amplifier - 1, False, True)
     mc_fast(target.addEffect, mobeffect)
 
 def propel(x, y, z, target=player):

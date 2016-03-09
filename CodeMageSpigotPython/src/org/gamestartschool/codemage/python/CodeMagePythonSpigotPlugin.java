@@ -18,6 +18,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.gamestartschool.codemage.ddp.CodeMageDDP;
 import org.gamestartschool.codemage.ddp.IEnchantment;
 import org.gamestartschool.codemage.ddp.ISpell;
+import org.gamestartschool.codemage.ddp.ISpellMeteorMethodCaller;
 import org.gamestartschool.codemage.ddp.IUser;
 
 public class CodeMagePythonSpigotPlugin extends JavaPlugin {
@@ -36,11 +37,6 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 	}
 
 	public void onEnable() {
-		codeRunner = new CodeRunner();
-		this.getCommand("python").setExecutor(new PythonConsoleCommand(codeRunner));
-		addListeners();
-		getServer().getScheduler().scheduleSyncRepeatingTask(this, codeRunner, 0L, 1L);
-
 		try {
 			log("DDP Plugin being invoked from CodeMagePython.");
 			ddp = new CodeMageDDP(meteorIp, meteorPort);
@@ -52,6 +48,10 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
+		codeRunner = new CodeRunner(ddp.getMethodCaller());
+		this.getCommand("python").setExecutor(new PythonConsoleCommand(codeRunner));
+		addListeners();
+		getServer().getScheduler().scheduleSyncRepeatingTask(this, codeRunner, 0L, 1L);
 	}
 
 	private void addListeners() {
@@ -76,7 +76,7 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 						List<ISpell> spells = e.getSpells();
 						for (ISpell spell : spells) {
 							log("runningCode: " + spell.getCode());
-							codeRunner.executeCode(spell.getCode(), player, gameWrappers, spell.getName());
+							codeRunner.executeCode(spell.getCode(), player, gameWrappers, spell.getName(), spell.getId());
 						}
 					}
 				}

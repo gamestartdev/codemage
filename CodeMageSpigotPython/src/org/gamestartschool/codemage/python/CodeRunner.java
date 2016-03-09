@@ -1,5 +1,7 @@
 package org.gamestartschool.codemage.python;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -15,11 +17,17 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 import org.gamestartschool.codemage.ddp.ISpell;
+import org.gamestartschool.codemage.ddp.ISpellMeteorMethodCaller;
 import org.python.util.InteractiveInterpreter;
 
 public class CodeRunner implements Runnable {
+	private ISpellMeteorMethodCaller methodCaller;
 	private static boolean exhaustQueueEachTick = true;
 	public ConcurrentLinkedQueue<PythonMethodCall> pythonMethodQueue = new ConcurrentLinkedQueue<PythonMethodCall>();
+
+	public CodeRunner(ISpellMeteorMethodCaller methodCaller) {
+		this.methodCaller = methodCaller;
+	}
 
 	@Override
 	public void run() {
@@ -44,7 +52,7 @@ public class CodeRunner implements Runnable {
 
 	private final ExecutorService interpreterPool = Executors.newFixedThreadPool(25);
 
-	public void executeCode(final String code, final Player player, final List<ISpell> gameWrappers, final String spellname) {
+	public void executeCode(final String code, final Player player, final List<ISpell> gameWrappers, final String spellname, final String spellId) {
 		String nonFinalCode = code.replaceAll("import ", "iMpOrT ");
 		nonFinalCode = nonFinalCode.replaceAll("_importNms", "_importnms");
 		nonFinalCode = nonFinalCode.replaceAll("_importCraft", "_importcraft");
@@ -113,7 +121,11 @@ public class CodeRunner implements Runnable {
 				try {
 					pi.exec(wrapperCode + sanitizedCode);
 				} catch (Exception e) {
+					StringWriter sw = new StringWriter();
+					e.printStackTrace(new PrintWriter(sw));
+					String trace = sw.toString();
 					e.printStackTrace();
+					methodCaller.spellException(trace, spellId);
 				}
 				pi.close();
 				return pi;

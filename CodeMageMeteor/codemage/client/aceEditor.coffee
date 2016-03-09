@@ -2,7 +2,7 @@ Template.aceEditor.onRendered ->
   spell = this.data
   editor = MandrillAce.getInstance();
   editor.ace.setOptions
-    maxLines:200
+    maxLines:20000
     minLines:5
     theme: 'ace/theme/monokai'
     mode: 'ace/mode/python'

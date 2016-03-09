@@ -60,11 +60,20 @@ public class CodeMageDDP {
 		@Override
 		public void healthUpdate(String userId, int health) {
 		}
+		
+		public void spellException(String exception, String playername) {
+			call("spellException", exception, playername);
+		}
 
 	}
 
 	private MeteorMethodCaller methodCaller = new MeteorMethodCaller();
-
+	
+	public MeteorMethodCaller getMethodCaller()
+	{
+		return methodCaller;
+	}
+	
 	private abstract class ACodeMageCollection<T extends IMongoDocument>
 			extends DDPListener implements ICodeMageCollection<T> {
 

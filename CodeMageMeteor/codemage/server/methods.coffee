@@ -17,6 +17,11 @@ updateTomeName = (tomeId, tomeName) ->
   check(tomeName, String)
   tomes.update tomeId, {$set: {name: tomeName}}
 
+spellException = (stacktrace, spellId) ->
+  check(stacktrace, String)
+  check(spellId, String)
+  spells.update spellId, {$set: {errorMessage: stacktrace}}
+
 addEnchantment = (userId, name, itemMaterial, action, spellIds) ->
   check(userId, String)
   check(name, String)
@@ -102,6 +107,7 @@ Meteor.methods
   addSpell: addSpell
   updateSpell: updateSpell
   removeSpell: removeSpell
+  spellException: spellException
 
   addSpellToEnchantment: addSpellToEnchantment
   removeSpellFromEnchantment: removeSpellFromEnchantment

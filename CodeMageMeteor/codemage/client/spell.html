@@ -18,6 +18,7 @@
             {{/each}}
         </div>
     </div>
+
     <a href="#" style="color:green" class="spellStatus spellStatus-{{status}}"><b>{{status}}</b></a>
-    {{#if message}}<span style="color:red">{{ message }}</span>{{/if}}
+    {{#if errorMessage}}<span style="color:red">{{ errorMessage }}</span>{{/if}}
 </template>

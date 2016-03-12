@@ -117,7 +117,7 @@ public class CodeRunner implements Runnable {
 				for (ISpell spell : gameWrappers) {
 					wrapperCode += spell.getCode() + "\n";
 				}
-				
+				boolean errored = false;
 				try {
 					pi.exec(wrapperCode + sanitizedCode);
 				} catch (Exception e) {
@@ -125,7 +125,13 @@ public class CodeRunner implements Runnable {
 					e.printStackTrace(new PrintWriter(sw));
 					String trace = sw.toString();
 					e.printStackTrace();
-					methodCaller.spellException(trace, spellId);
+					if(spellId != "<console>") {
+						methodCaller.spellException(trace, spellId);
+					}
+					errored = true;
+				}
+				if(!errored) {
+					methodCaller.spellException("", spellId);
 				}
 				pi.close();
 				return pi;

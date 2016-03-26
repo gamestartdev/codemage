@@ -20,6 +20,9 @@ updateTomeName = (tomeId, tomeName) ->
 spellException = (stacktrace, spellId) ->
   check(stacktrace, String)
   check(spellId, String)
+  if stacktrace == ""
+    spells.update spellId, {$set: {errorMessageLines: null}}
+    return
   match = /([^]*?)at org\.python[^]*/g.exec stacktrace
   console.log match
   stacktrace = match[1]

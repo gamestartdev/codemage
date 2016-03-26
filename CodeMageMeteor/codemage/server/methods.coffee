@@ -26,6 +26,7 @@ spellException = (stacktrace, spellId) ->
   match = /([^]*?)at org\.python[^]*/g.exec stacktrace
   console.log match
   stacktrace = match[1]
+  errorOnly = stacktrace.replace /Traceback[^]*studentCode[^]*?File "<string>", line \d*,/, ""
   stacktrace = stacktrace.split "\n"
   for line in stacktrace
     stacktrace[stacktrace.indexOf(line)] = {line: line}

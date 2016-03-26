@@ -20,11 +20,14 @@ updateTomeName = (tomeId, tomeName) ->
 spellException = (stacktrace, spellId) ->
   check(stacktrace, String)
   check(spellId, String)
-  match = /([^]*)org\.python[^]*/g.exec stacktrace
+  match = /([^]*?)at org\.python[^]*/g.exec stacktrace
   console.log match
   stacktrace = match[1]
+  stacktrace = stacktrace.split "\n"
+  for line in stacktrace
+    stacktrace[stacktrace.indexOf(line)] = {line: line}
   console.log stacktrace
-  spells.update spellId, {$set: {errorMessage: stacktrace}}
+  spells.update spellId, {$set: {errorMessageLines: stacktrace}}
 
 addEnchantment = (userId, name, itemMaterial, action, spellIds) ->
   check(userId, String)

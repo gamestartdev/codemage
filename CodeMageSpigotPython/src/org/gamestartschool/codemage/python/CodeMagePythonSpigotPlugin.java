@@ -50,6 +50,7 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 		}
 		codeRunner = new CodeRunner(ddp.getMethodCaller());
 		this.getCommand("python").setExecutor(new PythonConsoleCommand(codeRunner));
+		this.getCommand("reconnectddp").setExecutor(new DDPReconnectCommand(ddp));
 		addListeners();
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, codeRunner, 0L, 1L);
 	}

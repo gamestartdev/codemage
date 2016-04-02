@@ -26,12 +26,26 @@ spellException = (stacktrace, spellId) ->
   match = /([^]*?)at org\.python[^]*/g.exec stacktrace
   stacktrace = match[1]
   errorOnly = stacktrace.replace /Traceback[^]*studentCode[^]*?(File "<string>", line \d*,)*/, ""
+  lineNumber = 0
   if errorOnly.indexOf("SyntaxError") != -1
     console.log errorOnly
     match = /SyntaxError: \(['"]([^]*)['"], \('<string>',[^]*\)\)/.exec errorOnly
     errorOnly = "SyntaxError: " + match[1].replace /\\'/g, ""
     errorOnly = errorOnly.replace /'''/g, "'"
-  spells.update spellId, {$set: {errorMessage: stacktrace, errorOnly: errorOnly}}
+    match = /'<string>', (\d*)/.exec stacktrace
+    lineNumber = parseInt match[1]
+  else
+    match = /line (\d*), in <module>/
+    lineNumber = parseInt match[1]
+  preprocessSpells = []
+  for spell in spells
+    if spell["preprocess"]
+      preprocessSpells.append(spell)
+  preprocSpellsLength = 0
+  for spell in preprocessSpells
+    console.log spell
+    preprocSpellsLength += (/\n/g.exec spell["code"]).length
+  spells.update spellId, {$set: {errorMessage: stacktrace, errorOnly: errorOnly, line: lineNumber - preprocSpellsLength}}
 
 addEnchantment = (userId, name, itemMaterial, action, spellIds) ->
   check(userId, String)

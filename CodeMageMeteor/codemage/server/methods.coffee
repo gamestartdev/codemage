@@ -25,7 +25,12 @@ spellException = (stacktrace, spellId) ->
     return
   match = /([^]*?)at org\.python[^]*/g.exec stacktrace
   stacktrace = match[1]
-  errorOnly = stacktrace.replace /Traceback[^]*studentCode[^]*?File "<string>", line \d*,/, ""
+  errorOnly = stacktrace.replace /Traceback[^]*studentCode[^]*?(File "<string>", line \d*,)*/, ""
+  if errorOnly.indexOf("SyntaxError") != -1
+    console.log errorOnly
+    match = /SyntaxError: \(['"]([^]*)['"], \('<string>',[^]*\)\)/.exec errorOnly
+    errorOnly = "SyntaxError: " + match[1].replace /\\'/g, ""
+    errorOnly = errorOnly.replace /'''/g, "'"
   spells.update spellId, {$set: {errorMessage: stacktrace, errorOnly: errorOnly}}
 
 addEnchantment = (userId, name, itemMaterial, action, spellIds) ->

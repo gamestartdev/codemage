@@ -20,11 +20,9 @@
     </div>
 
     <a href="#" style="color:green" class="spellStatus spellStatus-{{status}}"><b>{{status}}</b></a>
-    {{#if errorMessageLines}}
-        <span style="color:red">
-            {{#each errorMessageLines}}
-                {{line}}<br>
-            {{/each}}
-        </span>
+    {{#if errorMessage}}
+        <a title="{{errorMessage}}" style="color:red">
+            {{errorOnly}}
+        </a>
     {{/if}}
 </template>

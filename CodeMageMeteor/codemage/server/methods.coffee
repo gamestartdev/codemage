@@ -21,17 +21,12 @@ spellException = (stacktrace, spellId) ->
   check(stacktrace, String)
   check(spellId, String)
   if stacktrace == ""
-    spells.update spellId, {$set: {errorMessageLines: null}}
+    spells.update spellId, {$set: {errorMessage: null, errorOnly: null}}
     return
   match = /([^]*?)at org\.python[^]*/g.exec stacktrace
-  console.log match
   stacktrace = match[1]
   errorOnly = stacktrace.replace /Traceback[^]*studentCode[^]*?File "<string>", line \d*,/, ""
-  stacktrace = stacktrace.split "\n"
-  for line in stacktrace
-    stacktrace[stacktrace.indexOf(line)] = {line: line}
-  console.log stacktrace
-  spells.update spellId, {$set: {errorMessageLines: stacktrace}}
+  spells.update spellId, {$set: {errorMessage: stacktrace, errorOnly: errorOnly}}
 
 addEnchantment = (userId, name, itemMaterial, action, spellIds) ->
   check(userId, String)

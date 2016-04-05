@@ -22,7 +22,7 @@
     <a href="#" style="color:green" class="spellStatus spellStatus-{{status}}"><b>{{status}}</b></a>
     {{#if errorMessage}}
         <a title="{{errorMessage}}" style="color:red">
-            {{errorOnly}}
+            {{errorOnly}} at line {{line}}
         </a>
     {{/if}}
 </template>

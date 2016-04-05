@@ -25,16 +25,17 @@ spellException = (stacktrace, spellId) ->
     return
   match = /([^]*?)at org\.python[^]*/g.exec stacktrace
   stacktrace = match[1]
-  errorOnly = stacktrace.replace /Traceback[^]*studentCode[^]*?(File "<string>", line \d*,)*/, ""
+  #errorOnly = stacktrace.replace /Traceback[^]*studentCode[^]*?(File "<string>", line \d*,)*/, ""
+  errorOnly = stacktrace.replace /[^]*line \d*, /, ""
   lineNumber = 0
   if errorOnly.indexOf("SyntaxError") != -1
     match = /SyntaxError: \(['"]([^]*)['"], \('<string>',[^]*\)\)/.exec errorOnly
     errorOnly = "SyntaxError: " + match[1].replace /\\'/g, ""
     errorOnly = errorOnly.replace /'''/g, "'"
     match = /'<string>', (\d*)/.exec stacktrace
-    lineNumber = (parseInt match[1]) + 1
+    lineNumber = (parseInt match[1])
   else
-    match = /line (\d*), in studentCode/.exec stacktrace
+    match = /[^]* line (\d*), /.exec stacktrace
     lineNumber = parseInt match[1]
   preprocessSpells = spells.find( {preprocess:true} ).fetch()
   preprocSpellsLength = 0

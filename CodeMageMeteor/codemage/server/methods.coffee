@@ -34,13 +34,14 @@ spellException = (stacktrace, spellId) ->
     match = /'<string>', (\d*)/.exec stacktrace
     lineNumber = (parseInt match[1]) + 1
   else
-    match = /line (\d*), in <module>/.exec stacktrace
+    match = /line (\d*), in studentCode/.exec stacktrace
     lineNumber = parseInt match[1]
   preprocessSpells = spells.find( {preprocess:true} ).fetch()
   preprocSpellsLength = 0
   for spell in preprocessSpells
     preprocSpellsLength += (spell.code.split /\n/g).length
-  spells.update spellId, {$set: {errorMessage: stacktrace, errorOnly: errorOnly, line: lineNumber - preprocSpellsLength - 2}}
+  
+  spells.update spellId, {$set: {errorMessage: stacktrace, errorOnly: errorOnly, line: lineNumber - preprocSpellsLength - 1}} #the one line is def studentCode():, and is injected from Java.
 
 addEnchantment = (userId, name, itemMaterial, action, spellIds) ->
   check(userId, String)

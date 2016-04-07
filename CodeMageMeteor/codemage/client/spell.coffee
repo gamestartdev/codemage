@@ -18,7 +18,7 @@ Template.spell.events
     Meteor.call 'updateSpell', this._id, {preprocess: !preprocess}
 
   'click .spell-name': (e, t) ->
-    newName = prompt("Spell name:", this.name)
+    newName = prompt("Spell name:", this.name) or this.name
     Meteor.call 'updateSpell', this._id, {name: newName}
 
   'click .addSpellToEnchantment': (e,t) ->

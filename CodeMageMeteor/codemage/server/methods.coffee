@@ -27,6 +27,7 @@ spellException = (stacktrace, spellId) ->
   stacktrace = match[1]
   #errorOnly = stacktrace.replace /Traceback[^]*studentCode[^]*?(File "<string>", line \d*,)*/, ""
   errorOnly = stacktrace.replace /[^]*line \d*, /, ""
+  errorOnly = errorOnly.replace /in trace_function[\r\n]*Exception: |in sleep[\r\n]*Exception: /, ""
   lineNumber = 0
   if errorOnly.indexOf("SyntaxError") != -1
     match = /SyntaxError: \(['"]([^]*)['"], \('<string>',[^]*\)\)/.exec errorOnly

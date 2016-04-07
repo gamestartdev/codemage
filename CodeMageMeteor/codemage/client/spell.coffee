@@ -5,6 +5,11 @@ Template.spell.helpers
   isSpellAssignedToEnchantment: (spell) ->
     enchantmentId = this._id
     return enchantments.find({_id:enchantmentId, spellIds: spell._id}).count() != 0
+  lineNumber: ->
+    if this.line < 0
+      return ""
+    else
+      return "at line " + this.line
 
 Template.spell.events
   'click .togglePreprocess': (e,t) ->

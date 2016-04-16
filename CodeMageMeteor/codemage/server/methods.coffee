@@ -56,7 +56,7 @@ addEnchantment = (userId, name, itemMaterial, action, spellIds) ->
     name: name
     itemMaterial: itemMaterial
     action: action
-    spellIds: spellIds? or []
+    spellIds: spellIds or []
     code: "from codemage import *"
     version: share.codeMageConstants.currentVersion
     namespace: share.codeMageConstants.defaultNamespace

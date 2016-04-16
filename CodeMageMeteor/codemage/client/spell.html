@@ -9,7 +9,7 @@
             <h5><a href="#" style="{{#if preprocess}}color:red{{/if}}" class="togglePreprocess">Preprocess</a></h5>
 
             <h5><a href="#" style="color:red" class="remove-spell">Delete</a></h5>
-            <select>
+            <select class="itemMaterialSelector">
                 {{#each itemMaterials}}
                     {{#if isCurrentItemMaterial .. this}}
                         <option class="itemMaterialSelector" value="{{this}}" selected>{{this}}</option>
@@ -18,7 +18,7 @@
                     {{/if}}
                 {{/each}}
             </select>
-            <select>
+            <select class="actionSelector">
                 {{#each actions}}
                     {{#if isCurrentAction ..}}
                         <option value="{{this}}" selected>{{this}}</option>

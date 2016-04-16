@@ -34,6 +34,20 @@ Template.spell.events
       console.log enchantments.findOne {itemMaterial: e.target.value, action: enchantment.action}
       Meteor.call 'addSpellToEnchantment', this._id, (enchantments.findOne {itemMaterial: e.target.value, action: enchantment.action})._id
 
+  'input .actionSelector': (e,t) ->
+    userId = (tomes.findOne this.tomeId).userId
+    enchantment = enchantments.findOne {userId: userId}
+    console.log enchantment
+    if enchantment
+      Meteor.call "removeSpellFromEnchantment", this._id, enchantment._id
+    else
+      enchantment = {itemMaterials: share.codeMageConstants.itemMaterials[0]}
+    if !enchantments.findOne {itemMaterial: enchantment.itemMaterial, action: e.target.value}
+      Meteor.call 'addEnchantment', userId, "meta", enchantment.itemMaterial, e.target.value, [this._id]
+#Ignore WebStorm saying there's an error, it works fine.
+    else
+      Meteor.call 'addSpellToEnchantment', this._id, (enchantments.findOne {itemMaterial: enchantment.itemMaterial, action: e.target.value})._id
+
   'click .togglePreprocess': (e,t) ->
     preprocess = spells.findOne(this._id).preprocess
     console.log preprocess

@@ -24,7 +24,7 @@ public class Main {
 		ddp.connect(meterUsername, meteorPassword);
 		//runWoodenSwordSwingCodeForPlayer(ddp, minecraftPlayerId2);
 		
-		while(true){
+		/*while(true){
 			Thread.sleep(3000);
 			System.out.println("Swinging..");
 			IUser user = ddp.getUser("GameStartSchool");
@@ -36,7 +36,7 @@ public class Main {
 					System.out.println("Spell! : "+spell.getCode());
 				}
 			}
-		}
+		}*/
 		
 
 		//		ddp.disconnect();

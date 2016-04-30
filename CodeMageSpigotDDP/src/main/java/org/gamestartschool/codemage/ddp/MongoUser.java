@@ -13,14 +13,14 @@ import ch.lambdaj.function.matcher.Predicate;
 
 class MongoUser extends AMongoDocument implements IUser {
 
-	private ICodeMageCollection<MongoEnchantment> enchantments;
+	private ICodeMageCollection<MongoSpell> spells;
 	private IUserMeteorMethods meteorMethods;
 	private boolean removed;
 
-	public MongoUser(ICodeMageCollection<MongoEnchantment> enchantments,
+	public MongoUser(ICodeMageCollection<MongoSpell> spells,
 			String id, Map<String, Object> fields, IUserMeteorMethods methodCaller) {
 		super(id, fields);
-		this.enchantments = enchantments;
+		this.spells = spells;
 		meteorMethods = methodCaller;
 	}
 
@@ -35,7 +35,7 @@ class MongoUser extends AMongoDocument implements IUser {
 		meteorMethods.healthUpdate(id, health);
 	}
 
-	public List<IEnchantment> getEnchantments() {
+	/*public List<IEnchantment> getEnchantments() {
 		if (removed) return new ArrayList<IEnchantment>();
 		
 		Predicate<MongoEnchantment> enchantmentsForUser = new Predicate<MongoEnchantment>() {
@@ -44,10 +44,10 @@ class MongoUser extends AMongoDocument implements IUser {
 				return id.equals(e.userId());
 			}
 		};
-		return filter(enchantmentsForUser, new ArrayList<IEnchantment>(enchantments.getAll()));
-	}
+		return filter(enchantmentsForUser, new ArrayList<IEnchantment>(spells.getAll()));*/
+	//}
 
-	@Override
+	/*@Override
 	public List<IEnchantment> getEnchantments(final Material material, final Action action) {
 		Predicate<MongoEnchantment> enchantmentsForTriggerBinding = new Predicate<MongoEnchantment>() {
 			@Override
@@ -56,7 +56,7 @@ class MongoUser extends AMongoDocument implements IUser {
 			}
 		};
 		return filter(enchantmentsForTriggerBinding, getEnchantments());
-	}
+	}*/
 
 	class EnchantmentsByPlayer extends Predicate<MongoEnchantment> {
 
@@ -69,5 +69,29 @@ class MongoUser extends AMongoDocument implements IUser {
 	@Override
 	public void removed() {
 		removed = true;
+	}
+
+	@Override
+	public List<ISpell> getSpells() {
+		if (removed) return new ArrayList<ISpell>();
+		
+		Predicate<MongoSpell> spellsForUser = new Predicate<MongoSpell>() {
+			@Override
+			public boolean apply(MongoSpell e) {
+				return id.equals(e.userId());
+			}
+		};
+		return filter(spellsForUser, new ArrayList<ISpell>(spells.getAll()));
+	}
+
+	@Override
+	public List<ISpell> getSpells(final Material material, final Action action) {
+		Predicate<MongoSpell> spellsForTriggerBinding = new Predicate<MongoSpell>() {
+			@Override
+			public boolean apply(MongoSpell e) {
+				return material.equals(e.getMaterial()) && action.equals(e.getAction());
+			}
+		};
+		return filter(spellsForTriggerBinding, getSpells());
 	}
 }

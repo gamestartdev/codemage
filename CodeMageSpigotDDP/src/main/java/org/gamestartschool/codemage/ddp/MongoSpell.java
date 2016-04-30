@@ -9,7 +9,12 @@ class MongoSpell extends AMongoDocument implements ISpell {
 		super(id, fields);
 		this.meteorCaller = methodCaller;
 	}
-
+	
+	@Override
+	public String userId() {
+		return getStringField("userId");
+	}
+	
 	@Override
 	public String getCode() {
 		return getStringField("code");
@@ -38,5 +43,15 @@ class MongoSpell extends AMongoDocument implements ISpell {
 
 	public boolean isGameWrapper() {
 		return getBooleanField("preprocess");
+	}
+
+	@Override
+	public String getAction() {
+		return getStringField("action");
+	}
+
+	@Override
+	public String getMaterial() {
+		return getStringField("itemMaterial");
 	}
 }

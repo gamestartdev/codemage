@@ -19,18 +19,23 @@ class NullUser implements IUser {
 		return new ArrayList<ISpell>();
 	}
 
-	@Override
+	/*@Override
 	public List<IEnchantment> getEnchantments(Material material, Action action){
 		return new ArrayList<IEnchantment>();
 	}
 	@Override
 	public List<IEnchantment> getEnchantments() {
 		return new ArrayList<IEnchantment>();
-	}
+	}*/
 	
 	@Override
 	public void updateHealth(int health) {
 		
+	}
+
+	@Override
+	public List<ISpell> getSpells(Material material, Action action) {
+		return new ArrayList<ISpell>();
 	}
 
 }

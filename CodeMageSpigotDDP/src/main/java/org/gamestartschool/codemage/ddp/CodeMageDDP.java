@@ -170,7 +170,7 @@ public class CodeMageDDP {
 
 		@Override
 		MongoUser documentAdded(String id, Map<String, Object> fields) {
-			return new MongoUser(enchantments, id, fields, methodCaller);
+			return new MongoUser(spells, id, fields, methodCaller);
 		}
 	};
 

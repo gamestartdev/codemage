@@ -7,7 +7,9 @@ import org.bukkit.event.block.Action;
 
 public interface IUser {
 	String getMinecraftUserId();
-	List<IEnchantment> getEnchantments();
-	List<IEnchantment> getEnchantments(Material material, Action action);
+	//List<IEnchantment> getEnchantments();
+	//List<IEnchantment> getEnchantments(Material material, Action action);
+	List<ISpell> getSpells();
+	List<ISpell> getSpells(Material material, Action action);
 	void updateHealth(int health);
 }

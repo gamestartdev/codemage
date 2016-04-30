@@ -15,6 +15,6 @@ Template.tome.events
   'click .add-spell': (e,t) ->
     tome = this
     spellName = tome.name + " Spell " + spells.find({tomeId: tome._id}).count()
-    Meteor.call 'addSpell', tome._id, spellName, share.codeMageConstants.defaultCode
+    Meteor.call 'addSpell', tome._id, tome.userId, spellName, share.codeMageConstants.defaultCode
   'click .spellStatus': (e,t) ->
     Meteor.call 'spellStatus', this._id, !this.status

@@ -72,13 +72,10 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 
 					List<ISpell> gameWrappers = ddp.getAllGameWrappers();
 					System.out.println("gameWrappers: " + gameWrappers.size());
-					List<IEnchantment> enchantments = user.getEnchantments(material, action);
-					for (IEnchantment e : enchantments) {
-						List<ISpell> spells = e.getSpells();
-						for (ISpell spell : spells) {
-							log("runningCode: " + spell.getCode());
-							codeRunner.executeCode(spell.getCode(), player, gameWrappers, spell.getName(), spell.getId());
-						}
+					List<ISpell> spells = user.getSpells(material, action);
+					for (ISpell spell : spells) {
+						log("runningCode: " + spell.getCode());
+						codeRunner.executeCode(spell.getCode(), player, gameWrappers, spell.getName(), spell.getId());
 					}
 				}
 			}

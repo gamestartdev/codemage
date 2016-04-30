@@ -17,6 +17,14 @@ updateTomeName = (tomeId, tomeName) ->
   check(tomeName, String)
   tomes.update tomeId, {$set: {name: tomeName}}
 
+setSpellItemMaterial = (spellId, material) ->
+  check(spellId, String)
+  spells.update spellId, {$set: {itemMaterial: material}}
+
+setSpellAction = (spellId, action) ->
+  check(spellId, String)
+  spells.update spellId, {$set: {action: action}}
+
 spellException = (stacktrace, spellId) ->
   check(stacktrace, String)
   check(spellId, String)
@@ -82,12 +90,13 @@ removeSpellFromEnchantment = (spellId, enchantmentId) ->
   check(enchantmentId, String)
   enchantments.update enchantmentId, { $pull: { spellIds: spellId }}
 
-addSpell = (tomeId, name, code) ->
+addSpell = (tomeId, userId, name, code) ->
   check(tomeId, String)
   check(name, String)
   check(code, String)
   spells.insert
     tomeId: tomeId
+    userId: userId
     name: name
     code: code
     message: ""

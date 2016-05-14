@@ -30,4 +30,5 @@ velocity:html-reporter
 
 matb33:collection-hooks
 mandrill:ace
-standard-minifiers
+standard-minifier-css
+standard-minifier-js

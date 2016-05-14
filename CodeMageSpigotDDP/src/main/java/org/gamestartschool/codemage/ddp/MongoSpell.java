@@ -2,6 +2,9 @@ package org.gamestartschool.codemage.ddp;
 
 import java.util.Map;
 
+import org.bukkit.Material;
+import org.bukkit.event.block.Action;
+
 class MongoSpell extends AMongoDocument implements ISpell {
 	private ISpellMeteorMethodCaller meteorCaller;
 
@@ -46,12 +49,13 @@ class MongoSpell extends AMongoDocument implements ISpell {
 	}
 
 	@Override
-	public String getAction() {
-		return getStringField("action");
+	public Action getAction() {
+		return Action.valueOf(getStringField("action"));
 	}
 
 	@Override
-	public String getMaterial() {
-		return getStringField("itemMaterial");
+	public Material getMaterial() {
+		System.out.println(toString());
+		return Material.valueOf(getStringField("itemMaterial"));
 	}
 }

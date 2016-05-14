@@ -19,10 +19,12 @@ updateTomeName = (tomeId, tomeName) ->
 
 setSpellItemMaterial = (spellId, material) ->
   check(spellId, String)
+  check(material, String)
   spells.update spellId, {$set: {itemMaterial: material}}
 
 setSpellAction = (spellId, action) ->
   check(spellId, String)
+  check(action, String)
   spells.update spellId, {$set: {action: action}}
 
 spellException = (stacktrace, spellId) ->
@@ -94,7 +96,10 @@ addSpell = (tomeId, userId, name, code) ->
   check(tomeId, String)
   check(name, String)
   check(code, String)
+  check(userId, String)
   spells.insert
+    itemMaterial: share.codeMageConstants.itemMaterials[0]
+    action: share.codeMageConstants.actions[0]
     tomeId: tomeId
     userId: userId
     name: name
@@ -140,6 +145,8 @@ Meteor.methods
   updateSpell: updateSpell
   removeSpell: removeSpell
   spellException: spellException
+  setSpellAction: setSpellAction
+  setSpellItemMaterial: setSpellItemMaterial
 
   addSpellToEnchantment: addSpellToEnchantment
   removeSpellFromEnchantment: removeSpellFromEnchantment

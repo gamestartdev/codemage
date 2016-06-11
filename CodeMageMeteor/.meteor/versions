@@ -42,8 +42,8 @@ iron:core@1.0.11
 iron:dynamic-template@1.0.12
 iron:layout@1.0.12
 iron:location@1.0.11
-iron:middleware-stack@1.0.11
-iron:router@1.0.12
+iron:middleware-stack@1.1.0
+iron:router@1.0.13
 iron:url@1.0.11
 jparker:crypto-base64@0.1.0
 jparker:crypto-core@0.1.0
@@ -66,7 +66,7 @@ modules@0.6.1
 modules-runtime@0.6.3
 mongo@1.1.7
 mongo-id@1.0.4
-npm-bcrypt@0.8.5
+npm-bcrypt@0.8.6_1
 npm-mongo@1.4.43
 oauth@1.1.10
 oauth2@1.1.9
@@ -91,7 +91,7 @@ sanjo:meteor-version@1.0.0
 service-configuration@1.0.9
 session@1.1.5
 sha@1.0.7
-softwarerero:accounts-t9n@1.3.3
+softwarerero:accounts-t9n@1.3.4
 spacebars@1.0.11
 spacebars-compiler@1.0.11
 srp@1.0.8

@@ -5,7 +5,6 @@
 	<classpathentry kind="src" path="src/test/resources"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="con" path="org.springsource.ide.eclipse.gradle.classpathcontainer"/>
-	<classpathentry kind="lib" path="lib/spigot-api-1.8.8-R0.1-SNAPSHOT-shaded.jar"/>
 	<classpathentry kind="lib" path="includedLibs/cglib-nodep-2.2.jar"/>
 	<classpathentry kind="lib" path="includedLibs/commons-collections-3.2.1.jar"/>
 	<classpathentry kind="lib" path="includedLibs/gson-2.3.1.jar"/>
@@ -17,5 +16,6 @@
 	<classpathentry kind="lib" path="includedLibs/slf4j-api-1.7.12.jar"/>
 	<classpathentry kind="lib" path="includedLibs/slf4j-simple-1.7.12.jar"/>
 	<classpathentry kind="lib" path="includedLibs/srp6a-1.5.3.jar"/>
+	<classpathentry kind="lib" path="lib/spigot-api-1.10-R0.1-SNAPSHOT-shaded.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

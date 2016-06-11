@@ -104,14 +104,7 @@ public class CodeRunner implements Runnable {
 				}
 				
 				for (Sound s : Sound.values()) {
-					if(s != Sound.GLASS && s != Sound.WATER && s != Sound.LAVA && s != Sound.PORTAL)
-					{
-						pi.set(s.toString(), s);
-					}
-					else
-					{
-						pi.set(s.toString() + "_SOUND", s);
-					}
+					pi.set(s.toString(), s);
 				}
 				
 				String wrapperCode = "";

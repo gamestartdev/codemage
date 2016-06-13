@@ -304,9 +304,7 @@ def spawnentity(x, y, z, entitytype, nbt={}):
     MojangsonParser = _importNms("MojangsonParser")
     craftentity = mc(jplayer.getWorld().spawnEntity, loc(x, y, z), entitytype)
     entity = craftentity.getHandle()
-    tag = entity.getNBTTag()
-    if tag == None:
-        tag = NBTTagCompound()
+    tag = NBTTagCompound()
     entity.c(tag)
     tagclass = tag.getClass() #Reflection, because there's no getmap or setmap.
     mapField = tagclass.getDeclaredField("map")

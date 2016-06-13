@@ -248,14 +248,17 @@ def getblock(x, y, z):
         return AIR
 
 def potioneffect(effect, duration=10, amplifier=1, target=player):
-    MobEffect = _importNms("MobEffect")
+    from org.bukkit import Bukkit
+    from org.bukkit.potion import PotionEffect
+    CraftLivingEntity = _importCraft("entity", "CraftLivingEntity")
     if object.__getattribute__(target, "__class__") == PyPlayer:
-        target = object.__getattribute__(player, "javaversion").getHandle()
+        target = object.__getattribute__(player, "javaversion")
     else:
-        target = object.__getattribute__(target, "javaversion")
-    mobeffect = MobEffect(effect.getId(), duration, amplifier - 1, False, True)
+        target = CraftLivingEntity(Bukkit.getServer(), object.__getattribute__(target, "javaversion"))
+    effectobj = PotionEffect(effect, duration * 20, amplifier)
+    print "test"
     try:
-        mc_fast(target.addEffect, mobeffect)
+        mc_fast(effectobj.apply, target)
     except Exception:
         pass
 

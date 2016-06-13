@@ -8,9 +8,9 @@ Template.spell.helpers
     enchantmentId = this._id
     return enchantments.find({_id:enchantmentId, spellIds: spell._id}).count() != 0
   isCurrentItemMaterial: (spell) ->
-    return enchantments.findOne({spellIds: spell._id}).itemMaterial is String(this)
+    return spell.itemMaterial is String(this)
   isCurrentAction: (spell) ->
-    return enchantments.findOne({spellIds: spell._id}).action is String(this)
+    return spell.action is String(this)
   lineNumber: ->
     if this.line < 0
       return ""

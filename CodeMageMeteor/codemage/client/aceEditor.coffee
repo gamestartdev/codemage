@@ -19,9 +19,10 @@ Template.aceEditor.onRendered ->
     if Template.instance().markerID?
       session.removeMarker Template.instance().markerID
     console.log "test2"
-    range = new Range(spell.line - 1, 0, spell.line - 1, 2)
-    markerID = session.addMarker range, "highlight", "fullLine", false
-    Template.instance().markerID = markerID
+    if spell.line != undefined
+      range = new Range(spell.line - 1, 0, spell.line - 1, 2)
+      markerID = session.addMarker range, "highlight", "fullLine", false
+      Template.instance().markerID = markerID
     #selection = session.getSelection()
     #selection.moveCursorToPosition {row:spell.line, column:0}
     #selection.selectLine()

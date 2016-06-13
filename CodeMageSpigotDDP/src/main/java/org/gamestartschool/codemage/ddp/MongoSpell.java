@@ -58,4 +58,9 @@ class MongoSpell extends AMongoDocument implements ISpell {
 		System.out.println(toString());
 		return Material.valueOf(getStringField("itemMaterial"));
 	}
+
+	@Override
+	public int getPreprocessPriority() {
+		return getIntegerField("preprocessPriority");
+	}
 }

@@ -47,7 +47,10 @@ public abstract class AMongoDocument implements IMongoDocument {
 	protected String getStringField(String key){
 		return (String) getField(key);
 	}
-
+	
+	protected int getIntegerField(String key){
+		return ((Double)getField(key)).intValue(); //Because java defaults it to Double (not double, Double), this is needed...
+	}
 
 	protected boolean getBooleanField(String key){
 		return (boolean) getField(key);

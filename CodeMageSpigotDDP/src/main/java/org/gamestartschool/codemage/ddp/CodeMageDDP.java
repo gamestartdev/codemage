@@ -239,7 +239,7 @@ public class CodeMageDDP {
 		return NullUser.NULL;
 	}
 
-	public List<ISpell> getAllGameWrappers() {
+	public ISpell[] getAllGameWrappers() {
 		Predicate<MongoSpell> gameWrappersForUser = new Predicate<MongoSpell>() {
 			
 			@Override
@@ -251,7 +251,26 @@ public class CodeMageDDP {
 		System.out.println("allSpells: " + allSpells.size());
 		List<MongoSpell> gameWrappers = filter(gameWrappersForUser, allSpells);
 		System.out.println("gameWrappers1: " + gameWrappers.size());
-		return new ArrayList<ISpell>(gameWrappers);
+		ISpell[] gameWrapperArray = new ISpell[gameWrappers.size()];
+		ArrayList<MongoSpell> miscGameWrappers = new ArrayList<MongoSpell>();
+		for(MongoSpell spell : gameWrappers)
+		{
+			if(spell.getPreprocessPriority() != -1)
+			{
+				gameWrapperArray[spell.getPreprocessPriority()] = spell;
+			}
+			else
+			{
+				miscGameWrappers.add(spell);
+			}
+		}
+		int index = gameWrapperArray.length;
+		for(MongoSpell spell: miscGameWrappers)
+		{
+			gameWrapperArray[index] = spell;
+			index++;
+		}
+		return gameWrapperArray;
 	}
 	
 	

@@ -70,8 +70,8 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 					System.out.println("Item Type: " + material);
 					System.out.println("Binding Type: " + action);
 
-					List<ISpell> gameWrappers = ddp.getAllGameWrappers();
-					System.out.println("gameWrappers: " + gameWrappers.size());
+					ISpell[] gameWrappers = ddp.getAllGameWrappers();
+					System.out.println("gameWrappers: " + gameWrappers.length);
 					List<ISpell> spells = user.getSpells(material, action);
 					for (ISpell spell : spells) {
 						log("runningCode: " + spell.getCode());

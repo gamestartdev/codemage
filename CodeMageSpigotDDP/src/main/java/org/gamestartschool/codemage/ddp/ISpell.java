@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.event.block.Action;
 
 public interface ISpell {
+	public int getPreprocessPriority();
 	public String getCode();
 	public String getName();
 	public boolean getStatus();

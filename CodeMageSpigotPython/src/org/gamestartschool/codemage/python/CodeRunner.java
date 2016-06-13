@@ -52,7 +52,7 @@ public class CodeRunner implements Runnable {
 
 	private final ExecutorService interpreterPool = Executors.newFixedThreadPool(25);
 
-	public void executeCode(final String code, final Player player, final List<ISpell> gameWrappers, final String spellname, final String spellId) {
+	public void executeCode(final String code, final Player player, final ISpell[] gameWrappers, final String spellname, final String spellId) {
 		methodCaller.spellException("", spellId);
 		String nonFinalCode = code.replaceAll("import ", "iMpOrT ");
 		nonFinalCode = nonFinalCode.replaceAll("_importNms", "_importnms");

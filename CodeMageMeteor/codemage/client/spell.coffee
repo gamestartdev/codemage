@@ -24,6 +24,10 @@ Template.spell.events
     console.log preprocess
     Meteor.call 'updateSpell', this._id, {preprocess: !preprocess}
 
+  'click .toggleLibrary': (e,t) ->
+    library = spells.findOne(this._id).library
+    Meteor.call 'updateSpell', this._id, {library: !library}
+
   'click .spell-name': (e, t) ->
     newName = prompt("Spell name:", this.name) or this.name
     Meteor.call 'updateSpell', this._id, {name: newName}

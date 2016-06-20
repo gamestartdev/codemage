@@ -1,6 +1,5 @@
 Template.tome.helpers
   spells: -> return spells.find { tomeId: this._id }
-  enchantments: -> return enchantments.find { tomeId: this._id }
 
 Template.tome.events
   'click .tome-name': (e, t) ->

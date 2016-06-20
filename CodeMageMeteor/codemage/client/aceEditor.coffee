@@ -23,11 +23,3 @@ Template.aceEditor.onRendered ->
       range = new Range(spell.line - 1, 0, spell.line - 1, 2)
       markerID = session.addMarker range, "highlight", "fullLine", false
       Template.instance().markerID = markerID
-    #selection = session.getSelection()
-    #selection.moveCursorToPosition {row:spell.line, column:0}
-    #selection.selectLine()
-
-#Template.aceEditor.onRendered ->
-#  this.autorun ->
-#    editor = MandrillAce.getInstance();
-#    editor.setValue(Template.currentData().code)

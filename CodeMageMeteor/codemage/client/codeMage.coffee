@@ -1,7 +1,3 @@
-Template.codeMage.helpers
-  enchantmentsForUser: (user) ->
-    return enchantments.find {userId: user?._id}
-
 Template.codeMage.events
   'click .minecraft-id-input': (e, t) ->
     if t.data.user._id == Meteor.userId()

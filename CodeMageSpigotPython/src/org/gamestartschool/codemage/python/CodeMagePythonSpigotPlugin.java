@@ -16,7 +16,6 @@ import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.gamestartschool.codemage.ddp.CodeMageDDP;
-import org.gamestartschool.codemage.ddp.IEnchantment;
 import org.gamestartschool.codemage.ddp.ISpell;
 import org.gamestartschool.codemage.ddp.ISpellMeteorMethodCaller;
 import org.gamestartschool.codemage.ddp.IUser;

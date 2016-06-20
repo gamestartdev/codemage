@@ -35,37 +35,6 @@ class MongoUser extends AMongoDocument implements IUser {
 		meteorMethods.healthUpdate(id, health);
 	}
 
-	/*public List<IEnchantment> getEnchantments() {
-		if (removed) return new ArrayList<IEnchantment>();
-		
-		Predicate<MongoEnchantment> enchantmentsForUser = new Predicate<MongoEnchantment>() {
-			@Override
-			public boolean apply(MongoEnchantment e) {
-				return id.equals(e.userId());
-			}
-		};
-		return filter(enchantmentsForUser, new ArrayList<IEnchantment>(spells.getAll()));*/
-	//}
-
-	/*@Override
-	public List<IEnchantment> getEnchantments(final Material material, final Action action) {
-		Predicate<MongoEnchantment> enchantmentsForTriggerBinding = new Predicate<MongoEnchantment>() {
-			@Override
-			public boolean apply(MongoEnchantment e) {
-				return material.equals(e.getMaterial()) && action.equals(e.getAction());
-			}
-		};
-		return filter(enchantmentsForTriggerBinding, getEnchantments());
-	}*/
-
-	class EnchantmentsByPlayer extends Predicate<MongoEnchantment> {
-
-		@Override
-		public boolean apply(MongoEnchantment e) {
-			return id.equals(e.userId());
-		}
-	}
-
 	@Override
 	public void removed() {
 		removed = true;

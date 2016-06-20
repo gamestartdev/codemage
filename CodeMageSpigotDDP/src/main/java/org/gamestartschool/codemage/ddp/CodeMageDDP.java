@@ -183,15 +183,6 @@ public class CodeMageDDP {
 		}
 	};
 
-	private final ACodeMageCollection<MongoEnchantment> enchantments = new ACodeMageCollection<MongoEnchantment>(
-			"enchantments") {
-
-		@Override
-		MongoEnchantment documentAdded(String id, Map<String, Object> fields) {
-			return new MongoEnchantment(spells, id, fields);
-		}
-	};
-
 	private boolean isReady() {
 		for (ACodeMageCollection<?> collection : subscriptions) {
 			if (!collection.isReady())
@@ -215,7 +206,6 @@ public class CodeMageDDP {
 		reportCodeMageServerStatus(CodeMageServerStatus.SUBSCRIBING);
 
 		createSubscription(users);
-		createSubscription(enchantments);
 		createSubscription(spells);
 
 		while (!isReady()) {

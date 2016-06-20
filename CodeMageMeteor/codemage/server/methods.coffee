@@ -55,43 +55,6 @@ spellException = (stacktrace, spellId) ->
   
   spells.update spellId, {$set: {errorMessage: stacktrace, errorOnly: errorOnly, line: lineNumber - preprocSpellsLength - 1}} #the one line is def studentCode():, and is injected from Java.
 
-addEnchantment = (userId, name, itemMaterial, action, spellIds) ->
-  check(userId, String)
-  check(name, String)
-  check(itemMaterial, String)
-  check(action, String)
-  check(spellIds, Match.Optional(Array))
-  enchantments.insert
-    userId: userId
-    name: name
-    itemMaterial: itemMaterial
-    action: action
-    spellIds: spellIds or []
-    code: "from codemage import *"
-    version: share.codeMageConstants.currentVersion
-    namespace: share.codeMageConstants.defaultNamespace
-
-removeEnchantment = (enchantmentId) ->
-  check(enchantmentId, String)
-  console.log "Removing enchantment: " + enchantmentId
-  enchantments.remove enchantmentId
-
-updateEnchantment = (enchantmentId, data) ->
-  check(enchantmentId, String)
-  check(data, Object)
-  console.log data
-  enchantments.update enchantmentId, {$set: data }
-
-addSpellToEnchantment = (spellId, enchantmentId) ->
-  check(spellId, String)
-  check(enchantmentId, String)
-  enchantments.update enchantmentId, { $addToSet: { spellIds: spellId }}
-
-removeSpellFromEnchantment = (spellId, enchantmentId) ->
-  check(spellId, String)
-  check(enchantmentId, String)
-  enchantments.update enchantmentId, { $pull: { spellIds: spellId }}
-
 addSpell = (tomeId, userId, name, code) ->
   check(tomeId, String)
   check(name, String)
@@ -138,19 +101,12 @@ Meteor.methods
   removeTome: removeTome
   updateTomeName: updateTomeName
 
-  addEnchantment: addEnchantment
-  removeEnchantment: removeEnchantment
-  updateEnchantment: updateEnchantment
-
   addSpell: addSpell
   updateSpell: updateSpell
   removeSpell: removeSpell
   spellException: spellException
   setSpellAction: setSpellAction
   setSpellItemMaterial: setSpellItemMaterial
-
-  addSpellToEnchantment: addSpellToEnchantment
-  removeSpellFromEnchantment: removeSpellFromEnchantment
 
   updateMinecraftPlayerId: updateMinecraftPlayerId
   serverStatus: serverStatus

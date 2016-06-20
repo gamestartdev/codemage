@@ -12,9 +12,9 @@
             <select class="itemMaterialSelector">
                 {{#each itemMaterials}}
                     {{#if isCurrentItemMaterial .. this}}
-                        <option class="itemMaterialSelector" value="{{this}}" selected>{{this}}</option>
+                        <option value="{{this}}" selected>{{this}}</option>
                     {{else}}
-                        <option class="actionSelector" value="{{this}}">{{this}}</option>
+                        <option value="{{this}}">{{this}}</option>
                     {{/if}}
                 {{/each}}
             </select>

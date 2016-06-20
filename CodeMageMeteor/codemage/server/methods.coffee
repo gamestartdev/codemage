@@ -82,7 +82,6 @@ updateSpell = (spellId, data) ->
 removeSpell = (spellId) ->
   check(spellId, String)
   console.log "Removing spell: " + spellId
-  enchantments.update {}, { $pull: { spellIds: spellId }}, { multi: true}
   spells.remove spellId
 
 serverStatus = (codeMageServerIp, codeMageServerPort, status) ->

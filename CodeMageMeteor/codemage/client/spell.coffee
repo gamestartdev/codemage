@@ -40,5 +40,3 @@ Template.spell.events
       tomeId = this.tomeId
       Meteor.call 'removeSpell', this._id, ->
         Router.go('codeMage.tome', {_id: tomeId} )
-
-

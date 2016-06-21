@@ -2,8 +2,9 @@ package org.gamestartschool.codemage.python;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
@@ -32,9 +33,7 @@ public class CodeRunner implements Runnable {
 	@Override
 	public void run() {
 		PythonMethodCall pythonMethodCall = pythonMethodQueue.poll();
-		int i = 0;
 		while (pythonMethodCall != null) {
-			i++;
 			try {
 				pythonMethodCall.result = pythonMethodCall.method.__call__(pythonMethodCall.args);
 			} catch (Exception e) {
@@ -52,9 +51,21 @@ public class CodeRunner implements Runnable {
 
 	private final ExecutorService interpreterPool = Executors.newFixedThreadPool(25);
 
-	public void executeCode(final String code, final Player player, final ISpell[] gameWrappers, final String spellname, final String spellId) {
+	public void executeCode(final String code, final Player player, final ISpell[] gameWrappers, final Map<String, ISpell> libraries, final String spellname, final String spellId) {
 		methodCaller.spellException("", spellId);
-		String nonFinalCode = code.replaceAll("import ", "iMpOrT ");
+		String nonFinalCode = code;
+		final List<ISpell> usedLibraries = new ArrayList<ISpell>();
+		for(String key : libraries.keySet())
+		{
+			if(code.contains("import " + key))
+			{
+				System.out.println(nonFinalCode);
+				nonFinalCode = nonFinalCode.replaceAll("import " + key, "");
+				usedLibraries.add(libraries.get(key));
+				System.out.println(nonFinalCode);
+			}
+		}
+		System.out.println(usedLibraries.toString());
 		nonFinalCode = nonFinalCode.replaceAll("_importNms", "_importnms");
 		nonFinalCode = nonFinalCode.replaceAll("_importCraft", "_importcraft");
 		nonFinalCode = nonFinalCode.replaceAll("startTimestamp", "starttimestamp");
@@ -70,6 +81,7 @@ public class CodeRunner implements Runnable {
 		nonFinalCode = nonFinalCode.replaceAll("trace_function", "TrAcE_fUnCtIoN");
 		nonFinalCode = "def studentCode():\n	" + nonFinalCode + "\nstudentCode()";
 		final String sanitizedCode = nonFinalCode.replaceAll("__import__", "__iMpOrT__");
+		@SuppressWarnings("unused")
 		Future<InteractiveInterpreter> doNotBlockOnThisResultPlease = interpreterPool.submit(new Callable<InteractiveInterpreter>() {
 			
 			@Override
@@ -111,7 +123,9 @@ public class CodeRunner implements Runnable {
 				for (ISpell spell : gameWrappers) {
 					wrapperCode += spell.getCode() + "\n";
 				}
-				boolean errored = false;
+				for (ISpell spell : usedLibraries) {
+					wrapperCode += spell.getCode() + "\n";
+				}
 				try {
 					pi.exec(wrapperCode + sanitizedCode);
 				} catch (Exception e) {
@@ -122,7 +136,6 @@ public class CodeRunner implements Runnable {
 					if(spellId != "<console>") {
 						methodCaller.spellException(trace, spellId);
 					}
-					errored = true;
 				}
 				
 				pi.close();

@@ -6,11 +6,9 @@ import org.bukkit.Material;
 import org.bukkit.event.block.Action;
 
 class MongoSpell extends AMongoDocument implements ISpell {
-	private ISpellMeteorMethodCaller meteorCaller;
 
-	public MongoSpell(String id, Map<String, Object> fields, ISpellMeteorMethodCaller methodCaller) {
+	public MongoSpell(String id, Map<String, Object> fields) {
 		super(id, fields);
-		this.meteorCaller = methodCaller;
 	}
 	
 	@Override
@@ -36,8 +34,6 @@ class MongoSpell extends AMongoDocument implements ISpell {
 	@Override
 	public void changed(Map<String, Object> fields) {
 		super.changed(fields);
-		if("executeRequest".equals(getStatus())) {
-		}
 	}
 
 	@Override
@@ -46,6 +42,10 @@ class MongoSpell extends AMongoDocument implements ISpell {
 
 	public boolean isGameWrapper() {
 		return getBooleanField("preprocess");
+	}
+	
+	public boolean isLibrary() {
+		return getBooleanField("library");
 	}
 
 	@Override
@@ -59,7 +59,6 @@ class MongoSpell extends AMongoDocument implements ISpell {
 		return Material.valueOf(getStringField("itemMaterial"));
 	}
 
-	@Override
 	public int getPreprocessPriority() {
 		return getIntegerField("preprocessPriority");
 	}

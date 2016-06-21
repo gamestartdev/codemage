@@ -179,7 +179,7 @@ public class CodeMageDDP {
 
 		@Override
 		MongoSpell documentAdded(String id, Map<String, Object> fields) {
-			return new MongoSpell(id, fields, methodCaller);
+			return new MongoSpell(id, fields);
 		}
 	};
 
@@ -227,6 +227,22 @@ public class CodeMageDDP {
 			}
 		}
 		return NullUser.NULL;
+	}
+	public Map<String, ISpell> getAllLibraries() {
+		Predicate<MongoSpell> librariesForUser = new Predicate<MongoSpell>() {
+			@Override
+			public boolean apply(MongoSpell s) {
+				return s.isLibrary();
+			}
+		};
+		Collection<MongoSpell> allSpells = spells.getAll();
+		List<MongoSpell> libraries = filter(librariesForUser, allSpells);
+		HashMap<String, ISpell> libMap = new HashMap<String, ISpell>();
+		for(MongoSpell spell: libraries)
+		{
+			libMap.put(spell.getName(), spell);
+		}
+		return libMap;
 	}
 
 	public ISpell[] getAllGameWrappers() {

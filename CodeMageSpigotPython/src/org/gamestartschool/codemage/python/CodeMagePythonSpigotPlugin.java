@@ -1,8 +1,8 @@
 package org.gamestartschool.codemage.python;
 
-import java.io.File;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -17,7 +17,6 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.gamestartschool.codemage.ddp.CodeMageDDP;
 import org.gamestartschool.codemage.ddp.ISpell;
-import org.gamestartschool.codemage.ddp.ISpellMeteorMethodCaller;
 import org.gamestartschool.codemage.ddp.IUser;
 
 public class CodeMagePythonSpigotPlugin extends JavaPlugin {
@@ -70,11 +69,12 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 					System.out.println("Binding Type: " + action);
 
 					ISpell[] gameWrappers = ddp.getAllGameWrappers();
+					Map<String, ISpell> libraries = ddp.getAllLibraries();
 					System.out.println("gameWrappers: " + gameWrappers.length);
 					List<ISpell> spells = user.getSpells(material, action);
 					for (ISpell spell : spells) {
 						log("runningCode: " + spell.getCode());
-						codeRunner.executeCode(spell.getCode(), player, gameWrappers, spell.getName(), spell.getId());
+						codeRunner.executeCode(spell.getCode(), player, gameWrappers, libraries, spell.getName(), spell.getId());
 					}
 				}
 			}
@@ -89,14 +89,6 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 
 	public void onDisable() {
 		ddp.disconnect();
-	}
-
-	private boolean checkJythonAccess() {
-		if (new File("plugins/lib/jython.jar").exists()) {
-			return true;
-		}
-		log("Could not find {serverDir}/plugins/lib/jython.jar");
-		return false;
 	}
 
 }

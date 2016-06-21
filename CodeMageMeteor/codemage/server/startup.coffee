@@ -8,6 +8,7 @@ addPreprocessSpell = (spellName, tomeId, code, userId, preprocessPriority) ->
       message: ""
       status: "creating"
       preprocess: true
+      library: false
       preprocessPriority: preprocessPriority
       version: share.codeMageConstants.currentVersion
       namespace: share.codeMageConstants.defaultNamespace

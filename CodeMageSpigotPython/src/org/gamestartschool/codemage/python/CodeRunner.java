@@ -51,10 +51,14 @@ public class CodeRunner implements Runnable {
 
 	private final ExecutorService interpreterPool = Executors.newFixedThreadPool(25);
 
-	public void executeCode(final String code, final Player player, final ISpell[] gameWrappers, final Map<String, ISpell> libraries, final String spellname, final String spellId) {
+	public void executeCode(final String code, final Player player, final Map<String, ISpell> libraries, final String spellname, final String spellId) {
 		methodCaller.spellException("", spellId);
 		String nonFinalCode = code;
 		final List<ISpell> usedLibraries = new ArrayList<ISpell>();
+		usedLibraries.add(libraries.get("xpRequirements"));
+		usedLibraries.add(libraries.get("mpApi"));
+		usedLibraries.add(libraries.get("preCode"));
+		System.out.println(libraries.keySet().toString());
 		for(String key : libraries.keySet())
 		{
 			if(code.contains("import " + key))
@@ -66,6 +70,7 @@ public class CodeRunner implements Runnable {
 			}
 		}
 		System.out.println(usedLibraries.toString());
+		nonFinalCode = nonFinalCode.replaceAll("import", "iMpOrT");
 		nonFinalCode = nonFinalCode.replaceAll("_importNms", "_importnms");
 		nonFinalCode = nonFinalCode.replaceAll("_importCraft", "_importcraft");
 		nonFinalCode = nonFinalCode.replaceAll("startTimestamp", "starttimestamp");
@@ -120,9 +125,6 @@ public class CodeRunner implements Runnable {
 				}
 				
 				String wrapperCode = "";
-				for (ISpell spell : gameWrappers) {
-					wrapperCode += spell.getCode() + "\n";
-				}
 				for (ISpell spell : usedLibraries) {
 					wrapperCode += spell.getCode() + "\n";
 				}

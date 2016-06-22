@@ -50,12 +50,7 @@ spellException = (stacktrace, spellId) ->
   else
     match = /[^]* line (\d*), /.exec stacktrace
     lineNumber = parseInt match[1]
-  preprocessSpells = spells.find( {preprocess:true} ).fetch()
-  preprocSpellsLength = 0
-  for spell in preprocessSpells
-    preprocSpellsLength += (spell.code.split /\n/g).length
-  
-  spells.update spellId, {$set: {errorMessage: stacktrace, errorOnly: errorOnly, line: lineNumber - preprocSpellsLength - 1}} #the one line is def studentCode():, and is injected from Java.
+  spells.update spellId, {$set: {errorMessage: stacktrace, errorOnly: errorOnly, line: lineNumber - 1}} #the one line is def studentCode():, and is injected from Java.
 
 addSpell = (tomeId, userId, name, code) ->
   check(tomeId, String)

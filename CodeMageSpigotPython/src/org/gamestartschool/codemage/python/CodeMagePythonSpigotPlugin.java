@@ -74,7 +74,7 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 					List<ISpell> spells = user.getSpells(material, action);
 					for (ISpell spell : spells) {
 						log("runningCode: " + spell.getCode());
-						codeRunner.executeCode(spell.getCode(), player, libraries, spell.getName(), spell.getId());
+						codeRunner.executeCode(spell.getCode(), player, gameWrappers, libraries, spell.getName(), spell.getId());
 					}
 				}
 			}

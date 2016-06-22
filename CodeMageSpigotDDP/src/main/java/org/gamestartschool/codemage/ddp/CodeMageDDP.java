@@ -250,20 +250,20 @@ public class CodeMageDDP {
 			
 			@Override
 			public boolean apply(MongoSpell s) {
-				return s.isGameWrapper();
+				return s.isGameWrapper() && s.isEnabledWrapper();
 			}
 		};
 		Collection<MongoSpell> allSpells = spells.getAll();
 		System.out.println("allSpells: " + allSpells.size());
 		List<MongoSpell> gameWrappers = filter(gameWrappersForUser, allSpells);
 		System.out.println("gameWrappers1: " + gameWrappers.size());
-		ISpell[] gameWrapperArray = new ISpell[gameWrappers.size()];
+		ISpell[] gameWrapperArray = new ISpell[gameWrappers.size() + 1]; //+1 because reasons
 		ArrayList<MongoSpell> miscGameWrappers = new ArrayList<MongoSpell>();
 		for(MongoSpell spell : gameWrappers)
 		{
-			if(spell.getPreprocessPriority() != -1)
+			if(spell.getWrapperPriority() != -1)
 			{
-				gameWrapperArray[spell.getPreprocessPriority()] = spell;
+				gameWrapperArray[spell.getWrapperPriority() + 4] = spell; //add 4 to account for xpReqs, mpApi, preCode being -4, -3, -2
 			}
 			else
 			{

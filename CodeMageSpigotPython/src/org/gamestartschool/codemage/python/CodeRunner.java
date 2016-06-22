@@ -50,26 +50,9 @@ public class CodeRunner implements Runnable {
 	}
 
 	private final ExecutorService interpreterPool = Executors.newFixedThreadPool(25);
-
-	public void executeCode(final String code, final Player player, final Map<String, ISpell> libraries, final String spellname, final String spellId) {
-		methodCaller.spellException("", spellId);
-		String nonFinalCode = code;
-		final List<ISpell> usedLibraries = new ArrayList<ISpell>();
-		usedLibraries.add(libraries.get("xpRequirements"));
-		usedLibraries.add(libraries.get("mpApi"));
-		usedLibraries.add(libraries.get("preCode"));
-		System.out.println(libraries.keySet().toString());
-		for(String key : libraries.keySet())
-		{
-			if(code.contains("import " + key))
-			{
-				System.out.println(nonFinalCode);
-				nonFinalCode = nonFinalCode.replaceAll("import " + key, "");
-				usedLibraries.add(libraries.get(key));
-				System.out.println(nonFinalCode);
-			}
-		}
-		System.out.println(usedLibraries.toString());
+	
+	public String sanitize(String nonFinalCode)
+	{
 		nonFinalCode = nonFinalCode.replaceAll("import", "iMpOrT");
 		nonFinalCode = nonFinalCode.replaceAll("_importNms", "_importnms");
 		nonFinalCode = nonFinalCode.replaceAll("_importCraft", "_importcraft");
@@ -84,6 +67,29 @@ public class CodeRunner implements Runnable {
 		nonFinalCode = nonFinalCode.replaceAll("pythonMethodQueue", "pYtHoNmEtHoDqUeUe");
 		nonFinalCode = nonFinalCode.replaceAll("exec", "eXeC");
 		nonFinalCode = nonFinalCode.replaceAll("trace_function", "TrAcE_fUnCtIoN");
+		return nonFinalCode;
+	}
+	
+	public void executeCode(final String code, final Player player, final ISpell[] gameWrappers, final Map<String, ISpell> libraries, final String spellname, final String spellId) {
+		methodCaller.spellException("", spellId);
+		String nonFinalCode = code;
+		final List<ISpell> usedLibraries = new ArrayList<ISpell>();
+		//usedLibraries.add(libraries.get("xpRequirements"));
+		//usedLibraries.add(libraries.get("mpApi"));
+		//usedLibraries.add(libraries.get("preCode"));
+		System.out.println(libraries.keySet().toString());
+		for(String key : libraries.keySet())
+		{
+			if(code.contains("import " + key))
+			{
+				System.out.println(nonFinalCode);
+				nonFinalCode = nonFinalCode.replaceAll("import " + key, "");
+				usedLibraries.add(libraries.get(key));
+				System.out.println(nonFinalCode);
+			}
+		}
+		System.out.println(usedLibraries.toString());
+		nonFinalCode = sanitize(nonFinalCode);
 		nonFinalCode = "def studentCode():\n	" + nonFinalCode + "\nstudentCode()";
 		final String sanitizedCode = nonFinalCode.replaceAll("__import__", "__iMpOrT__");
 		@SuppressWarnings("unused")
@@ -123,20 +129,39 @@ public class CodeRunner implements Runnable {
 				for (Sound s : Sound.values()) {
 					pi.set(s.toString(), s);
 				}
-				
 				String wrapperCode = "";
+				for (ISpell spell : gameWrappers)
+				{
+					wrapperCode += spell.getCode();
+				}
+				
+				
+				String libraryCode = "";
 				for (ISpell spell : usedLibraries) {
-					wrapperCode += spell.getCode() + "\n";
+					libraryCode += spell.getCode() + "\n";
+					libraryCode = sanitize(libraryCode);
 				}
 				try {
 					pi.exec(wrapperCode);
-				} catch (Exception internale) {
-					StringWriter isw = new StringWriter();
-					internale.printStackTrace(new PrintWriter(isw));
-					String itrace = isw.toString();
-					internale.printStackTrace();
+				} catch (Exception wrappere) {
+					StringWriter wsw = new StringWriter();
+					wrappere.printStackTrace(new PrintWriter(wsw));
+					String wtrace = wsw.toString();
+					wrappere.printStackTrace();
 					if(spellId != "<console>") {
-						methodCaller.spellException("Internal error:\r\n" + itrace, spellId);
+						methodCaller.spellException("Wrapper error:\r\n" + wtrace, spellId);
+					}
+				}
+				
+				try {
+					pi.exec(libraryCode);
+				} catch (Exception librarye) {
+					StringWriter lsw = new StringWriter();
+					librarye.printStackTrace(new PrintWriter(lsw));
+					String ltrace = lsw.toString();
+					librarye.printStackTrace();
+					if(spellId != "<console>") {
+						methodCaller.spellException("Library error:\r\n" + ltrace, spellId);
 					}
 				}
 				try {

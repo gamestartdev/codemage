@@ -20,6 +20,10 @@ class MongoSpell extends AMongoDocument implements ISpell {
 	public String getCode() {
 		return getStringField("code");
 	}
+	
+	public boolean isEnabledWrapper() {
+		return getBooleanField("wrapperEnabled");
+	}
 
 	@Override
 	public String getName() {
@@ -41,7 +45,7 @@ class MongoSpell extends AMongoDocument implements ISpell {
 	}
 
 	public boolean isGameWrapper() {
-		return getBooleanField("preprocess");
+		return getBooleanField("wrapper");
 	}
 	
 	public boolean isLibrary() {
@@ -64,7 +68,7 @@ class MongoSpell extends AMongoDocument implements ISpell {
 		return Material.valueOf(getStringField("itemMaterial"));
 	}
 
-	public int getPreprocessPriority() {
-		return getIntegerField("preprocessPriority");
+	public int getWrapperPriority() {
+		return Integer.parseInt(getStringField("wrapperPriority"));
 	}
 }

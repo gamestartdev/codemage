@@ -1,4 +1,4 @@
-addLibrarySpell = (spellName, tomeId, code, userId, preprocessPriority) ->
+addLibrarySpell = (spellName, tomeId, code, userId, priority) ->
   spells.update spellName,
     $set:
       userId: userId
@@ -7,8 +7,12 @@ addLibrarySpell = (spellName, tomeId, code, userId, preprocessPriority) ->
       code: code
       message: ""
       status: "creating"
-      library: true
-      preprocessPriority: preprocessPriority
+      library: false
+      wrapper: true
+      wrapperEnabled: true
+      wrapperText: false
+      wrapperDescription: ""
+      wrapperPriority: priority
       version: share.codeMageConstants.currentVersion
       namespace: share.codeMageConstants.defaultNamespace
       itemMaterial: share.codeMageConstants.itemMaterials[20]
@@ -21,6 +25,6 @@ Meteor.startup ->
 
   defaultTome = 'GameRules'
   tomes.update defaultTome, {$set:{ name: defaultTome, userId: Meteor.users.findOne({username:'admin'})._id }},  upsert: true
-  addLibrarySpell('preCode', defaultTome, Assets.getText('codemage/python/preCode.py'), Meteor.users.findOne({username:'admin'})._id, 2)
-  addLibrarySpell('mpApi', defaultTome, Assets.getText('codemage/python/mpApi.py'), Meteor.users.findOne({username:'admin'})._id, 0)
-  addLibrarySpell('xpRequirements', defaultTome, Assets.getText('codemage/python/xpRequirements.py'), Meteor.users.findOne({username:'admin'})._id, 1)
+  addLibrarySpell('preCode', defaultTome, Assets.getText('codemage/python/preCode.py'), Meteor.users.findOne({username:'admin'})._id, "-2")
+  addLibrarySpell('mpApi', defaultTome, Assets.getText('codemage/python/mpApi.py'), Meteor.users.findOne({username:'admin'})._id, "-3")
+  addLibrarySpell('xpRequirements', defaultTome, Assets.getText('codemage/python/xpRequirements.py'), Meteor.users.findOne({username:'admin'})._id, "-4")

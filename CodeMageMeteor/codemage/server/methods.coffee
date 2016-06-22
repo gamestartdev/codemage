@@ -67,6 +67,10 @@ addSpell = (tomeId, userId, name, code) ->
     message: ""
     status: "creating"
     library: false
+    wrapper: false
+    wrapperEnabled: false
+    wrapperDescription: ""
+    wrapperPriority: "-1"
     version: share.codeMageConstants.currentVersion
     namespace: share.codeMageConstants.defaultNamespace
 

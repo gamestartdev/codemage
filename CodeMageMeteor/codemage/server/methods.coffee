@@ -30,6 +30,8 @@ setSpellAction = (spellId, action) ->
 spellException = (stacktrace, spellId) ->
   check(stacktrace, String)
   check(spellId, String)
+  if stacktrace.startsWith("Internal error:")
+    spells.update spellId, {$set: {errorMessage: stacktrace, errorOnly: "Internal error"}}
   if stacktrace == ""
     spells.update spellId, {$set: {errorMessage: null, errorOnly: null}}
     return

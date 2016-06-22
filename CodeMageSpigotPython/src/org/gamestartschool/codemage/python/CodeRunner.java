@@ -129,7 +129,18 @@ public class CodeRunner implements Runnable {
 					wrapperCode += spell.getCode() + "\n";
 				}
 				try {
-					pi.exec(wrapperCode + sanitizedCode);
+					pi.exec(wrapperCode);
+				} catch (Exception internale) {
+					StringWriter isw = new StringWriter();
+					internale.printStackTrace(new PrintWriter(isw));
+					String itrace = isw.toString();
+					internale.printStackTrace();
+					if(spellId != "<console>") {
+						methodCaller.spellException("Internal error:\r\n" + itrace, spellId);
+					}
+				}
+				try {
+					pi.exec(sanitizedCode);
 				} catch (Exception e) {
 					StringWriter sw = new StringWriter();
 					e.printStackTrace(new PrintWriter(sw));

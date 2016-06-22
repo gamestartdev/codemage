@@ -55,7 +55,12 @@ class MongoSpell extends AMongoDocument implements ISpell {
 
 	@Override
 	public Material getMaterial() {
-		System.out.println(toString());
+		System.out.println(getStringField("itemMaterial"));
+		System.out.println(getName());
+		if(getStringField("itemMaterial").equals("DISABLED"))
+		{
+			return Material.FIRE;
+		}
 		return Material.valueOf(getStringField("itemMaterial"));
 	}
 

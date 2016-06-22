@@ -11,8 +11,8 @@ addLibrarySpell = (spellName, tomeId, code, userId, preprocessPriority) ->
       preprocessPriority: preprocessPriority
       version: share.codeMageConstants.currentVersion
       namespace: share.codeMageConstants.defaultNamespace
-      itemMaterial: null
-      action: null
+      itemMaterial: share.codeMageConstants.itemMaterials[20]
+      action: share.codeMageConstants.actions[0]
   ,
     upsert: true
 

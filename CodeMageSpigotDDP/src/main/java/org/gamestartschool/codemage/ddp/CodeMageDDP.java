@@ -257,20 +257,23 @@ public class CodeMageDDP {
 		System.out.println("allSpells: " + allSpells.size());
 		List<MongoSpell> gameWrappers = filter(gameWrappersForUser, allSpells);
 		System.out.println("gameWrappers1: " + gameWrappers.size());
-		ISpell[] gameWrapperArray = new ISpell[gameWrappers.size() + 1]; //+1 because reasons
+		ISpell[] gameWrapperArray = new ISpell[gameWrappers.size()]; //+1 because reasons
 		ArrayList<MongoSpell> miscGameWrappers = new ArrayList<MongoSpell>();
+		int index = 0;
 		for(MongoSpell spell : gameWrappers)
 		{
 			if(spell.getWrapperPriority() != -1)
 			{
+				index++;
 				gameWrapperArray[spell.getWrapperPriority() + 4] = spell; //add 4 to account for xpReqs, mpApi, preCode being -4, -3, -2
+				
 			}
 			else
 			{
 				miscGameWrappers.add(spell);
 			}
 		}
-		int index = gameWrapperArray.length;
+		//int index = gameWrapperArray.length;
 		for(MongoSpell spell: miscGameWrappers)
 		{
 			gameWrapperArray[index] = spell;

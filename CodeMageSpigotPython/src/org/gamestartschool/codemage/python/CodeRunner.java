@@ -97,6 +97,7 @@ public class CodeRunner implements Runnable {
 			
 			@Override
 			public InteractiveInterpreter call() {
+				System.out.println("are u a troll?");
 				InteractiveInterpreter pi = new InteractiveInterpreter();
 				pi.set("jplayer", player);
 				pi.set("pythonMethodQueue", pythonMethodQueue);
@@ -130,11 +131,10 @@ public class CodeRunner implements Runnable {
 					pi.set(s.toString(), s);
 				}
 				String wrapperCode = "";
-				for (ISpell spell : gameWrappers)
-				{
-					wrapperCode += spell.getCode();
+				for (ISpell spell : gameWrappers) {
+					wrapperCode += spell.getCode() + "\n";
 				}
-				
+				System.out.println(wrapperCode);
 				
 				String libraryCode = "";
 				for (ISpell spell : usedLibraries) {

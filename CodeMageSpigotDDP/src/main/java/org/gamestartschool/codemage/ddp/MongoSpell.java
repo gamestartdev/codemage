@@ -45,6 +45,7 @@ class MongoSpell extends AMongoDocument implements ISpell {
 	}
 
 	public boolean isGameWrapper() {
+		System.out.println(getName());
 		return getBooleanField("wrapper");
 	}
 	

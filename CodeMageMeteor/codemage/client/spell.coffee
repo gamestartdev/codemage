@@ -15,6 +15,11 @@ Template.spell.helpers
       return "checked"
     else
       return ""
+  gameWrapperText: ->
+    text = ""
+    wrappers = spells.find({wrapper: true}).fetch()
+    wrapperTexts = ""
+    wrapperTexts += spell.wrapperDescription for spell in wrappers when spell.wrapperDescription isnt "" #yay, coffeescript!
 
 Template.spell.events
 

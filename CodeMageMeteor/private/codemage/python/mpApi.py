@@ -5,6 +5,18 @@ _nmsPath = "net.minecraft.server." + _version
 _craftPath = "org.bukkit.craftbukkit." + _version + "."
 Bukkit = None
 
+setblockEventHandlers = []
+spawnentityEventHandlers = []
+spawnitemEventHandlers = []
+potioneffectEventHandlers = []
+propelEventHandlers = []
+
+def registerEventHandler(handler, registerTo):
+    from copy import deepcopy
+    print "test"
+    registerTo.append(deepcopy(handler))
+    handler = None
+
 '''AttributeError: import_module does not exist investigation:
 Not fixed by complete replace of server files
 Not fixed by reloads
@@ -16,6 +28,25 @@ def senderror(message):
     jplayer.sendMessage(message)
 
 import math
+
+class PyEvent(object):
+    def __getattribute__(self, attr):
+        if "getClass" not in attr and "__class__" not in attr:
+            return object.__getattribute__(self, attr)
+        else:
+            raise AttributeError("Non existant attribute")
+        
+    def __init__(self):
+        object.__setattr__(self, "canceled", False)
+        
+    def setCanceled(self, cancled):
+        object.__setattr__(self, "canceled", cancled)
+        
+    def isCanceled(self):
+        return self.canceled
+            
+    def __setattr__(self, attr, val):
+        raise AttributeError("Non existant attribute")
 
 class LessPickyMath(math):
     
@@ -171,10 +202,15 @@ def loc(x,y,z):
     return Location(jplayer.getWorld(), x, y, z)
 
 def setblock(x,y,z, mat):
-    x = int(math.floor(x))
-    y = int(math.floor(y))
-    z = int(math.floor(z))
-    mc_fast(loc(x,y,z).getBlock().setType, mat)
+    print setblockEventHandlers
+    event = PyEvent()
+    for handler in setblockEventHandlers:
+        handler(event)
+    if not event.isCanceled():
+        x = int(math.floor(x))
+        y = int(math.floor(y))
+        z = int(math.floor(z))
+        mc_fast(loc(x,y,z).getBlock().setType, mat)
 
 def teleport(x,y,z):
     mc_fast(jplayer.teleport, loc(x,y,z))
@@ -248,30 +284,38 @@ def getblock(x, y, z):
         return AIR
 
 def potioneffect(effect, duration=10, amplifier=1, target=player):
-    from org.bukkit import Bukkit
-    from org.bukkit.potion import PotionEffect
-    CraftLivingEntity = _importCraft("entity", "CraftLivingEntity")
-    if object.__getattribute__(target, "__class__") == PyPlayer:
-        target = object.__getattribute__(player, "javaversion")
-    else:
-        target = CraftLivingEntity(Bukkit.getServer(), object.__getattribute__(target, "javaversion"))
-    effectobj = PotionEffect(effect, duration * 20, amplifier)
-    print "test"
-    try:
-        mc_fast(effectobj.apply, target)
-    except Exception:
-        pass
+    event = PyEvent()
+    for handler in potioneffectEventHandlers:
+        handler(event)
+    if not event.isCanceled():
+        from org.bukkit import Bukkit
+        from org.bukkit.potion import PotionEffect
+        CraftLivingEntity = _importCraft("entity", "CraftLivingEntity")
+        if object.__getattribute__(target, "__class__") == PyPlayer:
+            target = object.__getattribute__(player, "javaversion")
+        else:
+            target = CraftLivingEntity(Bukkit.getServer(), object.__getattribute__(target, "javaversion"))
+        effectobj = PotionEffect(effect, duration * 20, amplifier)
+        print "test"
+        try:
+            mc_fast(effectobj.apply, target)
+        except Exception:
+            pass
 
 def propel(x, y, z, target=player):
-    if object.__getattribute__(target, "__class__") == PyPlayer:
-        from org.bukkit.util import Vector
-        Entity = _importNms("EntityLiving")
-        target = object.__getattribute__(target, "javaversion")
-        vec = Vector(x, y, z)
-        mc_fast(target.setVelocity, vec)
-    else:
-        target = object.__getattribute__(target, "javaversion")
-        mc_fast(target.g, x, y, z)
+    event = PyEvent()
+    for handler in propelEventHandlers:
+        handler(event)
+    if not event.isCanceled():
+        if object.__getattribute__(target, "__class__") == PyPlayer:
+            from org.bukkit.util import Vector
+            Entity = _importNms("EntityLiving")
+            target = object.__getattribute__(target, "javaversion")
+            vec = Vector(x, y, z)
+            mc_fast(target.setVelocity, vec)
+        else:
+            target = object.__getattribute__(target, "javaversion")
+            mc_fast(target.g, x, y, z)
     
 def playsound(x, y, z, sound,pitch=1,volume=1):
     mc_fast(jplayer.getWorld().playSound,loc(x,y,z),sound,1,1)
@@ -301,42 +345,51 @@ def toMojangson(data, isSelfcalled=False):
     return nbt
 
 def spawnentity(x, y, z, entitytype, nbt={}):
-    if entitytype == ENDER_DRAGON:
-        yell(jplayer.getPlayerListName() + "is spawning dragons!")
-    NBTTagCompound = _importNms("NBTTagCompound")
-    MojangsonParser = _importNms("MojangsonParser")
-    craftentity = mc(jplayer.getWorld().spawnEntity, loc(x, y, z), entitytype)
-    entity = craftentity.getHandle()
-    tag = NBTTagCompound()
-    entity.c(tag)
-    tagclass = tag.getClass() #Reflection, because there's no getmap or setmap.
-    mapField = tagclass.getDeclaredField("map")
-    mapField.setAccessible(True)
-    entityMap = mapField.get(tag)
-    suppliedTag = MojangsonParser.parse(toMojangson(nbt))
-    suppliedMap = mapField.get(suppliedTag)
-    entityMap.putAll(suppliedMap)  #Merges the tag maps.
-    mapField.set(tag, entityMap)
-    mc_fast(entity.f, tag)
-    return PyEntity(entity) 
+    event = PyEvent()
+    for handler in spawnentityEventHandlers:
+        handler(event)
+        print dir(event)
+    if not event.isCanceled():
+        if entitytype == ENDER_DRAGON:
+            yell(jplayer.getPlayerListName() + "is spawning dragons!")
+        NBTTagCompound = _importNms("NBTTagCompound")
+        MojangsonParser = _importNms("MojangsonParser")
+        craftentity = mc(jplayer.getWorld().spawnEntity, loc(x, y, z), entitytype)
+        entity = craftentity.getHandle()
+        tag = NBTTagCompound()
+        entity.c(tag)
+        tagclass = tag.getClass() #Reflection, because there's no getmap or setmap.
+        mapField = tagclass.getDeclaredField("map")
+        mapField.setAccessible(True)
+        entityMap = mapField.get(tag)
+        suppliedTag = MojangsonParser.parse(toMojangson(nbt))
+        suppliedMap = mapField.get(suppliedTag)
+        entityMap.putAll(suppliedMap)  #Merges the tag maps.
+        mapField.set(tag, entityMap)
+        mc_fast(entity.f, tag)
+        return PyEntity(entity) 
 
 def spawnparticle(x, y, z, particle, howMany, speed=0, xd=0.5, yd=0.5,zd=0.5):
     mc_fast(jplayer.getWorld().spigot().playEffect,loc(x,y,z),particle,0,0,xd,yd,zd,speed,
     howMany,16)
 
 def spawnitem(x, y, z, item=DIRT, count=1, damage=0, data={}):
-    CraftItemStack = _importCraft("inventory", "CraftItemStack")
-    ItemStack = _importNms("ItemStack")
-    MojangsonParser = _importNms("MojangsonParser")
-    itemid = str(item).lower()
-    try:
-        itemid = spigot_names[itemid]
-    except Exception:
-        pass
-    dictdata = {"Count":count,"Damage":damage,"id":itemid,"tag":data}
-    tag = MojangsonParser.parse(toMojangson(dictdata))
-    itemStack = ItemStack.createStack(tag)
-    mc_fast(jplayer.getWorld().dropItem, loc(x,y,z), CraftItemStack.asCraftMirror(itemStack))
+    event = PyEvent()
+    for handler in spawnItemEventHandlers:
+        handler(event)
+    if not event.isCanceled():
+        CraftItemStack = _importCraft("inventory", "CraftItemStack")
+        ItemStack = _importNms("ItemStack")
+        MojangsonParser = _importNms("MojangsonParser")
+        itemid = str(item).lower()
+        try:
+            itemid = spigot_names[itemid]
+        except Exception:
+            pass
+        dictdata = {"Count":count,"Damage":damage,"id":itemid,"tag":data}
+        tag = MojangsonParser.parse(toMojangson(dictdata))
+        itemStack = ItemStack.createStack(tag)
+        mc_fast(jplayer.getWorld().dropItem, loc(x,y,z), CraftItemStack.asCraftMirror(itemStack))
 
 def denyattribute(*args):
     raise AttributeError("Non existant attribute")
@@ -475,4 +528,5 @@ FakeTime = None
 #PyPlayer = None
 DenyingRandom = None
 LessPickyMath = None
+registerEventHandler = None
 file = None

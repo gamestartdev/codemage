@@ -528,5 +528,5 @@ FakeTime = None
 #PyPlayer = None
 DenyingRandom = None
 LessPickyMath = None
-registerEventHandler = None
+#registerEventHandler = None
 file = None

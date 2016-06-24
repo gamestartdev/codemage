@@ -28,3 +28,4 @@ Meteor.startup ->
   addLibrarySpell('preCode', defaultTome, Assets.getText('codemage/python/preCode.py'), Meteor.users.findOne({username:'admin'})._id, "-2")
   addLibrarySpell('mpApi', defaultTome, Assets.getText('codemage/python/mpApi.py'), Meteor.users.findOne({username:'admin'})._id, "-3")
   addLibrarySpell('xpRequirements', defaultTome, Assets.getText('codemage/python/xpRequirements.py'), Meteor.users.findOne({username:'admin'})._id, "-4")
+  addLibrarySpell('ManaGame', defaultTome, Assets.getText('codemage/python/ManaGame.py'), Meteor.users.findOne({username:'admin'})._id, "-1")

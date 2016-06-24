@@ -30,10 +30,14 @@ setSpellAction = (spellId, action) ->
 spellException = (stacktrace, spellId) ->
   check(stacktrace, String)
   check(spellId, String)
-  if stacktrace.startsWith("Internal error:")
-    spells.update spellId, {$set: {errorMessage: stacktrace, errorOnly: "Internal error"}}
+  if stacktrace.startsWith("Library error:")
+    spells.update spellId, {$set: {errorMessage: stacktrace, errorOnly: "Error in library:"}, line: -1}
+    return
+  if stacktrace.startsWith("Wrapper error:")
+    spells.update spellId, {$set: {errorMessage: stacktrace, errorOnly: "Internal error:"}, line: -1}
+    return
   if stacktrace == ""
-    spells.update spellId, {$set: {errorMessage: null, errorOnly: null}}
+    spells.update spellId, {$set: {errorMessage: null, errorOnly: null, line: -1}}
     return
   match = /([^]*?)at org\.python[^]*/g.exec stacktrace
   stacktrace = match[1]

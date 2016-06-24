@@ -19,7 +19,7 @@ Template.aceEditor.onRendered ->
     if Template.instance().markerID?
       session.removeMarker Template.instance().markerID
     console.log "test2"
-    if spell.line != undefined
-      range = new Range(spell.line - 1, 0, spell.line - 1, 2)
+    if spell.line != undefined and spell.line != -1
+      range = new Range spell.line - 1, 0, spell.line - 1, 2
       markerID = session.addMarker range, "highlight", "fullLine", false
       Template.instance().markerID = markerID

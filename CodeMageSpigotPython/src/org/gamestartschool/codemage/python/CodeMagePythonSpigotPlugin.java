@@ -47,6 +47,7 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 			e.printStackTrace();
 		}
 		codeRunner = new CodeRunner(ddp.getMethodCaller());
+		PrintHelper.setMethodCaller(ddp.getMethodCaller());
 		this.getCommand("python").setExecutor(new PythonConsoleCommand(codeRunner));
 		this.getCommand("reconnectddp").setExecutor(new DDPReconnectCommand(ddp));
 		addListeners();

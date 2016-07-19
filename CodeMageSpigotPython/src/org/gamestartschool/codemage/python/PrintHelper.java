@@ -4,21 +4,16 @@ import org.gamestartschool.codemage.ddp.ISpellMeteorMethodCaller;
 
 public class PrintHelper {
 	
-	private static ISpellMeteorMethodCaller methodCaller;
+	private static ISpellMeteorMethodCaller methodCaller = null;
 	
 	public static void setMethodCaller(ISpellMeteorMethodCaller caller)
 	{
-		methodCaller = caller;
+		methodCaller = methodCaller == null ? caller : methodCaller;
 	}
 	
-	public static void onPyPrint(String spellname, Object... args)
+	public static void onPyPrint(String spellId, String print)
 	{
-		
-		String str = "";
-		for(Object obj : args)
-		{
-			str += obj.toString();
-		}
-		
+		System.out.println(print);
+		methodCaller.spellPrint(print, spellId);
 	}
 }

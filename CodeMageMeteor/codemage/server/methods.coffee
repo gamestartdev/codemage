@@ -27,6 +27,18 @@ setSpellAction = (spellId, action) ->
   check(action, String)
   spells.update spellId, {$set: {action: action}}
 
+spellPrint = (print, spellId) ->
+  check(print, String)
+  check(spellId, String)
+  prints = (spells.findOne {_id: spellId}).prints or []
+  prints.push print
+  spells.update spellId, {$set: {prints: prints}}
+
+clearPrint = (spellId) ->
+  check(spellId, String)
+  spell = spells.findOne {_id: spellId}
+  spells.update spellId, {$set: {prints: []}}
+
 spellException = (stacktrace, spellId) ->
   check(stacktrace, String)
   check(spellId, String)
@@ -70,6 +82,7 @@ addSpell = (tomeId, userId, name, code) ->
     code: code
     message: ""
     status: "creating"
+    prints: []
     library: false
     wrapper: false
     wrapperEnabled: false
@@ -108,6 +121,8 @@ Meteor.methods
   updateSpell: updateSpell
   removeSpell: removeSpell
   spellException: spellException
+  spellPrint: spellPrint
+  clearPrint: clearPrint
   setSpellAction: setSpellAction
   setSpellItemMaterial: setSpellItemMaterial
 

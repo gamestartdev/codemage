@@ -26,6 +26,15 @@ def senderror(message):
     from org.bukkit import Bukkit
     CraftPlayer = _importCraft("entity", "CraftPlayer")
     jplayer.sendMessage(message)
+    
+def Print(*args):
+    print args
+    from org.gamestartschool.codemage.python import PrintHelper
+    s = ""
+    for arg in args:
+        s = s + str(arg) + " "
+    print s
+    PrintHelper.onPyPrint(spellId, s)
 
 import math
 

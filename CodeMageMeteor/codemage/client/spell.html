@@ -39,6 +39,12 @@
             {{errorOnly}}{{lineNumber}}
         </a>
     {{/if}}
+    <span style="color:blue">
+        {{#each prints}}
+            <br>
+            {{this}}
+        {{/each}}
+    </span>
     {{#if wrapper}}
         <br>
         Enabled: <input type="checkbox" class="wrapperEnabled" {{isChecked}}><br>

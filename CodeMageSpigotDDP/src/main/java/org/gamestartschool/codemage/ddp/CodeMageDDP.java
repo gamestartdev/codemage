@@ -61,8 +61,19 @@ public class CodeMageDDP {
 		public void healthUpdate(String userId, int health) {
 		}
 		
-		public void spellException(String exception, String playername) {
-			call("spellException", exception, playername);
+		@Override
+		public void spellException(String exception, String spellId) {
+			call("spellException", exception, spellId);
+		}
+		
+		@Override
+		public void spellPrint(String print, String spellId) {
+			call("spellPrint", print, spellId);
+		}
+		
+		@Override
+		public void clearPrint(String spellId) {
+			call("clearPrint", spellId);
 		}
 
 	}

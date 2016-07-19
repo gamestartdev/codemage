@@ -74,6 +74,7 @@ public class CodeRunner implements Runnable {
 	
 	public void executeCode(final String code, final Player player, final ISpell[] gameWrappers, final Map<String, ISpell> libraries, final String spellname, final String spellId) {
 		methodCaller.spellException("", spellId);
+		methodCaller.clearPrint(spellId);
 		String nonFinalCode = code;
 		final List<ISpell> usedLibraries = new ArrayList<ISpell>();
 		//usedLibraries.add(libraries.get("xpRequirements"));
@@ -104,6 +105,7 @@ public class CodeRunner implements Runnable {
 				pi.set("jplayer", player);
 				pi.set("pythonMethodQueue", pythonMethodQueue);
 				pi.set("spellname", spellname);
+				pi.set("spellId", spellId);
 				for (PotionEffectType p: PotionEffectType.values()) {
 					if(p != null) //Someone thought it would be a good idea to put a null at the start.
 					{

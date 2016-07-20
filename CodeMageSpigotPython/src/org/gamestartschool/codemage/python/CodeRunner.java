@@ -72,7 +72,7 @@ public class CodeRunner implements Runnable {
 		return nonFinalCode;
 	}
 	
-	public void executeCode(final String code, final Player player, final ISpell[] gameWrappers, final Map<String, ISpell> libraries, final String spellname, final String spellId) {
+	public void executeCode(final String code, final Player player, final ISpell[] gameWrappers, final Map<String, ISpell> libraries, final String spellname, final String spellId, final ISpell runWithStudentCode) {
 		methodCaller.spellException("", spellId);
 		methodCaller.clearPrint(spellId);
 		String nonFinalCode = code;
@@ -100,6 +100,7 @@ public class CodeRunner implements Runnable {
 			
 			@Override
 			public InteractiveInterpreter call() {
+				
 				System.out.println("are u a troll?");
 				InteractiveInterpreter pi = new InteractiveInterpreter();
 				pi.set("jplayer", player);
@@ -138,6 +139,7 @@ public class CodeRunner implements Runnable {
 				for (ISpell spell : gameWrappers) {
 					wrapperCode += spell.getCode() + "\n";
 				}
+				wrapperCode += runWithStudentCode.getCode();
 				System.out.println(wrapperCode);
 				
 				String libraryCode = "";

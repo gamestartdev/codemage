@@ -44,8 +44,3 @@ def settracefunc():
     startTimestamp = int(time.time())
     time.sleep(0.1)
     sys.settrace(trace_function)
-settracefunc()
-if spellname in xpReqs:
-    if not (jplayer.getLevel() >= xpReqs[spellname]):
-        senderror("Not enough XP!")
-        raise Exception("Not enough XP!")

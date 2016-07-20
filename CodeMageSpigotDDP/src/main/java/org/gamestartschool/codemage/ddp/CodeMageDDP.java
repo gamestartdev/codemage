@@ -230,7 +230,26 @@ public class CodeMageDDP {
 	public void disconnect() {
 		ddpClient.disconnect();
 	}
-
+	
+	public ISpell getRunBeforeStudentCode()
+	{
+		IUser admin;
+		Predicate<MongoUser> adminUser = new Predicate<MongoUser>() {
+			@Override
+			public boolean apply(MongoUser u) {
+				return "admin".equals(u.getStringField("username"));
+			}
+		};
+		admin = filter(adminUser, users.getAll()).get(0);
+		Predicate<MongoSpell> runBeforeStudentCodeFilter = new Predicate<MongoSpell>() {
+			@Override
+			public boolean apply(MongoSpell s) {
+				return s.getName().equals("runBeforeStudentCode");
+			}
+		};
+		return filter(runBeforeStudentCodeFilter, admin.getSpells()).get(0);
+	}
+	
 	public IUser getUser(String minecraftPlayerId) {
 		for (IUser user : users.getAll()) {
 			if (minecraftPlayerId.equals(user.getMinecraftUserId())) {

@@ -1,4 +1,4 @@
-addLibrarySpell = (spellName, tomeId, code, userId, priority) ->
+addWrapperSpell = (spellName, tomeId, code, userId, priority) ->
   spells.update spellName,
     $set:
       userId: userId
@@ -25,7 +25,26 @@ Meteor.startup ->
 
   defaultTome = 'GameRules'
   tomes.update defaultTome, {$set:{ name: defaultTome, userId: Meteor.users.findOne({username:'admin'})._id }},  upsert: true
-  addLibrarySpell('preCode', defaultTome, Assets.getText('codemage/python/preCode.py'), Meteor.users.findOne({username:'admin'})._id, "-2")
-  addLibrarySpell('mpApi', defaultTome, Assets.getText('codemage/python/mpApi.py'), Meteor.users.findOne({username:'admin'})._id, "-3")
-  addLibrarySpell('xpRequirements', defaultTome, Assets.getText('codemage/python/xpRequirements.py'), Meteor.users.findOne({username:'admin'})._id, "-4")
-  addLibrarySpell('ManaGame', defaultTome, Assets.getText('codemage/python/ManaGame.py'), Meteor.users.findOne({username:'admin'})._id, "-1")
+  addWrapperSpell 'preCode', defaultTome, Assets.getText('codemage/python/preCode.py'), Meteor.users.findOne({username:'admin'})._id, "-2"
+  addWrapperSpell 'mpApi', defaultTome, Assets.getText('codemage/python/mpApi.py'), Meteor.users.findOne({username:'admin'})._id, "-3"
+  addWrapperSpell 'xpRequirements', defaultTome, Assets.getText('codemage/python/xpRequirements.py'), Meteor.users.findOne({username:'admin'})._id, "-4"
+  addWrapperSpell 'ManaGame', defaultTome, Assets.getText('codemage/python/ManaGame.py'), Meteor.users.findOne({username:'admin'})._id, "-1"
+  spells.update 'runWithStudentCode',
+    $set:
+      userId: Meteor.users.findOne({username:'admin'})._id
+      tomeId: defaultTome
+      code: Assets.getText 'codemage/python/runWithStudentCode.py'
+      message: ""
+      status: "creating"
+      library: false
+      wrapper: false
+      wrapperEnabled: false
+      wrapperText: false
+      wrapperDescription: ""
+      wrapperPriority: -1
+      version: share.codeMageConstants.currentVersion
+      namespace: share.codeMageConstants.defaultNamespace
+      itemMaterial: share.codeMageConstants.itemMaterials[20]
+      action: share.codeMageConstants.actions[0]
+  ,
+    upsert: true

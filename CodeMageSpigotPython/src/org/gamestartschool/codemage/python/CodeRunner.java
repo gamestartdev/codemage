@@ -19,15 +19,22 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 import org.gamestartschool.codemage.ddp.ISpell;
 import org.gamestartschool.codemage.ddp.ISpellMeteorMethodCaller;
+import org.python.core.PyObject;
+import org.python.core.PySystemState;
 import org.python.util.InteractiveInterpreter;
+import org.python.util.PythonInterpreter;
 
 public class CodeRunner implements Runnable {
 	private ISpellMeteorMethodCaller methodCaller;
+	private PySystemState state;
+	private PyObject locals;
 	private static boolean exhaustQueueEachTick = true;
 	public ConcurrentLinkedQueue<PythonMethodCall> pythonMethodQueue = new ConcurrentLinkedQueue<PythonMethodCall>();
 
-	public CodeRunner(ISpellMeteorMethodCaller methodCaller) {
+	public CodeRunner(ISpellMeteorMethodCaller methodCaller, PySystemState state, PyObject locals) {
 		this.methodCaller = methodCaller;
+		this.state = state;
+		this.locals = locals;
 	}
 
 	@Override
@@ -75,6 +82,8 @@ public class CodeRunner implements Runnable {
 	public void executeCode(final String code, final Player player, final ISpell[] gameWrappers, final Map<String, ISpell> libraries, final String spellname, final String spellId, final ISpell runWithStudentCode) {
 		methodCaller.spellException("", spellId);
 		methodCaller.clearPrint(spellId);
+		final PyObject localsF = locals;
+		final PySystemState stateF = state;
 		String nonFinalCode = code;
 		final List<ISpell> usedLibraries = new ArrayList<ISpell>();
 		//usedLibraries.add(libraries.get("xpRequirements"));
@@ -101,7 +110,57 @@ public class CodeRunner implements Runnable {
 			@Override
 			public InteractiveInterpreter call() {
 				
-				System.out.println("are u a troll?");
+				InteractiveInterpreter pi = new InteractiveInterpreter(locals,state);
+				
+				pi.set("jplayer", player);
+				pi.set("pythonMethodQueue", pythonMethodQueue);
+				pi.set("spellname", spellname);
+				pi.set("spellId", spellId);
+				
+				try {
+					pi.exec(runWithStudentCode.getCode());
+				} catch (Exception wrappere) {
+					StringWriter wsw = new StringWriter();
+					wrappere.printStackTrace(new PrintWriter(wsw));
+					String wtrace = wsw.toString();
+					wrappere.printStackTrace();
+					if(spellId != "<console>") {
+						methodCaller.spellException("Wrapper error:\r\n" + wtrace, spellId);
+					}
+				}
+				
+				String libraryCode = "";
+				for (ISpell spell : usedLibraries) {
+					libraryCode += spell.getCode() + "\n";
+					libraryCode = sanitize(libraryCode);
+				}
+				
+				try {
+					pi.exec(libraryCode);
+				} catch (Exception librarye) {
+					StringWriter lsw = new StringWriter();
+					librarye.printStackTrace(new PrintWriter(lsw));
+					String ltrace = lsw.toString();
+					librarye.printStackTrace();
+					if(spellId != "<console>") {
+						methodCaller.spellException("Library error:\r\n" + ltrace, spellId);
+					}
+				}
+				try {
+					pi.exec(sanitizedCode);
+				} catch (Exception e) {
+					StringWriter sw = new StringWriter();
+					e.printStackTrace(new PrintWriter(sw));
+					String trace = sw.toString();
+					e.printStackTrace();
+					if(spellId != "<console>") {
+						methodCaller.spellException(trace, spellId);
+					}
+				}
+				
+				pi.close();
+				return pi;
+				/*System.out.println("are u a troll?");
 				InteractiveInterpreter pi = new InteractiveInterpreter();
 				pi.set("jplayer", player);
 				pi.set("pythonMethodQueue", pythonMethodQueue);
@@ -183,7 +242,7 @@ public class CodeRunner implements Runnable {
 				}
 				
 				pi.close();
-				return pi;
+				return pi;*/
 			}
 		});
 	}

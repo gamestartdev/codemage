@@ -1,3 +1,4 @@
+player = PyPlayer(jplayer)
 settracefunc()
 if spellname in xpReqs:
     if not (jplayer.getLevel() >= xpReqs[spellname]):

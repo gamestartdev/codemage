@@ -33,6 +33,7 @@ Meteor.startup ->
     $set:
       userId: Meteor.users.findOne({username:'admin'})._id
       tomeId: defaultTome
+      name: "runBeforeStudentCode"
       code: Assets.getText 'codemage/python/runWithStudentCode.py'
       message: ""
       status: "creating"

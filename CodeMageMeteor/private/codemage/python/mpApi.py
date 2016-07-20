@@ -180,7 +180,7 @@ class PyPlayer(PyEntity):
         return object.__getattribute__(self, "javaversion").getPlayerListName()
 
 time = FakeTime()
-player = PyPlayer(jplayer)
+
 
 def _importNms(classname):
     import importlib

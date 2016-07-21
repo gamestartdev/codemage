@@ -62,6 +62,17 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
+		createInterpreterState();
+		codeRunner = new CodeRunner(ddp.getMethodCaller(), state, locals);
+		PrintHelper.setMethodCaller(ddp.getMethodCaller());
+		this.getCommand("python").setExecutor(new PythonConsoleCommand(codeRunner, ddp.getRunBeforeStudentCode()));
+		this.getCommand("reconnectddp").setExecutor(new DDPReconnectCommand(ddp));
+		addListeners();
+		getServer().getScheduler().scheduleSyncRepeatingTask(this, codeRunner, 0L, 1L);
+	}
+	
+	public void createInterpreterState()
+	{
 		final ISpell[] gameWrappers = ddp.getAllGameWrappers();
 		ExecutorService initInterpreterPool = Executors.newFixedThreadPool(1);
 		InteractiveInterpreter initInterpreter = null;
@@ -125,12 +136,6 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 		locals = localsMap.copy();
 		initInterpreter.close();
 		initInterpreterPool.shutdown();
-		codeRunner = new CodeRunner(ddp.getMethodCaller(), state, locals);
-		PrintHelper.setMethodCaller(ddp.getMethodCaller());
-		this.getCommand("python").setExecutor(new PythonConsoleCommand(codeRunner, ddp.getRunBeforeStudentCode()));
-		this.getCommand("reconnectddp").setExecutor(new DDPReconnectCommand(ddp));
-		addListeners();
-		getServer().getScheduler().scheduleSyncRepeatingTask(this, codeRunner, 0L, 1L);
 	}
 
 	private void addListeners() {

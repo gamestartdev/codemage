@@ -127,7 +127,7 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 		initInterpreterPool.shutdown();
 		codeRunner = new CodeRunner(ddp.getMethodCaller(), state, locals);
 		PrintHelper.setMethodCaller(ddp.getMethodCaller());
-		this.getCommand("python").setExecutor(new PythonConsoleCommand(codeRunner));
+		this.getCommand("python").setExecutor(new PythonConsoleCommand(codeRunner, ddp.getRunBeforeStudentCode()));
 		this.getCommand("reconnectddp").setExecutor(new DDPReconnectCommand(ddp));
 		addListeners();
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, codeRunner, 0L, 1L);
@@ -147,14 +147,12 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 					Action action = event.getAction();
 					System.out.println("Item Type: " + material);
 					System.out.println("Binding Type: " + action);
-
-					ISpell[] gameWrappers = ddp.getAllGameWrappers();
+					
 					Map<String, ISpell> libraries = ddp.getAllLibraries();
-					System.out.println("gameWrappers: " + gameWrappers.length);
 					List<ISpell> spells = user.getSpells(material, action);
 					for (ISpell spell : spells) {
 						log("runningCode: " + spell.getCode());
-						codeRunner.executeCode(spell.getCode(), player, gameWrappers, libraries, spell.getName(), spell.getId(), ddp.getRunBeforeStudentCode());
+						codeRunner.executeCode(spell.getCode(), player, libraries, spell.getName(), spell.getId(), ddp.getRunBeforeStudentCode());
 					}
 				}
 			}

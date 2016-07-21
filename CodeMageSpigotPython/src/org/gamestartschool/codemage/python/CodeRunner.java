@@ -82,7 +82,7 @@ public class CodeRunner implements Runnable {
 		return nonFinalCode;
 	}
 	
-	public void executeCode(final String code, final Player player, final ISpell[] gameWrappers, final Map<String, ISpell> libraries, final String spellname, final String spellId, final ISpell runWithStudentCode) {
+	public void executeCode(final String code, final Player player, final Map<String, ISpell> libraries, final String spellname, final String spellId, final ISpell runWithStudentCode) {
 		methodCaller.spellException("", spellId);
 		methodCaller.clearPrint(spellId);
 		String nonFinalCode = code;
@@ -108,17 +108,11 @@ public class CodeRunner implements Runnable {
 			@Override
 			public InteractiveInterpreter call() {
 				
-				//PyStringMap specificLocals = locals.copy();
-				
-				//specificLocals.__setitem__("jplayer_local", Py.java2py(player));
-				//specificLocals.__setitem__("spellname", Py.java2py(spellname));
-				//specificLocals.__setitem__("spellId", Py.java2py(spellId));
-				//System.out.println(specificLocals.toString());
 				InteractiveInterpreter pi = new InteractiveInterpreter(locals, state);
 				pi.set("jplayer", player);
 				pi.set("spellname", spellname);
 				pi.set("spellId", spellId);
-				//pi.setLocals(specificLocals);
+				
 				try {
 					pi.exec(runWithStudentCode.getCode());
 				} catch (Exception wrappere) {
@@ -162,89 +156,6 @@ public class CodeRunner implements Runnable {
 				
 				pi.close();
 				return pi;
-				/*System.out.println("are u a troll?");
-				InteractiveInterpreter pi = new InteractiveInterpreter();
-				pi.set("jplayer", player);
-				pi.set("pythonMethodQueue", pythonMethodQueue);
-				pi.set("spellname", spellname);
-				pi.set("spellId", spellId);
-				for (PotionEffectType p: PotionEffectType.values()) {
-					if(p != null) //Someone thought it would be a good idea to put a null at the start.
-					{
-						pi.set(p.getName(), p);
-					}
-				}
-				for (EntityType e : EntityType.values()) {
-					if(e != EntityType.WITHER)
-					{
-						pi.set(e.toString(), e);
-					}
-					else
-					{
-						pi.set("WITHERBOSS", e);
-					}
-				}
-				
-				for (Material m : Material.values()) {
-					pi.set(m.toString(), m);
-				}
-				
-				for (Effect e : Effect.values()) {
-					pi.set(e.toString(), e);
-				}
-				
-				for (Sound s : Sound.values()) {
-					pi.set(s.toString(), s);
-				}
-				String wrapperCode = "";
-				for (ISpell spell : gameWrappers) {
-					wrapperCode += spell.getCode() + "\n";
-				}
-				wrapperCode += runWithStudentCode.getCode();
-				System.out.println(wrapperCode);
-				
-				String libraryCode = "";
-				for (ISpell spell : usedLibraries) {
-					libraryCode += spell.getCode() + "\n";
-					libraryCode = sanitize(libraryCode);
-				}
-				try {
-					pi.exec(wrapperCode);
-				} catch (Exception wrappere) {
-					StringWriter wsw = new StringWriter();
-					wrappere.printStackTrace(new PrintWriter(wsw));
-					String wtrace = wsw.toString();
-					wrappere.printStackTrace();
-					if(spellId != "<console>") {
-						methodCaller.spellException("Wrapper error:\r\n" + wtrace, spellId);
-					}
-				}
-				
-				try {
-					pi.exec(libraryCode);
-				} catch (Exception librarye) {
-					StringWriter lsw = new StringWriter();
-					librarye.printStackTrace(new PrintWriter(lsw));
-					String ltrace = lsw.toString();
-					librarye.printStackTrace();
-					if(spellId != "<console>") {
-						methodCaller.spellException("Library error:\r\n" + ltrace, spellId);
-					}
-				}
-				try {
-					pi.exec(sanitizedCode);
-				} catch (Exception e) {
-					StringWriter sw = new StringWriter();
-					e.printStackTrace(new PrintWriter(sw));
-					String trace = sw.toString();
-					e.printStackTrace();
-					if(spellId != "<console>") {
-						methodCaller.spellException(trace, spellId);
-					}
-				}
-				
-				pi.close();
-				return pi;*/
 			}
 		});
 	}

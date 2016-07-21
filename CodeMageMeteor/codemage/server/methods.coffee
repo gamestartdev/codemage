@@ -43,10 +43,10 @@ spellException = (stacktrace, spellId) ->
   check(stacktrace, String)
   check(spellId, String)
   if stacktrace.startsWith("Library error:")
-    spells.update spellId, {$set: {errorMessage: stacktrace, errorOnly: "Error in library:"}, line: -1}
+    spells.update spellId, {$set: {errorMessage: stacktrace, errorOnly: "Error in library:", line: -1}}
     return
   if stacktrace.startsWith("Wrapper error:")
-    spells.update spellId, {$set: {errorMessage: stacktrace, errorOnly: "Internal error:"}, line: -1}
+    spells.update spellId, {$set: {errorMessage: stacktrace, errorOnly: "Internal error:", line: -1}}
     return
   if stacktrace == ""
     spells.update spellId, {$set: {errorMessage: null, errorOnly: null, line: -1}}

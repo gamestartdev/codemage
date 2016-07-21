@@ -43,7 +43,7 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 	CodeMageDDP ddp = null;
 	CodeRunner codeRunner;
 	PySystemState state;
-	PyObject locals;
+	PyStringMap locals;
 	
 
 	void log(String message) {
@@ -104,6 +104,7 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 						wrapperCode += spell.getCode() + "\n";
 					}
 					System.out.println(wrapperCode);
+					wrapperCode = wrapperCode.replaceAll("jplayer", "jplayrstorage[0]"); //Python is a derp.
 					
 					try {
 						pi.exec(wrapperCode);
@@ -121,7 +122,7 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 		}
 		state = initInterpreter.getSystemState();
 		PyStringMap localsMap = (PyStringMap)initInterpreter.getLocals();
-		locals = (PyObject)localsMap.copy();
+		locals = localsMap.copy();
 		initInterpreter.close();
 		initInterpreterPool.shutdown();
 		codeRunner = new CodeRunner(ddp.getMethodCaller(), state, locals);

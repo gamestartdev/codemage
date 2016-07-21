@@ -4,6 +4,7 @@ _version = _version.split(".")[3]
 _nmsPath = "net.minecraft.server." + _version
 _craftPath = "org.bukkit.craftbukkit." + _version + "."
 Bukkit = None
+jplayrstorage = []
 
 setblockEventHandlers = []
 spawnentityEventHandlers = []
@@ -13,7 +14,7 @@ propelEventHandlers = []
 
 def registerEventHandler(handler, registerTo):
     from copy import deepcopy
-    print "test"
+    #print "test"
     registerTo.append(deepcopy(handler))
     handler = None
 
@@ -278,11 +279,11 @@ def lightning(x, y, z):
 
 def getplayernames():
     from org.bukkit import Bukkit
-    jplayers = Bukkit.getOnlinePlayers()
-    jplayernames = []
-    for jplayer in jplayers:
-        jplayernames.append(str(jplayer.getDisplayName()))
-    return jplayernames
+    players = Bukkit.getOnlinePlayers()
+    playernames = []
+    for player in players:
+        playernames.append(str(player.getDisplayName()))
+    return playernames
 
 def getblock(x, y, z):
     mat = jplayer.getWorld().getBlockAt(loc(x, y, z)).getType()
@@ -292,11 +293,13 @@ def getblock(x, y, z):
     else:
         return AIR
 
-def potioneffect(effect, duration=10, amplifier=1, target=player):
+def potioneffect(effect, duration=10, amplifier=1, target="nobody"):
     event = PyEvent()
     for handler in potioneffectEventHandlers:
         handler(event)
     if not event.isCanceled():
+        if target == "nobody":
+            target = player
         from org.bukkit import Bukkit
         from org.bukkit.potion import PotionEffect
         CraftLivingEntity = _importCraft("entity", "CraftLivingEntity")
@@ -311,11 +314,13 @@ def potioneffect(effect, duration=10, amplifier=1, target=player):
         except Exception:
             pass
 
-def propel(x, y, z, target=player):
+def propel(x, y, z, target="nobody"):
     event = PyEvent()
     for handler in propelEventHandlers:
         handler(event)
     if not event.isCanceled():
+        if target == "nobody":
+            target = player
         if object.__getattribute__(target, "__class__") == PyPlayer:
             from org.bukkit.util import Vector
             Entity = _importNms("EntityLiving")
@@ -423,8 +428,14 @@ def getplayerswithselector(selector):
 def getopponent():
     return getplayerswithselector("@p[name=!" + player.getName() + ",m=0,r=200]")[0]
 
-def getentitiesinrange(radius, x=player.x, y=player.y, z=player.z, etype=None):
+def getentitiesinrange(radius, x=None, y=None, z=None, etype=None):
     from math import floor as f
+    if x == None:
+        x = player.x
+    if y == None:
+        y = player.y
+    if z == None:
+        z = player.z
     xyz = ",x=" + str(int(x)) + ",y=" + str(int(y)) + ",z=" + str(int(z)) + "]"
     if radius in range(0, 101) and etype == None:
         selector = "@e[r=" + str(radius) + xyz
@@ -523,8 +534,8 @@ CHEST_MINECART = STORAGE_MINECART
 END_STONE = ENDER_STONE
 
 __builtins__ = None
-globals = None
-locals = None
+#globals = None
+#locals = None
 eval = None
 #dir = None
 compile = None

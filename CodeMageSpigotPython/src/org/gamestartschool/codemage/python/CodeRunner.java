@@ -19,7 +19,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 import org.gamestartschool.codemage.ddp.ISpell;
 import org.gamestartschool.codemage.ddp.ISpellMeteorMethodCaller;
+import org.python.core.Py;
 import org.python.core.PyObject;
+import org.python.core.PyStringMap;
 import org.python.core.PySystemState;
 import org.python.util.InteractiveInterpreter;
 import org.python.util.PythonInterpreter;
@@ -27,14 +29,15 @@ import org.python.util.PythonInterpreter;
 public class CodeRunner implements Runnable {
 	private ISpellMeteorMethodCaller methodCaller;
 	private PySystemState state;
-	private PyObject locals;
+	private PyStringMap locals;
 	private static boolean exhaustQueueEachTick = true;
 	public ConcurrentLinkedQueue<PythonMethodCall> pythonMethodQueue = new ConcurrentLinkedQueue<PythonMethodCall>();
 
-	public CodeRunner(ISpellMeteorMethodCaller methodCaller, PySystemState state, PyObject locals) {
+	public CodeRunner(ISpellMeteorMethodCaller methodCaller, PySystemState state, PyStringMap locals) {
 		this.methodCaller = methodCaller;
 		this.state = state;
 		this.locals = locals;
+		this.locals.__setitem__("pythonMethodQueue", Py.java2py(pythonMethodQueue));
 	}
 
 	@Override
@@ -82,13 +85,8 @@ public class CodeRunner implements Runnable {
 	public void executeCode(final String code, final Player player, final ISpell[] gameWrappers, final Map<String, ISpell> libraries, final String spellname, final String spellId, final ISpell runWithStudentCode) {
 		methodCaller.spellException("", spellId);
 		methodCaller.clearPrint(spellId);
-		final PyObject localsF = locals;
-		final PySystemState stateF = state;
 		String nonFinalCode = code;
 		final List<ISpell> usedLibraries = new ArrayList<ISpell>();
-		//usedLibraries.add(libraries.get("xpRequirements"));
-		//usedLibraries.add(libraries.get("mpApi"));
-		//usedLibraries.add(libraries.get("preCode"));
 		System.out.println(libraries.keySet().toString());
 		for(String key : libraries.keySet())
 		{
@@ -110,13 +108,17 @@ public class CodeRunner implements Runnable {
 			@Override
 			public InteractiveInterpreter call() {
 				
-				InteractiveInterpreter pi = new InteractiveInterpreter(locals,state);
+				//PyStringMap specificLocals = locals.copy();
 				
+				//specificLocals.__setitem__("jplayer_local", Py.java2py(player));
+				//specificLocals.__setitem__("spellname", Py.java2py(spellname));
+				//specificLocals.__setitem__("spellId", Py.java2py(spellId));
+				//System.out.println(specificLocals.toString());
+				InteractiveInterpreter pi = new InteractiveInterpreter(locals, state);
 				pi.set("jplayer", player);
-				pi.set("pythonMethodQueue", pythonMethodQueue);
 				pi.set("spellname", spellname);
 				pi.set("spellId", spellId);
-				
+				//pi.setLocals(specificLocals);
 				try {
 					pi.exec(runWithStudentCode.getCode());
 				} catch (Exception wrappere) {

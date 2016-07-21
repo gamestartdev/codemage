@@ -115,7 +115,10 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 						wrapperCode += spell.getCode() + "\n";
 					}
 					System.out.println(wrapperCode);
-					wrapperCode = wrapperCode.replaceAll("jplayer", "jplayrstorage[0]"); //Python is a derp.
+					wrapperCode = wrapperCode.replaceAll("jplayer", "injectedstorage['jplayer']"); //Python is a derp.
+					wrapperCode = wrapperCode.replaceAll("pythonMethodQueue", "injectedstorage['pythonMethodQueue']");
+					wrapperCode = wrapperCode.replaceAll("spellId", "injectedstorage['spellId']");
+					wrapperCode = wrapperCode.replaceAll("spellname", "injectedstorage['spellname']");
 					
 					try {
 						pi.exec(wrapperCode);

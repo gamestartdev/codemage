@@ -4,7 +4,7 @@ _version = _version.split(".")[3]
 _nmsPath = "net.minecraft.server." + _version
 _craftPath = "org.bukkit.craftbukkit." + _version + "."
 Bukkit = None
-jplayrstorage = []
+injectedstorage = {}
 
 setblockEventHandlers = []
 spawnentityEventHandlers = []

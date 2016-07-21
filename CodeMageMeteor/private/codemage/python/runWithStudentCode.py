@@ -1,6 +1,9 @@
 player = PyPlayer(jplayer)
 settracefunc()
-jplayrstorage.append(jplayer)
+injectedstorage["jplayer"] = jplayer
+injectedstorage["pythonMethodQueue"] = pythonMethodQueue
+injectedstorage["spellId"] = spellId
+injectedstorage["spellname"] = spellname
 #This seems to be the only part of python where jplayer can be accessed.
 #Python is a derp.
 

@@ -66,6 +66,7 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 		PrintHelper.setMethodCaller(ddp.getMethodCaller());
 		this.getCommand("python").setExecutor(new PythonConsoleCommand(codeRunner, ddp.getRunBeforeStudentCode()));
 		this.getCommand("reconnectddp").setExecutor(new DDPReconnectCommand(ddp));
+		this.getCommand("reloadwrappers").setExecutor(new GameWrapperReloadCommand(this));
 		addListeners();
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, codeRunner, 0L, 1L);
 	}

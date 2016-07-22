@@ -15,16 +15,29 @@
         <div class="panel">
             {{>userList}}
         </div>
+
+        <div class="panel">
+            {{#each groups}}
+                <a href="{{pathFor 'codeMage.group'}}">{{name}}</a><hr style="margin:3px">
+            {{/each}}
+            <a href="#" class="add-group"><b>+</b></a>
+        </div>
     </div>
     <div class="small-8 medium-9 large-10 columns">
-    {{#if spell}}
+        {{#if spell}}
             {{#with spell}}
                 {{>spell}}
             {{/with}}
-        {{else}}
-        {{#with tome}}
-            {{>tome}}
-        {{/with}}
+        {{/if}}
+        {{#if tome}}
+            {{#with tome}}
+                {{>tome}}
+            {{/with}}
+        {{/if}}
+        {{#if group}}
+            {{#with group}}
+                {{>group}}
+            {{/with}}
         {{/if}}
     </div>
 </template>

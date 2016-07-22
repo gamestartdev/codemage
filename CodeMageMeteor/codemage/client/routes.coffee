@@ -3,7 +3,7 @@ Router.route '/user/:_id?',
   template: 'codeMage'
   data: ->
     user = Meteor.users.findOne {username: @params._id} or Meteor.user()
-    return { user: user, tomes: tomes.find {userId: user?._id} }
+    return { groups: groups.find({}), user: user, tomes: tomes.find {userId: user?._id} }
 
 Router.route '/tome/:_id?',
   name: 'codeMage.tome'
@@ -11,7 +11,14 @@ Router.route '/tome/:_id?',
   data: ->
     tome = tomes.findOne @params._id
     user = Meteor.users.findOne tome?.userId
-    return { user: user, tome: tome, tomes: tomes.find {userId: user?._id} }
+    return { groups: groups.find({}), user: user, tome: tome, tomes: tomes.find {userId: user?._id} }
+
+Router.route '/group/:_id?',
+  name: 'codeMage.group'
+  template: 'codeMage'
+  data: ->
+    group = groups.findOne @params._id
+    return { group: group, groups: groups.find({}), user: Meteor.user(), tomes: tomes.find {userId: Meteor.user()._id} }
 
 Router.route '/spell/:_id?',
   name: 'codeMage.spell'
@@ -21,4 +28,4 @@ Router.route '/spell/:_id?',
     spell = spells.findOne @params._id
     tome = tomes.findOne(spell?.tomeId)
     user = Meteor.users.findOne(tome?.userId) or Meteor.user()
-    return { user: user, tome: tome, spell: spell, tomes: tomes.find {userId: user?._id} }
+    return { groups: groups.find({}), user: user, tome: tome, spell: spell, tomes: tomes.find {userId: user?._id} }

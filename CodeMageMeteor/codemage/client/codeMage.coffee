@@ -7,3 +7,6 @@ Template.codeMage.events
     user = t.data.user
     tomeName = user?.username + " Tome " + tomes.find({userId: user._id}).count()
     Meteor.call 'addTome', user._id, tomeName, (error, newTomeId) -> Router.go('codeMage.tome', tomes.findOne(newTomeId))
+  'click .add-group': (e,t) ->
+    groupName = "Group " + groups.find({}).count()
+    Meteor.call 'addGroup', groupName

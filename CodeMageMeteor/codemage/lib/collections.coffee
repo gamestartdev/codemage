@@ -1,5 +1,6 @@
 @tomes = new Mongo.Collection "tomes"
 @spells = new Mongo.Collection "spells"
+@groups = new Mongo.Collection "groups"
 
 createdAt = (userId, doc) ->
   doc.createdAt = new Date()

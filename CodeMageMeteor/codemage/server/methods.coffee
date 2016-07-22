@@ -112,10 +112,66 @@ updateMinecraftPlayerId = (minecraftPlayerId) ->
   console.log "ID! " + minecraftPlayerId
   Meteor.users.update Meteor.userId(), {$set: {'minecraftPlayerId': minecraftPlayerId}}
 
+addGroup = (name) ->
+  check(name, String)
+  groups.insert
+    name: name
+    wrappers: []
+    groupMembers: []
+
+removeGroup = (id) ->
+  check(id, String)
+  groups.remove id
+
+addWrapperToGroup = (groupId, wrapperId) ->
+  check(groupId, String)
+  check(wrapperId, String)
+  group = groups.findOne {_id: groupId}
+  wrappers = group.wrappers
+  if wrappers.indexOf wrapperId == -1
+    wrappers.push(wrapperId)
+    groups.update groupId, {$set: {wrappers: wrappers}}
+
+removeWrapperFromGroup = (groupId, wrapperId) ->
+  check(groupId, String)
+  check(wrapperId, String)
+  group = groups.findOne {_id: groupId}
+  wrappers = group.wrappers
+  if wrappers.indexOf wrapperId != -1
+    wrappers.splice (wrappers.indexOf wrapperId), 1
+    groups.update groupId, {$set: {wrappers: wrappers}}
+
+addMemberToGroup = (groupId, userId) ->
+  check(groupId, String)
+  check(userId, String)
+  group = groups.findOne {_id: groupId}
+  groupMembers = group.groupMembers
+  if groupMembers.indexOf userId == -1
+    groupMembers.push userId
+    groups.update groupId, {$set: {groupMembers: groupMembers}}
+
+removeMemberFromGroup = (groupId, userId) ->
+  check(groupId, String)
+  check(userId, String)
+  group = groups.findOne {_id: groupId}
+  groupMembers = group.groupMembers
+  if groupMembers.indexOf userId != -1
+    groupMembers.splice (groupMembers.indexOf userId), 1
+    groups.update groupId, {$set: {groupMembers: groupMembers}}
+
+
+
 Meteor.methods
   addTome: addTome
   removeTome: removeTome
   updateTomeName: updateTomeName
+
+  addGroup: addGroup
+  removeGroup: removeGroup
+  addWrapperToGroup: addWrapperToGroup
+  removeWrapperFromGroup: removeWrapperFromGroup
+  addMemberToGroup: addMemberToGroup
+  removeMemberFromGroup: removeMemberFromGroup
 
   addSpell: addSpell
   updateSpell: updateSpell

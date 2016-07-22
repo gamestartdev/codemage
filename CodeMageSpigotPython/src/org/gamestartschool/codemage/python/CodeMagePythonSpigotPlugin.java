@@ -44,6 +44,7 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 	CodeRunner codeRunner;
 	PySystemState state;
 	PyStringMap locals;
+	private int codeRunnerTaskId = -1;
 	
 
 	void log(String message) {
@@ -68,7 +69,6 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 		this.getCommand("reconnectddp").setExecutor(new DDPReconnectCommand(ddp));
 		this.getCommand("reloadwrappers").setExecutor(new GameWrapperReloadCommand(this));
 		addListeners();
-		getServer().getScheduler().scheduleSyncRepeatingTask(this, codeRunner, 0L, 1L);
 	}
 	
 	public void initCodeRunner()
@@ -139,7 +139,11 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 		locals = localsMap.copy();
 		initInterpreter.close();
 		initInterpreterPool.shutdown();
+		if(codeRunnerTaskId != -1) {
+			getServer().getScheduler().cancelTask(codeRunnerTaskId);
+		}
 		codeRunner = new CodeRunner(ddp.getMethodCaller(), state, locals);
+		codeRunnerTaskId = getServer().getScheduler().scheduleSyncRepeatingTask(this, codeRunner, 0L, 1L);
 	}
 
 	private void addListeners() {

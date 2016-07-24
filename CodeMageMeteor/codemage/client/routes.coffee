@@ -18,7 +18,7 @@ Router.route '/group/:_id?',
   template: 'codeMage'
   data: ->
     group = groups.findOne @params._id
-    return { group: group, groups: groups.find({}), user: Meteor.user(), tomes: tomes.find {userId: Meteor.user()._id} }
+    return { group: group, groups: groups.find({}), user: Meteor.user(), users: Meteor.users.find({}), tomes: tomes.find {userId: Meteor.user()._id} }
 
 Router.route '/spell/:_id?',
   name: 'codeMage.spell'

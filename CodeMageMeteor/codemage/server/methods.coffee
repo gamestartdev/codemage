@@ -128,7 +128,7 @@ addWrapperToGroup = (groupId, wrapperId) ->
   check(wrapperId, String)
   group = groups.findOne {_id: groupId}
   wrappers = group.wrappers
-  if wrappers.indexOf wrapperId == -1
+  if (wrappers.indexOf wrapperId) == -1
     wrappers.push(wrapperId)
     groups.update groupId, {$set: {wrappers: wrappers}}
 
@@ -137,7 +137,7 @@ removeWrapperFromGroup = (groupId, wrapperId) ->
   check(wrapperId, String)
   group = groups.findOne {_id: groupId}
   wrappers = group.wrappers
-  if wrappers.indexOf wrapperId != -1
+  if (wrappers.indexOf wrapperId) != -1
     wrappers.splice (wrappers.indexOf wrapperId), 1
     groups.update groupId, {$set: {wrappers: wrappers}}
 
@@ -146,7 +146,7 @@ addMemberToGroup = (groupId, userId) ->
   check(userId, String)
   group = groups.findOne {_id: groupId}
   groupMembers = group.groupMembers
-  if groupMembers.indexOf userId == -1
+  if (groupMembers.indexOf userId) == -1
     groupMembers.push userId
     groups.update groupId, {$set: {groupMembers: groupMembers}}
 
@@ -155,7 +155,7 @@ removeMemberFromGroup = (groupId, userId) ->
   check(userId, String)
   group = groups.findOne {_id: groupId}
   groupMembers = group.groupMembers
-  if groupMembers.indexOf userId != -1
+  if (groupMembers.indexOf userId) != -1
     groupMembers.splice (groupMembers.indexOf userId), 1
     groups.update groupId, {$set: {groupMembers: groupMembers}}
 

@@ -3,17 +3,21 @@
         <h3><a href="#" class="group-name">{{name}}</a></h3><br>
         Game Wrappers:<br>
         {{#each wrappers}}
-            {{wrapperNameFromId ..}}   <a href="#" class="remove-wrapper {{..}}" style="color:red">-</a><br>
+            {{wrapperNameFromId this}}   <a href="#" class="remove-wrapper {{this}}" style="color:red">-</a><br>
         {{/each}}
         <select class="wrapper-dropdown">
             {{#each wrapperSpells}}
-
+                <option value="{{_id}}">{{name}}</option>
             {{/each}}
         </select><a href="#" class="add-wrapper">+</a><br>
         Group Members:<br>
-        {{#each members}}
-            {{userNameFromId ..}}   <a href="#" class="remove-member {{..}}" style="color:red">-</a><br>
+        {{#each groupMembers}}
+            {{userNameFromId this}}   <a href="#" class="remove-member {{this}}" style="color:red">-</a><br>
         {{/each}}
-        <a href="#" class="add-member">+</a>
+        <select class="member-dropdown">
+            {{#each allUsers}}
+                <option value="{{_id}}">{{username}}</option>
+            {{/each}}
+        </select><a href="#" class="add-member">+</a><br>
     </div>
 </template>

@@ -1,8 +1,7 @@
 package org.gamestartschool.codemage.python;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -25,9 +24,10 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
 import org.gamestartschool.codemage.ddp.CodeMageDDP;
+import org.gamestartschool.codemage.ddp.DefaultGroup;
+import org.gamestartschool.codemage.ddp.IGroup;
 import org.gamestartschool.codemage.ddp.ISpell;
 import org.gamestartschool.codemage.ddp.IUser;
-import org.python.core.PyObject;
 import org.python.core.PyStringMap;
 import org.python.core.PySystemState;
 import org.python.util.InteractiveInterpreter;
@@ -41,10 +41,8 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 	String minecraftPlayerId1 = "GameStartSchool";
 	String minecraftPlayerId2 = "denrei";
 	CodeMageDDP ddp = null;
-	CodeRunner codeRunner;
-	PySystemState state;
-	PyStringMap locals;
-	private int codeRunnerTaskId = -1;
+	Map<IGroup, CodeRunner> codeRunnerMap = new HashMap<IGroup, CodeRunner>();
+	private Map<IGroup, Integer> codeRunnerTaskIdMap = new HashMap<IGroup, Integer>();
 	
 
 	void log(String message) {
@@ -63,17 +61,42 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
-		initCodeRunner();
+		initCodeRunners();
 		PrintHelper.setMethodCaller(ddp.getMethodCaller());
-		this.getCommand("python").setExecutor(new PythonConsoleCommand(codeRunner, ddp.getRunBeforeStudentCode()));
+		//this.getCommand("python").setExecutor(new PythonConsoleCommand(codeRunner, ddp.getRunBeforeStudentCode()));
 		this.getCommand("reconnectddp").setExecutor(new DDPReconnectCommand(ddp));
 		this.getCommand("reloadwrappers").setExecutor(new GameWrapperReloadCommand(this));
 		addListeners();
 	}
 	
-	public void initCodeRunner()
+	public void initCodeRunners()
 	{
-		final ISpell[] gameWrappers = ddp.getAllGameWrappers();
+		codeRunnerMap.clear();
+		for(IGroup group : ddp.getGroups())
+		{
+			if(codeRunnerTaskIdMap.containsKey(group))
+			{
+				getServer().getScheduler().cancelTask(codeRunnerTaskIdMap.get(group).intValue());
+			}
+			List<ISpell> wrappers = ddp.getGlobalGameWrappers();
+			wrappers.addAll(ddp.getGameWrappersForGroup(group));
+			CodeRunner codeRunner = initCodeRunner(wrappers);
+			codeRunnerMap.put(group, codeRunner);
+			int taskId = getServer().getScheduler().scheduleSyncRepeatingTask(this, codeRunner, 0L, 1L);
+			codeRunnerTaskIdMap.put(group, Integer.valueOf(taskId));
+		}
+		if(codeRunnerTaskIdMap.containsKey(DefaultGroup.INSTANCE))
+		{
+			getServer().getScheduler().cancelTask(codeRunnerTaskIdMap.get(DefaultGroup.INSTANCE).intValue());
+		}
+		CodeRunner codeRunner = initCodeRunner(ddp.getGlobalGameWrappers());
+		codeRunnerMap.put(DefaultGroup.INSTANCE, codeRunner);
+		int taskId = getServer().getScheduler().scheduleSyncRepeatingTask(this, codeRunner, 0L, 1L);
+		codeRunnerTaskIdMap.put(DefaultGroup.INSTANCE, Integer.valueOf(taskId));
+	}
+	
+	private CodeRunner initCodeRunner(final List<ISpell> wrappers)
+	{
 		ExecutorService initInterpreterPool = Executors.newFixedThreadPool(1);
 		InteractiveInterpreter initInterpreter = null;
 		try {
@@ -81,7 +104,7 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 				@Override
 				public InteractiveInterpreter call()
 				{
-					InteractiveInterpreter pi = new InteractiveInterpreter();
+					InteractiveInterpreter pi = new InteractiveInterpreter(new PyStringMap(), new PySystemState());
 					for (PotionEffectType p: PotionEffectType.values()) {
 						if(p != null) //Someone thought it would be a good idea to put a null at the start.
 						{
@@ -111,7 +134,7 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 						pi.set(s.toString(), s);
 					}
 					String wrapperCode = "";
-					for (ISpell spell : gameWrappers) {
+					for (ISpell spell : wrappers) {
 						wrapperCode += spell.getCode() + "\n";
 					}
 					System.out.println(wrapperCode);
@@ -123,9 +146,9 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 					try {
 						pi.exec(wrapperCode);
 					} catch (Exception wrappere) {
-						StringWriter wsw = new StringWriter();
-						wrappere.printStackTrace(new PrintWriter(wsw));
-						String wtrace = wsw.toString();
+						//StringWriter wsw = new StringWriter();
+						//wrappere.printStackTrace(new PrintWriter(wsw));
+						//String wtrace = wsw.toString();
 						wrappere.printStackTrace();
 					}
 					return pi;
@@ -134,16 +157,17 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		state = initInterpreter.getSystemState();
-		PyStringMap localsMap = (PyStringMap)initInterpreter.getLocals();
-		locals = localsMap.copy();
+		
+		PySystemState state = initInterpreter.getSystemState();
+		PyStringMap locals = ((PyStringMap)initInterpreter.getLocals()).copy();
 		initInterpreter.close();
 		initInterpreterPool.shutdown();
-		if(codeRunnerTaskId != -1) {
-			getServer().getScheduler().cancelTask(codeRunnerTaskId);
-		}
-		codeRunner = new CodeRunner(ddp.getMethodCaller(), state, locals);
-		codeRunnerTaskId = getServer().getScheduler().scheduleSyncRepeatingTask(this, codeRunner, 0L, 1L);
+		//if(codeRunnerTaskId != -1) {
+		//	getServer().getScheduler().cancelTask(codeRunnerTaskId);
+		//}
+		//codeRunner = new CodeRunner(ddp.getMethodCaller(), state, locals);
+		//codeRunnerTaskId = getServer().getScheduler().scheduleSyncRepeatingTask(this, codeRunner, 0L, 1L);
+		return new CodeRunner(ddp.getMethodCaller(), state, locals);
 	}
 
 	private void addListeners() {
@@ -160,9 +184,10 @@ public class CodeMagePythonSpigotPlugin extends JavaPlugin {
 					Action action = event.getAction();
 					System.out.println("Item Type: " + material);
 					System.out.println("Binding Type: " + action);
-					
 					Map<String, ISpell> libraries = ddp.getAllLibraries();
 					List<ISpell> spells = user.getSpells(material, action);
+					IGroup group = user.getGroup();
+					CodeRunner codeRunner = codeRunnerMap.get(group);
 					for (ISpell spell : spells) {
 						log("runningCode: " + spell.getCode());
 						codeRunner.executeCode(spell.getCode(), player, libraries, spell.getName(), spell.getId(), ddp.getRunBeforeStudentCode());

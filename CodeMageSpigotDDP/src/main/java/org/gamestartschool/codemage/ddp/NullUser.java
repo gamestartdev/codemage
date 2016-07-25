@@ -38,4 +38,14 @@ class NullUser implements IUser {
 		return new ArrayList<ISpell>();
 	}
 
+	@Override
+	public String getId() {
+		return null;
+	}
+
+	@Override
+	public IGroup getGroup() {
+		return DefaultGroup.INSTANCE;
+	}
+
 }

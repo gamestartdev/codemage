@@ -181,7 +181,7 @@ public class CodeMageDDP {
 
 		@Override
 		MongoUser documentAdded(String id, Map<String, Object> fields) {
-			return new MongoUser(spells, id, fields, methodCaller);
+			return new MongoUser(spells, groups, id, fields, methodCaller);
 		}
 	};
 
@@ -193,6 +193,15 @@ public class CodeMageDDP {
 			return new MongoSpell(id, fields);
 		}
 	};
+	
+	private final ACodeMageCollection<MongoGroup> groups = new ACodeMageCollection<MongoGroup>(
+			"groups") {
+
+		@Override
+		MongoGroup documentAdded(String id, Map<String, Object> fields) {
+			return new MongoGroup(id, fields);
+		}
+	};
 
 	private boolean isReady() {
 		for (ACodeMageCollection<?> collection : subscriptions) {
@@ -201,7 +210,12 @@ public class CodeMageDDP {
 		}
 		return true;
 	}
-
+	
+	public List<IGroup> getGroups()
+	{
+		return new ArrayList<IGroup>(groups.getAll());
+	}
+	
 	public CodeMageDDP(String meteorServerIp, Integer meteorServerPort)
 			throws URISyntaxException {
 		ddpClient = new DDPClient(meteorServerIp, meteorServerPort);
@@ -218,6 +232,7 @@ public class CodeMageDDP {
 
 		createSubscription(users);
 		createSubscription(spells);
+		createSubscription(groups);
 
 		while (!isReady()) {
 			System.out.println("Not ready..");
@@ -274,7 +289,8 @@ public class CodeMageDDP {
 		}
 		return libMap;
 	}
-
+	
+	@Deprecated
 	public ISpell[] getAllGameWrappers() {
 		Predicate<MongoSpell> gameWrappersForUser = new Predicate<MongoSpell>() {
 			
@@ -312,6 +328,25 @@ public class CodeMageDDP {
 		return gameWrapperArray;
 	}
 	
+	public List<ISpell> getGlobalGameWrappers() {
+		final List<ISpell> globalWrappers = new ArrayList<ISpell>();
+		globalWrappers.add(spells.get("preCode"));
+		globalWrappers.add(spells.get("xpRequirements"));
+		globalWrappers.add(spells.get("mpApi"));  //Only these 3 spells have constant, non-gibberish ids.
+		
+		return globalWrappers;
+	}
+	
+	public List<ISpell> getGameWrappersForGroup(final IGroup group) {
+		List<String> groupWrapperIds = group.getWrapperIds();
+		List<ISpell> groupWrappers = new ArrayList<ISpell>();
+		for(String wrapperId : groupWrapperIds)
+		{
+			groupWrappers.add(spells.get(wrapperId));
+		}
+		
+		return groupWrappers;
+	}
 	
 	private void reportCodeMageServerStatus(CodeMageServerStatus status) {
 		String dummyCodeMageServerIp = "127.0.0.1";

@@ -11,5 +11,7 @@ public interface IUser {
 	//List<IEnchantment> getEnchantments(Material material, Action action);
 	List<ISpell> getSpells();
 	List<ISpell> getSpells(Material material, Action action);
+	String getId();
+	IGroup getGroup();
 	void updateHealth(int health);
 }

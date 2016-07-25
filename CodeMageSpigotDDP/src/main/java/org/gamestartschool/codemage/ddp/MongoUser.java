@@ -14,13 +14,15 @@ import ch.lambdaj.function.matcher.Predicate;
 class MongoUser extends AMongoDocument implements IUser {
 
 	private ICodeMageCollection<MongoSpell> spells;
+	private ICodeMageCollection<MongoGroup> groups;
 	private IUserMeteorMethods meteorMethods;
 	private boolean removed;
 
-	public MongoUser(ICodeMageCollection<MongoSpell> spells,
+	public MongoUser(ICodeMageCollection<MongoSpell> spells, ICodeMageCollection<MongoGroup> groups,
 			String id, Map<String, Object> fields, IUserMeteorMethods methodCaller) {
 		super(id, fields);
 		this.spells = spells;
+		this.groups = groups;
 		meteorMethods = methodCaller;
 	}
 
@@ -39,7 +41,23 @@ class MongoUser extends AMongoDocument implements IUser {
 	public void removed() {
 		removed = true;
 	}
-
+	
+	@Override
+	public IGroup getGroup() {
+		Predicate<MongoGroup> groupForUser = new Predicate<MongoGroup>() {
+			@Override
+			public boolean apply(MongoGroup group) {
+				return group.getMemberIds().contains(getId());
+			}
+		};
+		List<MongoGroup> userGroups = filter(groupForUser, groups.getAll());
+		if(!userGroups.isEmpty())
+		{
+			return userGroups.get(0);
+		}
+		return DefaultGroup.INSTANCE;
+	}
+	
 	@Override
 	public List<ISpell> getSpells() {
 		if (removed) return new ArrayList<ISpell>();

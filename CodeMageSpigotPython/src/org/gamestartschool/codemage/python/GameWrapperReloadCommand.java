@@ -18,7 +18,7 @@ public class GameWrapperReloadCommand implements CommandExecutor {
 		if(command.getName().equalsIgnoreCase("reloadwrappers") && sender.isOp())
 		{
 			sender.sendMessage("Reloading gamewrappers...");
-			plugin.initCodeRunner();
+			plugin.initCodeRunners();
 			//Un-schedule the old CodeRunner and schedule the new one
 			//plugin.getServer().getScheduler().cancelTask(taskId);
 			//plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, plugin.codeRunner, 0L, 1L);

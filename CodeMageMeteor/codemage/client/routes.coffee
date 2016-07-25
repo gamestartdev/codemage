@@ -28,4 +28,4 @@ Router.route '/spell/:_id?',
     spell = spells.findOne @params._id
     tome = tomes.findOne(spell?.tomeId)
     user = Meteor.users.findOne(tome?.userId) or Meteor.user()
-    return { groups: groups.find({}), user: user, tome: tome, spell: spell, tomes: tomes.find {userId: user?._id} }
+    return { groups: groups.find({}), user: user, spell: spell, tomes: tomes.find {userId: user?._id} }

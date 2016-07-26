@@ -12,7 +12,7 @@
         </select><a href="#" class="add-wrapper">+</a><br>
         Group Members:<br>
         {{#each groupMembers}}
-            {{userNameFromId this}}   <a href="#" class="remove-member {{this}}" style="color:red">-</a><br>
+            {{#if isUngrouped this}}{{userNameFromId this}}   <a href="#" class="remove-member {{this}}" style="color:red">-</a><br>{{/if}}
         {{/each}}
         <select class="member-dropdown">
             {{#each allUsers}}

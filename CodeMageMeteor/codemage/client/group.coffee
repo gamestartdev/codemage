@@ -7,6 +7,13 @@ Template.group.helpers
     console.log id
     return Meteor.users.findOne({_id: id}).username
 
+  isUngrouped: (id) ->
+    groupsArray = groups.find({}).fetch()
+    groupedIds = []
+    for group in groupsArray
+      groupedIds.push id for id in group.groupMembers
+    return !(id in groupedIds)
+
   wrapperSpells: ->
     return spells.find {wrapper: true}
 
@@ -25,6 +32,7 @@ Template.group.events
     Meteor.call 'removeWrapperFromGroup', t.data._id, wrapperId #"this" doesn't work here for some reason
 
   'click .add-member': (e,t) ->
+    console.log "add member"
     dropdown = (e.target.parentElement.getElementsByClassName "member-dropdown")[0]
     memberId = dropdown.options[dropdown.options.selectedIndex].value
     Meteor.call 'addMemberToGroup', this._id, memberId

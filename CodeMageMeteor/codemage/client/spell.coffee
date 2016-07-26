@@ -34,15 +34,8 @@ Template.spell.events
     console.log wrapper
     Meteor.call 'updateSpell', this._id, {wrapper: !wrapper}
 
-  'click .wrapperEnabled': (e,t) ->
-    enabled = spells.findOne(this._id).wrapperEnabled
-    Meteor.call 'updateSpell', this._id, {wrapperEnabled: !enabled}
-
   'input .wrapperDesc': (e,t) ->
     Meteor.call 'updateSpell', this._id, {wrapperDescription: e.target.value}
-
-  'input .wrapperPriority': (e,t) ->
-    Meteor.call 'updateSpell', this._id, {wrapperPriority: e.target.value}
 
   'click .toggleLibrary': (e,t) ->
     library = spells.findOne(this._id).library

@@ -1,8 +1,10 @@
 <template name="spell">
     <div class="row">
         <div class="small-8 medium-9 large-10 columns">
-            <h3><a href="#" class="spell-name">{{name}}</a></h3><br>
-            {{gameWrapperText}}
+            <h3><a href="#" class="spell-name">{{name}}</a></h3>
+            {{#each gameWrapperText}}
+                {{this}}<br>
+            {{/each}}
             {{>aceEditor}}
         </div>
 

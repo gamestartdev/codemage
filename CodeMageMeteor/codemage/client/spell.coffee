@@ -16,10 +16,12 @@ Template.spell.helpers
     else
       return ""
   gameWrapperText: ->
-    text = ""
-    wrappers = spells.find({wrapper: true}).fetch()
-    wrapperTexts = ""
-    wrapperTexts += spell.wrapperDescription for spell in wrappers when spell.wrapperDescription isnt "" #yay, coffeescript!
+    group = groups.findOne {groupMembers: {$in: [this.userId]}}
+    wrapperIds = group.wrappers
+    wrappers = spells.find({_id: {$in: wrapperIds}}).fetch()
+    wrapperTexts = []
+    wrapperTexts.push spell.wrapperDescription for spell in wrappers when spell.wrapperDescription isnt "" #yay, coffeescript!
+    return wrapperTexts
 
 Template.spell.events
 

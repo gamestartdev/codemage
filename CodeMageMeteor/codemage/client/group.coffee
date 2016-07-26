@@ -11,7 +11,7 @@ Template.group.helpers
     groupsArray = groups.find({}).fetch()
     groupedIds = []
     for group in groupsArray
-      groupedIds.push id for id in group.groupMembers
+      groupedIds.push gid for gid in group.groupMembers
     return !(id in groupedIds)
 
   wrapperSpells: ->

@@ -40,3 +40,7 @@ Template.group.events
   'click .remove-member': (e,t) ->
     memberId = e.target.classList[1]
     Meteor.call 'removeMemberFromGroup', t.data._id, memberId
+
+  'click .remove-group': (e,t) ->
+    if share.confirm "Delete #{this.name}?"
+      Meteor.call 'removeGroup', this._id
